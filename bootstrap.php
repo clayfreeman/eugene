@@ -10,6 +10,10 @@
   // Define the current file's parent directory as the private root
   define('__PRIVATEROOT__', __DIR__);
 
+  // Display and enable *all* types of errors
+  ini_set('display_errors', 1);
+  error_reporting(E_ALL);
+
   // Load the `Path` class for easier platform-specific path generation
   silent_include(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
     'Pubkey2', 'Utilities', 'Autoload.php']))) or die('Could not load the '.
@@ -29,5 +33,5 @@
    */
   function silent_include(string $path = null): bool {
     // Silently attempt to include the provided path
-    return is_file($path) && is_readable($path) && @include_once($path);
+    return is_file($path) && is_readable($path) && include_once($path);
   }
