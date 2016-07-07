@@ -21,6 +21,9 @@
   // Create a locally-scoped alias for the `PathResolutionError` class
   use \Pubkey2\Exceptions\PathResolutionError;
 
+  /**
+   * TODO
+   */
   final class Path {
     /**
      * Prevent construction of this class to force a static-only interface.

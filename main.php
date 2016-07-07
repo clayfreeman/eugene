@@ -6,7 +6,5 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  use \Pubkey2\Runtime\Registry;
-
-  $r = Registry::getInstance();
+  $r = \Pubkey2\Runtime\Registry::getInstance();
   echo var_export(get_declared_classes(), true)."\n";

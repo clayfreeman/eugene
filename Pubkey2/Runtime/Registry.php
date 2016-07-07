@@ -15,6 +15,14 @@
   // Create a locally-scoped alias for the `Singleton` class and its exceptions
   use \Pubkey2\{Exceptions\InstantiationFailureError, DesignPatterns\Singleton};
 
+  /**
+   * TODO
+   */
   final class Registry extends Singleton {
-    // TODO
+    /**
+     * [__construct description]
+     */
+    protected function __construct() {
+      //
+    }
   }
