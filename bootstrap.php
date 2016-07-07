@@ -14,8 +14,7 @@
   require_once(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
     'Pubkey2', 'Utilities', 'Autoload.php'])));
 
-  // Create a locally-scoped alias for the `Path` class
-  use \Pubkey2\Utilities\Path;
-
   // Load the composer autoloader
-  require_once(Path::make([__PRIVATEROOT__, 'vendor', 'autoload.php']));
+  require_once(\Pubkey2\Utilities\Path::make([
+    __PRIVATEROOT__, 'vendor', 'autoload.php'
+  ]));
