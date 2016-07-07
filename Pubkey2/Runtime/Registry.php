@@ -12,6 +12,9 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
-  final class Registry {
-    //
+  // Create a locally-scoped alias for the `Singleton` class and its exceptions
+  use \Pubkey2\{Exceptions\InstantiationFailureError, DesignPatterns\Singleton};
+
+  final class Registry extends Singleton {
+    // TODO
   }
