@@ -1,13 +1,10 @@
 <?php
-  // Define the current file's parent directory as the private root
-  define('__PRIVATEROOT__', __DIR__);
+  /**
+   * Temporary entrypoint to the application.
+   *
+   * @copyright Copyright 2016 Clay Freeman. All rights reserved.
+   * @license   GNU General Public License v3 (GPL-3.0).
+   */
 
   // Load the `Path` class for easier platform-specific path generation
-  require_once(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
-    'Pubkey2', 'Utilities', 'Autoload.php'])));
-
-  // Create a locally-scoped alias for the `Path` class
-  use \Pubkey2\Utilities\Path;
-
-  // Load the composer autoloader
-  require_once(Path::make([__PRIVATEROOT__, 'vendor', 'autoload.php']));
+  require_once(realpath(__DIR__.DIRECTORY_SEPARATOR.'bootstrap.php'));

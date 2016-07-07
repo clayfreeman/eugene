@@ -7,6 +7,8 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
+  namespace Pubkey2\Utilities;
+
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
@@ -14,6 +16,9 @@
   { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Pubkey2',
     'Exceptions', 'PathResolutionError.php']));
   if (is_file($_class) && is_readable($_class)) require_once($_class); }
+
+  // Create a locally-scoped alias for the `PathResolutionError` class
+  use \Pubkey2\Exceptions\PathResolutionError;
 
   final class Path {
     /**
