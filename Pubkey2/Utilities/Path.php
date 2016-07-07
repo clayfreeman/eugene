@@ -15,8 +15,8 @@
   // Provide manual support for loading external dependencies
   { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Pubkey2',
     'Exceptions', 'PathResolutionError.php']));
-  silent_include($_class) or die('Could not load the '.
-    escapeshellarg($_class)." file.\n"); }
+  silent_include($_class) or die('Could not load file at '.
+    escapeshellarg($_class).".\n"); }
 
   // Create a locally-scoped alias for the `PathResolutionError` class
   use \Pubkey2\Exceptions\PathResolutionError;
