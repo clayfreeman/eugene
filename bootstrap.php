@@ -11,10 +11,23 @@
   define('__PRIVATEROOT__', __DIR__);
 
   // Load the `Path` class for easier platform-specific path generation
-  require_once(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
-    'Pubkey2', 'Utilities', 'Autoload.php'])));
+  silent_include(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
+    'Pubkey2', 'Utilities', 'Autoload.php']))) or die('Could not load the '.
+    "project autoload utility.\n");
 
   // Load the composer autoloader
-  require_once(\Pubkey2\Utilities\Path::make([
+  silent_include(\Pubkey2\Utilities\Path::make([
     __PRIVATEROOT__, 'vendor', 'autoload.php'
-  ]));
+  ])) or die("Could not load the composer autoload utility.\n");
+
+  /**
+   * Attempt to silently include the provided path.
+   *
+   * @param  string $path The desired path to include.
+   *
+   * @return bool         `true` if included successfully, `false` on failure.
+   */
+  function silent_include(string $path = null): bool {
+    // Silently attempt to include the provided path
+    return is_file($path) && is_readable($path) && @include_once($path);
+  }

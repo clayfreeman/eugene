@@ -15,7 +15,8 @@
   // Provide manual support for loading external dependencies
   { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Pubkey2',
     'Utilities', 'Path.php']));
-  if (is_file($_class) && is_readable($_class)) require_once($_class); }
+  silent_include($_class) or die('Could not load the '.
+    escapeshellarg($_class)." file.\n"); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
   use \Pubkey2\{Exceptions\PathResolutionError, Utilities\Path};
@@ -31,6 +32,7 @@
     try { // Attempt to create a platform-specific path string to load the class
       $class = Path::make($class);
       // Load the resulting path representing the requested class
-      if (is_file($class) && is_readable($class)) require_once($class);
+      silent_include($class) or die('Could not load the '.
+        escapeshellarg($class)." file.\n");
     } catch (PathResolutionError $e) {}
   }, true, true);

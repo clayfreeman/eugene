@@ -7,4 +7,6 @@
    */
 
   // Load the `Path` class for easier platform-specific path generation
-  require_once(realpath(__DIR__.DIRECTORY_SEPARATOR.'bootstrap.php'));
+  $bootstrap = realpath(__DIR__.DIRECTORY_SEPARATOR.'bootstrap.php');
+  (is_file($bootstrap) && is_readable($bootstrap) && include_once($bootstrap))
+    or die("Could not load the bootstrap routine.\n");
