@@ -1,0 +1,7 @@
+{
+    "require": {
+        "bjeavons/zxcvbn-php": "^0.1.4",
+        "paragonie/halite": "^2.1",
+        "twig/twig": "^1.24"
+    }
+}
