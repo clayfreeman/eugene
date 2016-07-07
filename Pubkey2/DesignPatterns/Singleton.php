@@ -62,7 +62,7 @@
      *                                     instance.
      *
      * @throws  InstantiationFailureError  Upon failure during external
-     *                                      instantiation of the called class.
+     *                                     instantiation of the called class.
      *
      * @return  Singleton                  The only instance for a given
      *                                     `Singleton`.

@@ -34,7 +34,7 @@
      *                             separators should be inserted.
      *
      * @throws PathResolutionError Upon failure when attempting to resolve the
-     *                              absolute path to the requested target.
+     *                             absolute path to the requested target.
      *
      * @return string              A string representing the `realpath()` result
      *                             using the appropriate directory separators.
