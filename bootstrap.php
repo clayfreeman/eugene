@@ -29,7 +29,8 @@
    *
    * @param  string $path The desired path to include.
    *
-   * @return bool         `true` if included successfully, `false` on failure.
+   * @return bool         `true`  if included successfully,
+   *                      `false` on failure.
    */
   function silent_include(string $path = null): bool {
     // Silently attempt to include the provided path

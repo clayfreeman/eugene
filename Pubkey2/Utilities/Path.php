@@ -22,13 +22,14 @@
   use \Pubkey2\Exceptions\PathResolutionError;
 
   /**
-   * TODO
+   * Helper class to aid in making platform-specific filesystem paths via
+   * `DIRECTORY_SEPARATOR` implosion of path components.
    */
   final class Path {
     /**
      * Prevent construction of this class to force a static-only interface.
      */
-    private function __construct() {}
+    protected function __construct() {}
 
     /**
      * Creates a platform-specific path to a filesystem directory entry from an

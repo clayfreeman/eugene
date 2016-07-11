@@ -32,10 +32,10 @@
      * Enforce the subclass to define a default constructor so that it can be
      * instantiated using the singleton design pattern.
      *
-     * @todo                 Assign `void` return type in future version of PHP.
-     *
      * @see   getInstance()  For more information regarding how an instance is
      *                       fetched (created) on request.
+     *
+     * @todo                 Assign `void` return type in future version of PHP.
      */
     abstract protected function __construct();
 
