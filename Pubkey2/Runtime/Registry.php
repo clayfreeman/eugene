@@ -33,7 +33,7 @@
      *
      * Items equivalent to `null` represent items with a permanent write-lock
      * where items with a non-null string value represent items with a read-lock
-     * using the given value as its password.
+     * using the given value as the lock's password.
      *
      * @var array
      */
@@ -130,7 +130,7 @@
     public function isWriteLocked(string $key): bool {
       // Check if the internal locking system contains a value for the
       // specified name
-      return isset($this->locks[$key]);
+      return isset ($this->locks[$key]);
     }
 
     /**
@@ -150,7 +150,7 @@
      * Locks the provided name from being altered (write-lock) or read
      * (read-lock) without first unlocking it.
      *
-     * A read-lock is either a temporary or permanent lock to prevent read or
+     * A read-lock is either a temporary or permanent lock to prevent read and
      * write access to the provided name without first unlocking it with the
      * correct password. This type of lock can be reversed if the password used
      * to lock the name is not lost.
@@ -178,7 +178,7 @@
      */
     public function lock(string $key, string $password = null): bool {
       // Check that the requested name is not currently locked
-      if ($this->isset($key) && !$this->isWriteLocked()) {
+      if ($this->isset($key) && !$this->isWriteLocked($key)) {
         // Store the requested locking information in the registry
         $this->locks[$key] = $password;
         // Return a valid state
@@ -201,32 +201,56 @@
      *                        specified name.
      */
     public function set(string $key, object $data) {
-      // Check that the requested name is not currently locked
-      if ($this->isWriteLocked()) throw new WriteLockError('Failed to write '.
-        'using name '.escapeshellarg($key).' to the Registry: the provided '.
-        'name is write-locked and cannot be unlocked.');
+      // Check that the requested name is not currently write-locked
+      if ($this->isWriteLocked($key)) throw new WriteLockError('Failed to '.
+        'write using name '.escapeshellarg($key).' to the Registry: the '.
+        'provided name is locked.');
       // Store the provided data at the requested name
       $this->storage[$key] = $data;
     }
 
     /**
-     * [unlock description]
+     * Attempts to unlock the requested name with the supplied password.
      *
-     * @param  string $key      [description]
-     * @param  string $password [description]
+     * @param  string $key      The name that should be unlocked.
+     * @param  string $password The password that was originally used to
+     *                          read-lock the specified name.
      *
-     * @return bool             [description]
+     * @throws NameUnlockError  Upon encountering an incorrect password supplied
+     *                          for use in unlocking a name.
+     *
+     * @return bool             `true`  if the specified name was unlocked,
+     *                          `false` otherwise.
      */
     public function unlock(string $key, string $password): bool {
-      //
+      // Check that the requested name is currently read-locked
+      if ($this->isset($key) && $this->isReadLocked($key)) {
+        // Ensure that the provided password matches the read-lock password
+        if ($this->locks[$key] !== $password) throw new NameUnlockError(
+          'Failed to unlock using name '.escapeshellarg($key).' in the '.
+          'Registry: the provided password is invalid.');
+        // Remove the requested locking information from the registry
+        unset($this->locks[$key]);
+        // Return a valid state
+        return true;
+      } // Return a failure state
+      return false;
     }
 
     /**
-     * [unset description]
+     * Undefines a given name's value in the registry.
      *
-     * @param string $key [description]
+     * @param  string $key    The name that should be undefined.
+     *
+     * @throws WriteLockError Upon encountering a write-lock using the
+     *                        specified name.
      */
     public function unset(string $key) {
-      //
+      // Check that the requested name is not currently write-locked
+      if ($this->isWriteLocked($key)) throw new WriteLockError('Failed to '.
+        'unset using name '.escapeshellarg($key).' from the Registry: the '.
+        'provided name is locked.');
+      // Remove the element by the specified name
+      if (isset($this->storage[$key])) unset($this->storage[$key]);
     }
   }
