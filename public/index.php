@@ -1,6 +1,6 @@
 <?php
   /**
-   * Entrypoint to the application.
+   * Public entrypoint to the application.
    *
    * @copyright Copyright 2016 Clay Freeman. All rights reserved.
    * @license   GNU General Public License v3 (GPL-3.0).

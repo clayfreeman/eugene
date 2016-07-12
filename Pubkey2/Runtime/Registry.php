@@ -15,6 +15,11 @@
   // Create a locally-scoped alias for the `Singleton` class
   use \Pubkey2\DesignPatterns\Singleton;
 
+  // Create a locally-scoped alias for all possible exceptions that might be
+  // thrown by this class
+  use \Pubkey2\Exceptions\{NameUnavailableError, NameUnlockError,
+    ReadLockError, WriteLockError};
+
   /**
    * Provides a (temporary) centralized storage location for information
    * commonly required during runtime by various other mechanisms.
@@ -66,10 +71,10 @@
      *                              provided item.
      * @param  object $data         The item to store in the registry.
      *
-     * @throws NameUnavailableError Upon encountering a write-lock using the
-     *                              specified name.
+     * @throws NameUnavailableError Upon encountering an existing entry using
+     *                              the specified name.
      */
-    public function create(string $key, object $data) {
+    public function create(string $key, $data) {
       // Check if the requested name is currently in use
       if ($this->isset($key)) throw new NameUnavailableError('Failed to '.
         'create name '.escapeshellarg($key).' in the Registry: the provided'.
@@ -91,7 +96,7 @@
      *
      * @return object               The value stored at the specified name.
      */
-    public function get(string $key): object {
+    public function get(string $key) {
       // Check if the requested name exists
       if (!$this->isset($key)) throw new NameUnavailableError('Failed to '.
         'get name '.escapeshellarg($key).' in the Registry: the provided name'.
@@ -200,7 +205,7 @@
      * @throws WriteLockError Upon encountering a write-lock using the
      *                        specified name.
      */
-    public function set(string $key, object $data) {
+    public function set(string $key, $data) {
       // Check that the requested name is not currently write-locked
       if ($this->isWriteLocked($key)) throw new WriteLockError('Failed to '.
         'write using name '.escapeshellarg($key).' to the Registry: the '.
