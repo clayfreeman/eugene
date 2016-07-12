@@ -7,3 +7,5 @@
    */
 
   $r = \Pubkey2\Runtime\Registry::getInstance();
+  $r->create('test', 'Registry class sample test.');
+  echo $r->get('test')."\n";
