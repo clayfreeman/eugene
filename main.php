@@ -6,15 +6,7 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  use \Pubkey2\Exceptions\{NameUnavailableError, ReadLockError};
-  use \Pubkey2\Runtime\Registry;
+  use \Pubkey2\Exceptions\{DNSResolutionError, InvalidHostnameException};
+  use \Pubkey2\Database\MySQL;
 
-  // Get a reference to the singleton instance of `Registry`
-  $r = Registry::getInstance();
-  // Attempt to create an entry named 'test'
-  try { $r->create('test', 'Registry class sample test.'); }
-  catch (NameUnavailableError $e) {}
-  // Attempt to retrieve the value held by the entry named 'test'
-  try { echo $r->get('test')."\n"; }
-  catch (NameUnavailableError $e) {}
-  catch (ReadLockError $e) {}
+  $mysql = new MySQL('localhost', 'username', 'password', 3306);
