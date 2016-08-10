@@ -12,5 +12,5 @@
     or die("Could not load the bootstrap routine.\n");
 
   // Load the application logic file
-  silent_include(\Pubkey2\Utilities\Path::make([__PRIVATEROOT__, 'main.php']))
+  silent_include(\Eugene\Utilities\Path::make([__PRIVATEROOT__, 'main.php']))
     or die("Could not load the application logic file.\n");

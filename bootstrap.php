@@ -16,11 +16,11 @@
 
   // Load the `Path` class for easier platform-specific path generation
   silent_include(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
-    'Pubkey2', 'Utilities', 'Autoload.php']))) or die('Could not load the '.
+    'Eugene', 'Utilities', 'Autoload.php']))) or die('Could not load the '.
     "project's autoload utility.\n");
 
   // Load the composer autoloader
-  silent_include(\Pubkey2\Utilities\Path::make([
+  silent_include(\Eugene\Utilities\Path::make([
     __PRIVATEROOT__, 'vendor', 'autoload.php'
   ])) or die("Could not load composer's autoload utility.\n");
 

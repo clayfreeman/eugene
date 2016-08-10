@@ -7,13 +7,13 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  namespace Pubkey2\DesignPatterns;
+  namespace Eugene\DesignPatterns;
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
   // Create a locally-scoped alias for the `InstantiationFailureError` class
-  use \Pubkey2\Exceptions\InstantiationFailureError;
+  use \Eugene\Exceptions\InstantiationFailureError;
 
   /**
    * Implementation source for the singleton design pattern.

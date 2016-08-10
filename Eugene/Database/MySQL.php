@@ -6,16 +6,16 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  namespace Pubkey2\Database;
+  namespace Eugene\Database;
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
   // Create a locally-scoped alias for the `Address` class and its exceptions
-  use \Pubkey2\{Exceptions\DNSResolutionError, Utilities\Address};
+  use \Eugene\{Exceptions\DNSResolutionError, Utilities\Address};
 
   // Create a locally-scoped alias for the `InvalidHostnameException` class
-  use \Pubkey2\Exceptions\InvalidHostnameException;
+  use \Eugene\Exceptions\InvalidHostnameException;
 
   /**
    * //

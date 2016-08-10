@@ -7,19 +7,19 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  namespace Pubkey2\Utilities;
+  namespace Eugene\Utilities;
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
   // Provide manual support for loading external dependencies
-  { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Pubkey2',
+  { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Eugene',
     'Exceptions', 'PathResolutionError.php']));
   silent_include($_class) or die('Could not load file at '.
     escapeshellarg($_class).".\n"); }
 
   // Create a locally-scoped alias for the `PathResolutionError` class
-  use \Pubkey2\Exceptions\PathResolutionError;
+  use \Eugene\Exceptions\PathResolutionError;
 
   /**
    * Helper class to aid in making platform-specific filesystem paths via

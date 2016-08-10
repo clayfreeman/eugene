@@ -7,17 +7,17 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  namespace Pubkey2\Runtime;
+  namespace Eugene\Runtime;
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
   // Create a locally-scoped alias for the `Singleton` class
-  use \Pubkey2\DesignPatterns\Singleton;
+  use \Eugene\DesignPatterns\Singleton;
 
   // Create a locally-scoped alias for all possible exceptions that might be
   // thrown by this class
-  use \Pubkey2\Exceptions\{NameUnavailableError, NameUnlockError,
+  use \Eugene\Exceptions\{NameUnavailableError, NameUnlockError,
     ReadLockError, WriteLockError};
 
   /**

@@ -1,25 +1,25 @@
 <?php
   /**
    * This file prepares a Standard PHP Library class autoloader function using
-   * the `\Pubkey2\Utilities\Path` class for platform-independent support.
+   * the `\Eugene\Utilities\Path` class for platform-independent support.
    *
    * @copyright Copyright 2016 Clay Freeman. All rights reserved.
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  namespace Pubkey2\Utilities;
+  namespace Eugene\Utilities;
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
   // Provide manual support for loading external dependencies
-  { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Pubkey2',
+  { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Eugene',
     'Utilities', 'Path.php']));
   silent_include($_class) or die('Could not load file at '.
     escapeshellarg($_class).".\n"); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
-  use \Pubkey2\{Exceptions\PathResolutionError, Utilities\Path};
+  use \Eugene\{Exceptions\PathResolutionError, Utilities\Path};
 
   // Register a silent, fail-safe autoloader for all project classes
   spl_autoload_register(function ($class) {

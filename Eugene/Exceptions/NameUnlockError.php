@@ -7,7 +7,7 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  namespace Pubkey2\Exceptions;
+  namespace Eugene\Exceptions;
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
@@ -16,4 +16,4 @@
    * An `Exception` subclass responsible for conveying an unexpected failure
    * during internal operations in a `Registry` class.
    */
-  class ReadLockError extends \Exception {}
+  class NameUnlockError extends \Exception {}

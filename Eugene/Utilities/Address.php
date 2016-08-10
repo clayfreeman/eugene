@@ -8,13 +8,13 @@
    * @license   GNU General Public License v3 (GPL-3.0).
    */
 
-  namespace Pubkey2\Utilities;
+  namespace Eugene\Utilities;
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
   // Create a locally-scoped alias for the `DNSResolutionError` class
-  use \Pubkey2\Exceptions\DNSResolutionError;
+  use \Eugene\Exceptions\DNSResolutionError;
 
   /**
    * Helper class to aid in managing IP addresses and hostnames.
