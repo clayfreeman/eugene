@@ -8,5 +8,12 @@
 
   use \Eugene\Exceptions\{DNSResolutionError, InvalidHostnameException};
   use \Eugene\Database\MySQL;
+  use \Eugene\Utilities\HiddenString;
 
-  $mysql = new MySQL('localhost', 'username', 'password', 3306);
+  $mysql = new MySQL(new HiddenString('localhost'),
+                     new HiddenString('webdev'),
+                     new HiddenString(''));
+  $mysql->use('webdev_test');
+  $mysql->insert('bin_groups',
+    ['default_grain_id', 'name'],
+    [1, 'Hello, World!']);
