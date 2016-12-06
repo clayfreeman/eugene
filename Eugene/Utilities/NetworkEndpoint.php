@@ -67,7 +67,7 @@
      */
     public function getAddress(): string {
       // Fetch a randomized array of all available addresses
-      $addresses = $this->address->getAddresses(); shuffle($addresses);
+      $addresses = $this->address->getAddresses(true); shuffle($addresses);
       // Return the first address in the array
       return array_shift($addresses);
     }

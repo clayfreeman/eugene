@@ -39,13 +39,10 @@
      */
     public function __construct(NetworkEndpoint $endpoint,
         HiddenString $username, HiddenString $password) {
-      // Determine whether we should use 'localhost' (assumed Unix socket) or
-      // an address from the provided endpoint
-      $target = ($endpoint->getHostname() === 'localhost' ? 'localhost' :
-        $endpoint->getAddress());
       // Create a new PDO instance with the filtered parameters
       try { parent::__construct('mysql:charset=utf8mb4;host=['.
-          $target.'];port='.$endpoint->getPort(), $username, $password, [
+          $endpoint->getAddress().'];port='.$endpoint->getPort(),
+          $username, $password, [
         // Ensure that emulated prepared statements are disabled for security
         \PDO::ATTR_EMULATE_PREPARES   => false,
         // Fetch associative array result sets by default
