@@ -3,8 +3,8 @@
    * This file provides an `Exception` subclass to describe a path resolution
    * error when using the `\Eugene\Utilities\Path` class.
    *
-   * @copyright Copyright 2016 Clay Freeman. All rights reserved.
-   * @license   GNU General Public License v3 (GPL-3.0).
+   * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
+   * @license    GNU General Public License v3 (GPL-3.0).
    */
 
   namespace Eugene\Exceptions;

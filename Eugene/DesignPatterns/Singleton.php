@@ -3,8 +3,8 @@
    * This file provides an abstract `Singleton` class responsible for outlining
    * the singleton design pattern used throughout this project.
    *
-   * @copyright Copyright 2016 Clay Freeman. All rights reserved.
-   * @license   GNU General Public License v3 (GPL-3.0).
+   * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
+   * @license    GNU General Public License v3 (GPL-3.0).
    */
 
   namespace Eugene\DesignPatterns;
@@ -34,20 +34,18 @@
      *
      * @see   getInstance()  For more information regarding how an instance is
      *                       fetched (created) on request.
-     *
-     * @todo                 Assign `void` return type in future version of PHP.
      */
     abstract protected function __construct();
 
     /**
      * Disregard all incoming requests to serialize data.
      */
-    final public function __sleep() {}
+    final public function __sleep(): void {}
 
     /**
      * Disregard all incoming requests to unserialize data.
      */
-    final private function __wakeup() {}
+    final private function __wakeup(): void {}
 
     /**
      * Fetches the only instance for a given `Singleton` class or creates an

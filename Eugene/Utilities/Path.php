@@ -3,8 +3,8 @@
    * This file provides a `Path` class responsible for generating
    * platform-specific filesystem paths for use with internal functionaltiy.
    *
-   * @copyright Copyright 2016 Clay Freeman. All rights reserved.
-   * @license   GNU General Public License v3 (GPL-3.0).
+   * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
+   * @license    GNU General Public License v3 (GPL-3.0).
    */
 
   namespace Eugene\Utilities;
@@ -40,14 +40,15 @@
      * is constructed, it is passed through `realpath()` to determine the
      * absolute path to the requested target.
      *
-     * @param  array  $components  An array of path components where directory
-     *                             separators should be inserted.
+     * @param   array  $components   An array of path components where directory
+     *                               separators should be inserted.
      *
-     * @throws PathResolutionError Upon failure when attempting to resolve the
-     *                             absolute path to the requested target.
+     * @throws  PathResolutionError  Upon failure when attempting to resolve the
+     *                               absolute path to the requested target.
      *
-     * @return string              A string representing the `realpath()` result
-     *                             using the appropriate directory separators.
+     * @return  string               A string representing the `realpath()`
+     *                               result using the appropriate directory
+     *                               separators.
      */
     public static function make(array $components): string {
       // Generate a string containing the dirty, platform-specific path

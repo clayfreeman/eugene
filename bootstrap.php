@@ -3,8 +3,8 @@
    * This file serves as an application entrypoint routine responsible for
    * preparing the application's runtime.
    *
-   * @copyright Copyright 2016 Clay Freeman. All rights reserved.
-   * @license   GNU General Public License v3 (GPL-3.0).
+   * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
+   * @license    GNU General Public License v3 (GPL-3.0).
    */
 
   // Define the current file's parent directory as the private root
@@ -27,10 +27,10 @@
   /**
    * Attempt to silently include the provided path.
    *
-   * @param  string $path The desired path to include.
+   * @param  string  $path  The desired path to include.
    *
-   * @return bool         `true`  if included successfully,
-   *                      `false` on failure.
+   * @return bool           `true`  if included successfully,
+   *                        `false` on failure.
    */
   function silent_include(string $path = null): bool {
     // Silently attempt to include the provided path

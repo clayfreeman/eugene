@@ -4,8 +4,8 @@
    * attempting to resolve hostnames into IP addresses and fetching PTR results
    * for IP addresses.
    *
-   * @copyright Copyright 2016 Clay Freeman. All rights reserved.
-   * @license   GNU General Public License v3 (GPL-3.0).
+   * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
+   * @license    GNU General Public License v3 (GPL-3.0).
    */
 
   namespace Eugene\Utilities;
@@ -23,14 +23,14 @@
     /**
      * Storage location for IPv4/IPv6 addresses.
      *
-     * @var array
+     * @var  array
      */
     protected $addresses = ['A' => [], 'AAAA' => []];
 
     /**
      * Storage location for a hostname.
      *
-     * @var string
+     * @var  string
      */
     protected $hostname  = null;
 
@@ -38,16 +38,17 @@
      * Responsible for preparing an `Address` instance with the provided
      * IP Address/Hostname as input.
      *
-     * @see    setupIPAddress()   For more information regarding how the
-     *                            instance is prepared when using an IP address.
+     * @see     setupIPAddress()   For more information regarding how the
+     *                             instance is prepared when using an IP
+     *                             address.
      *
-     * @see    setupHostname()    For more information regarding how the
-     *                            instance is prepared when using a hostname.
+     * @see     setupHostname()    For more information regarding how the
+     *                             instance is prepared when using a hostname.
      *
-     * @param  string $address    An IP Address or Hostname as input.
+     * @param   string $address    An IP Address or Hostname as input.
      *
-     * @throws DNSResolutionError Upon failure when attempting to resolve the
-     *                            provided hostname's DNS records.
+     * @throws  DNSResolutionError Upon failure when attempting to resolve the
+     *                             provided hostname's DNS records.
      */
     public function __construct(string $address) {
       // Attempt to parse the provided parameter as an IP address
@@ -61,9 +62,9 @@
     /**
      * Fetches the internal array of addresses.
      *
-     * @param  bool  $flat  Whether the resulting array should be flat.
+     * @param   bool  $flat  Whether the resulting array should be flat.
      *
-     * @return array        The addresses associated with this object.
+     * @return  array        The addresses associated with this object.
      */
     public function getAddresses(bool $flat = false): array {
       $result = [];
@@ -78,7 +79,7 @@
     /**
      * Fetches the internal hostname.
      *
-     * @return string The hostname associated with this object.
+     * @return  string  The hostname associated with this object.
      */
     public function getHostname(): string {
       // Return the internal hostname
@@ -92,12 +93,12 @@
      * then an attempt is made to resolve all A/AAAA records for the given
      * hostname. If DNS resolution fails then an exception is thrown.
      *
-     * @param  string $hostname   The hostname used to setup the instance.
+     * @param   string $hostname    The hostname used to setup the instance.
      *
-     * @throws DNSResolutionError Upon failure when attempting to resolve the
-     *                            provided hostname's DNS records.
+     * @throws  DNSResolutionError  Upon failure when attempting to resolve the
+     *                              provided hostname's DNS records.
      */
-    protected function setupHostname(string $hostname) {
+    protected function setupHostname(string $hostname): void {
       // Add the provided hostname to the appropriate storage location
       $this->hostname = $hostname;
       // Attempt to resolve the provided hostname
@@ -125,9 +126,9 @@
      * The provided IP address is added to the internal pool of addresses and
      * then an attempt is made to resolve a PTR record for the given address.
      *
-     * @param string $address The IP address used to setup the instance.
+     * @param  string  $address The IP address used to setup the instance.
      */
-    protected function setupIPAddress(string $address) {
+    protected function setupIPAddress(string $address): void {
       // Add the provided address to the appropriate storage location
       if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false)
         $this->addresses['A'][]    = $address;

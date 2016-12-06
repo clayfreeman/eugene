@@ -3,8 +3,8 @@
    * This file prepares a Standard PHP Library class autoloader function using
    * the `\Eugene\Utilities\Path` class for platform-independent support.
    *
-   * @copyright Copyright 2016 Clay Freeman. All rights reserved.
-   * @license   GNU General Public License v3 (GPL-3.0).
+   * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
+   * @license    GNU General Public License v3 (GPL-3.0).
    */
 
   namespace Eugene\Utilities;
