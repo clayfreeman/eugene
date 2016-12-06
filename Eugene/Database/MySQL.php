@@ -54,15 +54,12 @@
     }
 
     /**
-     * Created a protected passthrough for the parent's `setAttribute` method.
+     * Create a dummy `setAttribute` method that always returns `false`.
      *
      * @param   int    $attr   The attribute to be set.
      * @param   mixed  $value  The value to set the attribute.
      *
-     * @return  bool           The return value from the parent implementation.
+     * @return  bool           `false`
      */
-    protected function setAttribute(int $attr, $value): bool {
-      // Call the parent's implementation for this method
-      return parent::setAttribute($attr, $value);
-    }
+    public function setAttribute(int $attr, $value): bool { return false; }
   }
