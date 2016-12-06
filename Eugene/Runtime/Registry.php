@@ -64,9 +64,9 @@
      *                                a value to a name and possible uncaught
      *                                exceptions from upstream.
      *
-     * @param   string $key           The name used to reference the
+     * @param   string  $key          The name used to reference the
      *                                provided item.
-     * @param   object $data          The item to store in the registry.
+     * @param   mixed   $data         The item to store in the registry.
      *
      * @throws  NameUnavailableError  Upon encountering an existing entry using
      *                                the specified name.
@@ -91,7 +91,7 @@
      * @throws  ReadLockError         Upon determining that the provided name
      *                                is read-locked.
      *
-     * @return  object                The value stored at the specified name.
+     * @return  mixed                 The value stored at the specified name.
      */
     public function get(string $key) {
       // Check if the requested name exists
@@ -194,7 +194,7 @@
      * existing value).
      *
      * @param   string  $key    The name used to reference the provided item.
-     * @param   object  $data   The item to store in the registry.
+     * @param   mixed   $data   The item to store in the registry.
      *
      * @throws  WriteLockError  Upon encountering a write-lock using the
      *                          specified name.

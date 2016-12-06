@@ -43,11 +43,26 @@
       try { parent::__construct('mysql:charset=utf8mb4;host=['.
           $endpoint->getAddress().'];port='.$endpoint->getPort(),
           $username, $password, [
+        // Fetch associative array result sets by default
+        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
         // Ensure that emulated prepared statements are disabled for security
         \PDO::ATTR_EMULATE_PREPARES   => false,
-        // Fetch associative array result sets by default
-        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+        // Force PDO to throw exceptions when an error occurs
+        \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION
         // Rethrow with only the error text to prevent showing PDO arguments
       ]); } catch (\Exception $e) { throw new \Exception($e->getMessage()); }
+    }
+
+    /**
+     * Created a protected passthrough for the parent's `setAttribute` method.
+     *
+     * @param   int    $attr   The attribute to be set.
+     * @param   mixed  $value  The value to set the attribute.
+     *
+     * @return  bool           The return value from the parent implementation.
+     */
+    protected function setAttribute(int $attr, $value): bool {
+      // Call the parent's implementation for this method
+      return parent::setAttribute($attr, $value);
     }
   }
