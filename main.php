@@ -7,7 +7,6 @@
    */
 
   use \Eugene\Database\MySQL;
-  use \Eugene\Exceptions\{DNSResolutionError, InvalidHostnameException};
   use \Eugene\Utilities\{Address, HiddenString, NetworkEndpoint};
 
   $mysql  = new MySQL(new NetworkEndpoint(new Address('127.0.0.1'), 3306),
