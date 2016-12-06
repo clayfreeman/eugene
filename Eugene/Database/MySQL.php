@@ -61,5 +61,5 @@
      *
      * @return  bool           `false`
      */
-    public function setAttribute(int $attr, $value): bool { return false; }
+    public function setAttribute($attribute, $value): bool { return false; }
   }
