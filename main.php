@@ -6,6 +6,9 @@
    * @license    GNU General Public License v3 (GPL-3.0).
    */
 
+  // Enable strict types for this file
+  declare(strict_types = 1);
+
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 

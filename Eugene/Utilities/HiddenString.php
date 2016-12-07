@@ -7,6 +7,9 @@
    * @license    GNU General Public License v3 (GPL-3.0).
    */
 
+  // Enable strict types for this file
+  declare(strict_types = 1);
+
   namespace Eugene\Utilities;
 
   // End script execution if the private root is not defined
@@ -31,7 +34,25 @@
      * @param  string  $contents The value that the instance should represent.
      */
     public function __construct(string $contents) {
-      $this->value = $contents;
+      $this->value = implode(null, str_split($contents));
+    }
+
+    /**
+     * Keep the internal value of the class from showing up in debug info.
+     *
+     * @return  array  An empty array.
+     */
+    public function __debugInfo(): array {
+      return [];
+    }
+
+    /**
+     * Keep the internal value of the class from showing up in `serialize()`.
+     *
+     * @return  array  An empty array.
+     */
+    public function __sleep(): array {
+      return [];
     }
 
     /**
@@ -41,6 +62,6 @@
      * @return  string  The internal `string` value held by the instance.
      */
     public function __toString(): string {
-      return $this->value;
+      return implode(null, str_split($this->value));
     }
   }

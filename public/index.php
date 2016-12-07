@@ -6,6 +6,9 @@
    * @license    GNU General Public License v3 (GPL-3.0).
    */
 
+  // Enable strict types for this file
+  declare(strict_types = 1);
+
   // Load the `Path` class for easier platform-specific path generation
   $bootstrap = realpath(dirname(__DIR__).DIRECTORY_SEPARATOR.'bootstrap.php');
   (is_file($bootstrap) && is_readable($bootstrap) && include_once($bootstrap))

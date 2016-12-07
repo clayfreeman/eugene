@@ -7,6 +7,9 @@
    * @license    GNU General Public License v3 (GPL-3.0).
    */
 
+  // Enable strict types for this file
+  declare(strict_types = 1);
+
   namespace Eugene\DesignPatterns;
 
   // End script execution if the private root is not defined

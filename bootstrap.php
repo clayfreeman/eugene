@@ -7,11 +7,14 @@
    * @license    GNU General Public License v3 (GPL-3.0).
    */
 
+  // Enable strict types for this file
+  declare(strict_types = 1);
+
   // Define the current file's parent directory as the private root
   define('__PRIVATEROOT__', __DIR__);
 
   // Display and enable *all* types of errors
-  ini_set('display_errors', 1);
+  ini_set('display_errors', '1');
   error_reporting(E_ALL);
 
   // Load the `Path` class for easier platform-specific path generation
