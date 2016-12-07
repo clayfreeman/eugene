@@ -39,13 +39,16 @@
      * @param  NetworkEndpoint  $hostname  A `NetworkEndpoint` for the database.
      * @param  HiddenString     $username  The database login username.
      * @param  HiddenString     $password  The database login password.
+     * @param  HiddenString     $database  The database name.
      */
     public function __construct(NetworkEndpoint $endpoint,
-        HiddenString $username, HiddenString $password) {
+         HiddenString $username, HiddenString $password,
+        ?HiddenString $database = null) {
       // Create a new PDO instance with the filtered parameters
       try { parent::__construct('mysql:charset=utf8mb4;host=['.
-          $endpoint->getAddress().'];port='.$endpoint->getPort(),
-          (string)$username, (string)$password, [
+          $endpoint->getAddress().'];port='.$endpoint->getPort().
+          ((string)$database != null ? ';dbname='.(string)$database : null),
+           (string)$username, (string)$password, [
         // Fetch associative array result sets by default
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
         // Ensure that emulated prepared statements are disabled for security

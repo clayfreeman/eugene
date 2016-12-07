@@ -17,6 +17,7 @@
 
   $mysql  = new MySQL(new NetworkEndpoint(new Address('127.0.0.1'), 3306),
                       new HiddenString('webdev'),
-                      new HiddenString(''));
-  $result = $mysql->query('SELECT * FROM webdev_test.test')->fetchAll();
+                      new HiddenString(''),
+                      new HiddenString('webdev_test'));
+  $result = $mysql->query('SELECT * FROM test')->fetchAll();
   echo var_export($result, true)."\n";
