@@ -20,4 +20,4 @@
                       new HiddenString(''),
                       new HiddenString('webdev_test'));
   $result = $mysql->query('SELECT * FROM test')->fetchAll();
-  echo var_export($result, true)."\n";
+  echo print_r($result, true)."\n";
