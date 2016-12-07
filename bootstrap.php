@@ -17,6 +17,11 @@
   ini_set('display_errors', '1');
   error_reporting(E_ALL);
 
+  // Ensure that `var_export` is disabled
+  !function_exists('var_export') or trigger_error('For maximum security the '.
+    '\'var_export(...)\' function should be disabled using the '.
+    '\'disable_functions\' directive in PHP\'s INI file.', E_USER_WARNING);
+
   // Load the `Path` class for easier platform-specific path generation
   silent_include(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
     'Eugene', 'Utilities', 'Autoload.php']))) or die('Could not load the '.
