@@ -14,8 +14,11 @@
   define('__PRIVATEROOT__', __DIR__);
 
   // Display and enable *all* types of errors
-  ini_set('display_errors', '1');
-  error_reporting(E_ALL);
+  ini_set('display_errors',         '1');
+  ini_set('display_startup_errors', '1');
+  ini_set('log_errors',             '1');
+  ini_set('log_errors_max_len',     '0');
+  error_reporting(E_ALL & E_STRICT);
 
   // Ensure that `var_export` is disabled
   !function_exists('var_export') or trigger_error('For maximum security the '.
