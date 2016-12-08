@@ -18,7 +18,7 @@
   ini_set('display_startup_errors', '1');
   ini_set('log_errors',             '1');
   ini_set('log_errors_max_len',     '0');
-  error_reporting(E_ALL & E_STRICT);
+  error_reporting(E_ALL | E_STRICT);
 
   // Ensure that `var_export` is disabled
   !function_exists('var_export') or trigger_error('For maximum security the '.
