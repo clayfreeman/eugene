@@ -31,9 +31,9 @@
     "project's autoload utility.\n");
 
   // Load the composer autoloader
-  silent_include(\Eugene\Utilities\Path::make([
+  silent_include(\Eugene\Utilities\Path::make(
     __PRIVATEROOT__, 'vendor', 'autoload.php'
-  ])) or die("Could not load composer's autoload utility.\n");
+  )) or die("Could not load composer's autoload utility.\n");
 
   /**
    * Attempt to silently include the provided path.

@@ -33,7 +33,7 @@
     // Prepend the private root to the class' path component array
     array_unshift($class, __PRIVATEROOT__);
     try { // Attempt to create a platform-specific path string to load the class
-      $class = Path::make($class);
+      $class = Path::make(...$class);
       // Load the resulting path representing the requested class
       silent_include($class) or die('Could not load file at '.
         escapeshellarg($class).".\n");
