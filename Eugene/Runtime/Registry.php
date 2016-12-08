@@ -29,6 +29,13 @@
    */
   final class Registry extends Singleton {
     /**
+     * Disallow unlinks via `getInstance(true)`.
+     *
+     * @var  bool
+     */
+    protected $allowUnlink = false;
+
+    /**
      * Access-restricted storage location for all data within the object.
      *
      * @var  array

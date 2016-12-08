@@ -27,6 +27,14 @@
    */
   abstract class Singleton {
     /**
+     * Allows the subclass to determine whether it can be unlinked via
+     * subsequent calls to `getInstance(true)`.
+     *
+     * @var  bool
+     */
+    protected $allowUnlink = true;
+
+    /**
      * Disregard all incoming requests to clone data.
      */
     final private function __clone() {}
@@ -60,7 +68,8 @@
      *
      * @param   bool       $unlink         Whether the current instance should
      *                                     be unlinked and replaced with a new
-     *                                     instance.
+     *                                     instance. This argument is ignored if
+     *                                     the subclass disallows unlinking.
      *
      * @throws  InstantiationFailureError  Upon failure during external
      *                                     instantiation of the called class.
@@ -73,7 +82,8 @@
       // Declare storage for the only instance of `Singleton`
       static $instance  = null;
       // Determine if `Singleton` should be (re)instantiated
-      if ($instance === null || $unlink === true)
+      if ($instance === null || ($unlink === true &&
+          $instance->allowUnlink === true))
         // There is no current instance of `Singleton`; instantiate one
         $instance = new static;
       // Check if the type of the instance is invalid
