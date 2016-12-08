@@ -17,16 +17,12 @@
   use \Eugene\Runtime\Registry;
   use \Eugene\Utilities\{Address, HiddenString, NetworkEndpoint};
 
-  // Fetch (or create) the Registry instance
-  $registry = Registry::getInstance();
   // Create the database key of the registry to hold our database instance
-  $registry->create('database', new MySQL(
+  $database = Registry::getInstance()->create('database', new MySQL(
     new NetworkEndpoint(new Address('127.0.0.1'), 3306),
     new HiddenString('webdev'),
     new HiddenString(''),
     new HiddenString('webdev_test')));
-  // Fetch the newly created database instance
-  $database = $registry->get('database');
 
   // Attempt to pull some sample data from the database
   $result = $database->query('SELECT * FROM test')->fetchAll();

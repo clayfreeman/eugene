@@ -73,14 +73,18 @@
      *
      * @throws  NameUnavailableError  Upon encountering an existing entry using
      *                                the specified name.
+     *
+     * @return                        A reference to the provided data (after
+     *                                being stored in the registry).
      */
-    public function create(string $key, $data): void {
+    public function create(string $key, $data) {
       // Check if the requested name is currently in use
       if ($this->isset($key)) throw new NameUnavailableError('Failed to '.
         'create name '.escapeshellarg($key).' in the Registry: the provided'.
         'name is already in-use.');
-      // Defer assignment to the `set()` method
-      $this->set($key, $data);
+      // Defer assignment to the `set()` method and return the resulting
+      // reference to the caller
+      return $this->set($key, $data);
     }
 
     /**
@@ -201,14 +205,19 @@
      *
      * @throws  WriteLockError  Upon encountering a write-lock using the
      *                          specified name.
+     *
+     * @return                  A reference to the provided data (after being
+     *                          stored in the registry).
      */
-    public function set(string $key, $data): void {
+    public function set(string $key, $data) {
       // Check that the requested name is not currently write-locked
       if ($this->isWriteLocked($key)) throw new WriteLockError('Failed to '.
         'write using name '.escapeshellarg($key).' to the Registry: the '.
         'provided name is locked.');
       // Store the provided data at the requested name
       $this->storage[$key] = $data;
+      // Return a reference to the stored data
+      return $this->get($key);
     }
 
     /**
