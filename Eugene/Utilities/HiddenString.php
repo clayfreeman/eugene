@@ -18,12 +18,17 @@
   /**
    * Responsible for encapsulating a raw `string` so that its value is not
    * leaked in error logs and exceptions.
+   *
+   * This class is a wrapper for Halite's `HiddenString` class written by
+   * Paragon Initiative Enterprises, LLC. The purpose of this wrapper is to
+   * change the default behavior of `HiddenString` to always prevent inline use
+   * and serialization.
    */
   final class HiddenString {
     /**
-     * The internal storage location for the `string` value.
+     * The internal storage location for the `HiddenString` value.
      *
-     * @var  string
+     * @var  HiddenString
      */
     protected $value = null;
 
@@ -31,37 +36,18 @@
      * Creates an instance of `HiddenString` with the contents of the provided
      * raw `string`.
      *
-     * @param  string  $contents The value that the instance should represent.
+     * @param  string  $contents  The value that the instance should represent.
      */
     public function __construct(string $contents) {
-      $this->value = implode(null, str_split($contents));
+      $this->value = new \ParagonIE\Halite\HiddenString($contents, true, true);
     }
 
     /**
-     * Keep the internal value of the class from showing up in debug info.
+     * Fetches the internal `string` value held by the `HiddenString` instance.
      *
-     * @return  array  An empty array.
+     * @return  string  The internal `string` value held by the `HiddenString`.
      */
-    public function __debugInfo(): array {
-      return [];
-    }
-
-    /**
-     * Keep the internal value of the class from showing up in `serialize()`.
-     *
-     * @return  array  An empty array.
-     */
-    public function __sleep(): array {
-      return [];
-    }
-
-    /**
-     * Uses the internal `string` value to represent the class instance during
-     * inline operations.
-     *
-     * @return  string  The internal `string` value held by the instance.
-     */
-    public function __toString(): string {
-      return implode(null, str_split($this->value));
+    public function getString(): string {
+      return $this->value->getString();
     }
   }

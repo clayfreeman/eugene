@@ -47,8 +47,9 @@
       // Create a new PDO instance with the filtered parameters
       try { parent::__construct('mysql:charset=utf8mb4;host=['.
           $endpoint->getAddress().'];port='.$endpoint->getPort().
-          ((string)$database != null ? ';dbname='.(string)$database : null),
-           (string)$username, (string)$password, [
+          ($database->getString() != null ? ';dbname='.
+           $database->getString()  : null),
+           $username->getString(), $password->getString(), [
         // Fetch associative array result sets by default
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
         // Ensure that emulated prepared statements are disabled for security
