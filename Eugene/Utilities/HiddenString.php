@@ -23,6 +23,9 @@
    * Paragon Initiative Enterprises, LLC. The purpose of this wrapper is to
    * change the default behavior of `HiddenString` to always prevent inline use
    * and serialization.
+   *
+   * Halite's `HiddenString` implementation also features forced string copy and
+   * memory scrubbing on instance deconstruction.
    */
   final class HiddenString {
     /**
