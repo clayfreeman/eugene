@@ -192,7 +192,7 @@
      * @return  bool               `true`  if the provided name was locked,
      *                             `false` otherwise.
      */
-    public function lock(string $key, string $password = null): bool {
+    public function lock(string $key, HiddenString $password = null): bool {
       // Check that the requested name is not currently locked
       if ($this->isset($key) && !$this->isWriteLocked($key)) {
         // Store the requested locking information in the registry
@@ -240,7 +240,7 @@
      * @return  bool               `true`  if the specified name was unlocked,
      *                             `false` otherwise.
      */
-    public function unlock(string $key, string $password): bool {
+    public function unlock(string $key, HiddenString $password): bool {
       // Check that the requested name is currently read-locked
       if ($this->isset($key) && $this->isReadLocked($key)) {
         // Ensure that the provided password matches the read-lock password
