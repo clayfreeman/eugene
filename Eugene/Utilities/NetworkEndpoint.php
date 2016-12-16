@@ -76,9 +76,9 @@
     }
 
     /**
-     * [getPort description]
+     * Fetches the originally provided internal port number.
      *
-     * @return  int  [description]
+     * @return  int  The internal port.
      */
     public function getPort(): int {
       return $this->port;
