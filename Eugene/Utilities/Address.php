@@ -41,17 +41,17 @@
      * Responsible for preparing an `Address` instance with the provided
      * IP Address/Hostname as input.
      *
-     * @see     setupIPAddress()   For more information regarding how the
-     *                             instance is prepared when using an IP
-     *                             address.
+     * @see     setupIPAddress()    For more information regarding how the
+     *                              instance is prepared when using an IP
+     *                              address.
      *
-     * @see     setupHostname()    For more information regarding how the
-     *                             instance is prepared when using a hostname.
+     * @see     setupHostname()     For more information regarding how the
+     *                              instance is prepared when using a hostname.
      *
-     * @param   string $address    An IP Address or Hostname as input.
+     * @param   string  $address    An IP Address or Hostname as input.
      *
-     * @throws  DNSResolutionError Upon failure when attempting to resolve the
-     *                             provided hostname's DNS records.
+     * @throws  DNSResolutionError  Upon failure when attempting to resolve the
+     *                              provided hostname's DNS records.
      */
     public function __construct(string $address) {
       // Attempt to parse the provided parameter as an IP address
@@ -96,7 +96,7 @@
      * then an attempt is made to resolve all A/AAAA records for the given
      * hostname. If DNS resolution fails then an exception is thrown.
      *
-     * @param   string $hostname    The hostname used to setup the instance.
+     * @param   string  $hostname   The hostname used to setup the instance.
      *
      * @throws  DNSResolutionError  Upon failure when attempting to resolve the
      *                              provided hostname's DNS records.
@@ -129,7 +129,7 @@
      * The provided IP address is added to the internal pool of addresses and
      * then an attempt is made to resolve a PTR record for the given address.
      *
-     * @param  string  $address The IP address used to setup the instance.
+     * @param  string  $address  The IP address used to setup the instance.
      */
     protected function setupIPAddress(string $address): void {
       // Add the provided address to the appropriate storage location

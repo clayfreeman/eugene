@@ -97,7 +97,7 @@
     /**
      * Retrieves the value stored by the specified name.
      *
-     * @param   string $key           The name used to reference the
+     * @param   string  $key          The name used to reference the
      *                                requested item.
      *
      * @throws  NameUnavailableError  Upon determining that the provided name

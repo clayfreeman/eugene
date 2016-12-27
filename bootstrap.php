@@ -29,7 +29,7 @@
   { (version_compare(PHP_VERSION, $minimum = '7.1.0') >= 0) or trigger_error(
     'This project requires at least PHP '.$minimum.' to run', E_USER_ERROR); }
 
-  // Load the `Path` class for easier platform-specific path generation
+  // Run the application autoload utility setup file
   silent_include(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
     'Eugene', 'Utilities', 'Autoload.php']))) or die('Could not load the '.
     "project's autoload utility.\n");
