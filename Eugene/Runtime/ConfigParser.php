@@ -47,7 +47,18 @@
      *                will be loaded.
      */
     public function scan(): void {
-      //
+      $configPath = \Eugene\Utilities\Path::make(__PRIVATEROOT__, 'config');
+      // Ensure that the `config` directory is non-writable by this process
+      (is_directory($configPath) && !is_writable($configPath)) or trigger_error(
+        'The `config` directory should not be writable by PHP', E_USER_WARNING);
+      // Get a list of JSON files in the `config` directory
+      $files = glob(\Eugene\Utilities\Path::make($configPath, '*.json'));
+      // Filter the globular expression result to contain only usable files
+      $files = array_filter(function($input) {
+        // Check whether the directory entry is a file
+        return is_file($input);
+      }, $files); // Attempt to parse each configuration file
+      foreach ($files as $file) $this->parse($file);
     }
 
     /**
