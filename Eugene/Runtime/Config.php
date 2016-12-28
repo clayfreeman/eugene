@@ -22,8 +22,8 @@
     'The `config` path must be a directory; file or otherwise found '.
     'instead', E_USER_ERROR);
 
-  // Create a locally-scoped alias for the `Security` class
-  use \Eugene\Utilities\Security;
+  // Create locally-scoped aliases for the `Registry` and `Security` classes
+  use \Eugene\{Runtime\Registry, Utilities\Security};
 
   // Create a locally-scoped alias for all possible exceptions that might be
   // thrown by this class
@@ -85,6 +85,8 @@
     }
 
     /**
+     * TODO: http://php.net/manual/en/ini.core.php#ini.open-basedir
+     *
      * Scans the `config` directory for configuration files matching the
      * globular expression `*.json` and attempts to load them.
      *
@@ -112,14 +114,17 @@
      *
      * `{ "category": "...", "contents": ... }`
      *
-     * Optionally, a `lock` key can be set as a sibling of `category` with a
-     * boolean value describing whether to place a write lock on the
-     * configuration to prevent alteration. This value defaults to `false`
+     * Optionally, a `lock` key can be set as a sibling of `category` describing
+     * how to lock the category. This value defaults to `false`, but may also be
+     * `true` (to place a write lock), or an `array` with `callable` members (to
+     * place a read lock) that will be invoked to grant them category access.
+     *
+     * The `callable` members of a `lock` array must accept a `string` key for
+     * their first parameter and a `string` password for their second parameter.
      *
      * If the above requirements are met, the value of the "contents" key will
      * be assigned to the key with the value held by "category" in the
-     * `Registry` class. This value can be accessed via this class'
-     * `getCategory(...)` method.
+     * `Registry` class.
      *
      * @param  string  $file  Absolute (non-writable) file path.
      */
@@ -133,12 +138,21 @@
       // Ensure that the data array is properly formatted
       if (is_array($data) && isset($data['category'])
                           && isset($data['contents'])) {
+        // Fetch a reference to the `Registry` instance
+        $registry     = Registry::getInstance();
+        // Set default values in the data array where necessary
+        $data['lock'] = $data['lock'] ?? false;
         // Ensure that the category is not locked
         if (!$registry->isWriteLocked()) {
           // Assign the resulting data to the requested category
           $registry->set($data['category'], $data['contents']);
           // Check to see whether the category should be locked
-          if ($data['lock'] ?? false) $registry->lock($data['category']);
+          if ($data['lock'] === true)
+            // Perform a write lock if `true`
+            $registry->lock($data['category']);
+          else if (is_array($data['lock'])) {
+            // TODO: Lock with random password and inform `lock` members
+          }
         } else trigger_error('This configuration file\'s requested category'.
           'cannot be overridden', E_USER_WARNING);
       } else trigger_error('This configuration file is improperly '.
