@@ -55,8 +55,10 @@
      *                        addition to the `config` directory.
      */
     protected function sanityCheck(?string $file = null): void {
+      // Fetch a reference to the `Security` instance
+      $security = Security::getInstance();
       // Ensure that the `config` directory is non-writable by this process
-      !Security::fileIsMutable(__CONFIGROOT__) or trigger_error(
+      !$security->fileIsMutable(__CONFIGROOT__) or trigger_error(
         'The `config` directory should not be mutable by PHP (see this '.
         'method\'s documentation to find a definition of '.
         'mutability)', E_USER_WARNING);
@@ -71,7 +73,7 @@
         if (!is_readable($file))
           trigger_error('This configuration file is not '.
             'readable', E_USER_ERROR);
-        if (Security::fileIsMutable($file))
+        if ($security->fileIsMutable($file))
           trigger_error('This configuration file should not be mutable by PHP '.
             '(see this method\'s documentation to find a definition of '.
             'mutability)', E_USER_WARNING);
