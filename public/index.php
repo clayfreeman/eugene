@@ -10,7 +10,8 @@
   declare(strict_types = 1);
 
   // Run the application bootstrap routine
-  $bootstrap = realpath(dirname(__DIR__).DIRECTORY_SEPARATOR.'bootstrap.php');
+  // implode(DIRECTORY_SEPARATOR, [dirname(__DIR__), 'private', 'app', 'bootstrap.php'])
+  $bootstrap = realpath();
   (is_file($bootstrap) && is_readable($bootstrap) && include_once($bootstrap))
     or trigger_error("Could not load the bootstrap routine", E_USER_ERROR);
 
