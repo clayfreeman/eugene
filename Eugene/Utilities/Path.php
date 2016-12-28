@@ -18,8 +18,8 @@
   // Provide manual support for loading external dependencies
   { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Eugene',
     'Exceptions', 'PathResolutionError.php']));
-  silent_include($_class) or die('Could not load file at '.
-    escapeshellarg($_class).".\n"); }
+  silent_include($_class) or trigger_error('Could not load file at '.
+    escapeshellarg($_class), E_USER_ERROR); }
 
   // Create a locally-scoped alias for the `PathResolutionError` class
   use \Eugene\Exceptions\PathResolutionError;

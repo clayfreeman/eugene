@@ -31,13 +31,23 @@
 
   // Run the application autoload utility setup file
   silent_include(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
-    'Eugene', 'Utilities', 'Autoload.php']))) or die('Could not load the '.
-    "project's autoload utility.\n");
+    'Eugene', 'Utilities', 'Autoload.php']))) or trigger_error('Could not '.
+    'load the project\'s autoload utility', E_USER_ERROR);
 
-  // Load the composer autoloader
-  silent_include(\Eugene\Utilities\Path::make(
-    __PRIVATEROOT__, 'vendor', 'autoload.php'
-  )) or die("Could not load composer's autoload utility.\n");
+  // Create locally-scoped aliases for the `Config` and `Path` classes
+  use \Eugene\{Runtime\Config, Utilities\Path};
+
+  // Define the public root directory
+  define('__PUBLICROOT__', Path::make(__PRIVATEROOT__, 'public'));
+
+  // Scan for project configuration files and restrict file access to the public
+  // document root (see http://php.net/manual/en/ini.core.php#ini.open-basedir
+  // for more information regarding file restriction)
+  Config::scan(); ini_set('open_basedir', Path::make(__PUBLICROOT__, null));
+
+  // Load the composer vendor autoloader to include all composer software
+  silent_include(Path::make(__PRIVATEROOT__, 'vendor', 'autoload.php')) or
+    trigger_error('Could not load composer\'s autoload utility', E_USER_ERROR);
 
   /**
    * Attempt to silently include the provided path.

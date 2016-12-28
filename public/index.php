@@ -12,8 +12,8 @@
   // Run the application bootstrap routine
   $bootstrap = realpath(dirname(__DIR__).DIRECTORY_SEPARATOR.'bootstrap.php');
   (is_file($bootstrap) && is_readable($bootstrap) && include_once($bootstrap))
-    or die("Could not load the bootstrap routine.\n");
+    or trigger_error("Could not load the bootstrap routine", E_USER_ERROR);
 
   // Load the application logic file
   silent_include(\Eugene\Utilities\Path::make(__PRIVATEROOT__, 'main.php'))
-    or die("Could not load the application logic file.\n");
+    or trigger_error("Could not load the application logic file", E_USER_ERROR);

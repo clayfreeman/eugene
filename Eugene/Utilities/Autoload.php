@@ -18,8 +18,8 @@
   // Provide manual support for loading external dependencies
   { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Eugene',
     'Utilities', 'Path.php']));
-  silent_include($_class) or die('Could not load file at '.
-    escapeshellarg($_class).".\n"); }
+  silent_include($_class) or trigger_error('Could not load file at '.
+    escapeshellarg($_class), E_USER_ERROR); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
   use \Eugene\{Exceptions\PathResolutionError, Utilities\Path};
@@ -35,7 +35,7 @@
     try { // Attempt to create a platform-specific path string to load the class
       $class = Path::make(...$class);
       // Load the resulting path representing the requested class
-      silent_include($class) or die('Could not load file at '.
-        escapeshellarg($class).".\n");
+      silent_include($class) or trigger_error('Could not load file at '.
+        escapeshellarg($class), E_USER_ERROR);
     } catch (PathResolutionError $e) {}
   }, true, true);

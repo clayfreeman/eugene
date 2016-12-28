@@ -128,7 +128,7 @@
      *
      * @param  string  $file  Absolute (non-writable) file path.
      */
-    public function parse(string $file): void {
+    protected function parse(string $file): void {
       // Ensure that we're using the absolute path
       $file = realpath($file);
       // Perform sanity checks on this file path
