@@ -86,12 +86,11 @@
     public function scan(): void {
       // Get a list of JSON files in the `config` directory
       $files = array_filter(array_map('realpath', glob(
-        Path::make(__CONFIGROOT__, '*.json'))));
+        __CONFIGROOT__.DIRECTORY_SEPARATOR.'*.json')));
+      echo var_export($files, true)."\n";
       // Filter the globular expression result to contain only files
-      $files = array_filter(function($input) {
-        // Check whether the directory entry is a file
-        return is_file($input);
-      }, $files); // Attempt to parse each configuration file
+      $files = array_filter($files, 'is_file');
+      // Attempt to parse each configuration file
       foreach ($files as $file) $this->parse($file);
     }
 
