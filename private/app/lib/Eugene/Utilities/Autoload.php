@@ -16,9 +16,9 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   // Provide manual support for loading external dependencies
-  { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Eugene',
+  { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__CLASSPATH__, 'Eugene',
     'Utilities', 'Path.php']));
-  silent_include($_class) or trigger_error('Could not load file at '.
+  include_once($_class) or trigger_error('Could not load file at '.
     escapeshellarg($_class), E_USER_ERROR); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
@@ -30,12 +30,12 @@
     $class = explode('\\', $class); assert(count($class) > 0);
     // Append '.php' to the last component of the class
     array_push($class, array_pop($class).'.php');
-    // Prepend the private root to the class' path component array
-    array_unshift($class, __PRIVATEROOT__);
+    // Prepend the class path to the class' path component array
+    array_unshift($class, __CLASSPATH__);
     try { // Attempt to create a platform-specific path string to load the class
       $class = Path::make(...$class);
       // Load the resulting path representing the requested class
-      silent_include($class) or trigger_error('Could not load file at '.
+      include_once($class) or trigger_error('Could not load file at '.
         escapeshellarg($class), E_USER_ERROR);
     } catch (PathResolutionError $e) {}
   }, true, true);

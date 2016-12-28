@@ -19,58 +19,41 @@
 
   // Define the required path constants for the application
   define('__DS__',          DIRECTORY_SEPARATOR);
-  define('__CLASSPATH__',   realpath(__DIR__.__DS__.'vendor'));
+  define('__CLASSPATH__',   realpath(__DIR__.__DS__.'lib'));
   define('__APPROOT__',     realpath(__DIR__));
+  define('__DATAROOT__',    realpath(__APPROOT__.__DS__.'data'));
   define('__PRIVATEROOT__', realpath(dirname(__APPROOT__)));
+  define('__CONFIGROOT__',  realpath(__PRIVATEROOT__.__DS__.'config'));
   define('__PROJECTROOT__', realpath(dirname(__PRIVATEROOT__)));
   define('__PUBLICROOT__',  realpath(__PROJECTROOT__.__DS__.'public'));
+
+  // Check the PHP version number and complain if unsatisfactory
+  { (version_compare(PHP_VERSION, $minimum = '7.1.0') >= 0) or trigger_error(
+    'This project requires at least PHP '.$minimum.' to run', E_USER_ERROR); }
 
   // Ensure that `var_export` is disabled
   !function_exists('var_export') or trigger_error('For maximum security the '.
     '\'var_export(...)\' function should be disabled using the '.
     '\'disable_functions\' directive', E_USER_WARNING);
 
-  // Check the PHP version number and complain if unsatisfactory
-  { (version_compare(PHP_VERSION, $minimum = '7.1.0') >= 0) or trigger_error(
-    'This project requires at least PHP '.$minimum.' to run', E_USER_ERROR); }
+  // Define a list of allowed paths during application runtime. Include
+  // directories should be checked for read-only access in addition to this
+  // preventative security measure
+  $allowedDirectories = array_filter(function($input) {
+    return is_directory($input) && !stristr($input, PATH_SEPARATOR);
+  }, [__DATAROOT__, __CLASSPATH__, __PROJECTROOT__.__DS__.'vendor']);
+  // Restrict file access to prevent unauthorized tampering of application (see
+  // http://php.net/manual/en/ini.core.php#ini.open-basedir for more information
+  // regarding file restriction)
+  ini_set('open_basedir', implode(PATH_SEPARATOR, $allowedDirectories));
 
   // Run the application autoload utility setup file
-  require_once(realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
-    'Autoload.php']))) or trigger_error('Could not load the project\'s '.
-    'autoload utility', E_USER_ERROR);
-
-  // Create a locally-scoped alias for the `Path` class
-  use \Eugene\Utilities\Path;
-
-  // Define the public root directory
-  define('__PUBLICROOT__', Path::make(__PRIVATEROOT__, 'public'));
-  // Define the config root directory
-  define('__CONFIGROOT__', Path::make(__PRIVATEROOT__, 'config'));
-  // Ensure that the config directory exists
-  is_dir( __CONFIGROOT__ ) or trigger_error('The `config` path is not a '.
-    'directory', E_USER_ERROR);
+  require_once(realpath(implode(__DS__,
+    [__CLASSPATH__, 'Eugene', 'Utilities', 'Autoload.php'])));
 
   // Scan for project configuration files
   \Eugene\Runtime\Config::getInstance()->scan();
 
   // Load the composer vendor autoloader to include all composer software
-  silent_include(Path::make(__PRIVATEROOT__, 'vendor', 'autoload.php')) or
-    trigger_error('Could not load composer\'s autoload utility', E_USER_ERROR);
-
-  // Restrict file access to the public document root (see
-  // http://php.net/manual/en/ini.core.php#ini.open-basedir for more information
-  // regarding file restriction)
-  // ini_set('open_basedir', Path::make(__DATAROOT__, null));
-
-  /**
-   * Attempt to silently include the provided path.
-   *
-   * @param  string  $path  The desired path to include.
-   *
-   * @return bool           `true`  if included successfully,
-   *                        `false` on failure.
-   */
-  function silent_include(string $path = null): bool {
-    // Silently attempt to include the provided path
-    return is_file($path) && is_readable($path) && include_once($path);
-  }
+  require_once(\Eugene\Utilities\Path::make(
+    __PROJECTROOT__, 'vendor', 'autoload.php'));
