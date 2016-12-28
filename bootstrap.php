@@ -11,7 +11,7 @@
   declare(strict_types = 1);
 
   // Define the current file's parent directory as the private root
-  define('__PRIVATEROOT__', __DIR__);
+  define('__PRIVATEROOT__', realpath(__DIR__));
 
   // Display and enable *all* types of errors
   ini_set('display_errors',         '1');
