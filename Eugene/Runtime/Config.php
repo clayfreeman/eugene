@@ -20,12 +20,6 @@
   // Create locally-scoped aliases for the `Path` and `Security` classes
   use \Eugene\Utilities\{Path,Security};
 
-  // Define the absolute path to the `config` directory
-  define('__CONFIGROOT__', Path::make(__PRIVATEROOT__, 'config'));
-  // Ensure that the config directory exists
-  (file_exists(__CONFIGROOT__) && is_dir(__CONFIGROOT__)) or
-    trigger_error('The `config` directory must exist', E_USER_ERROR);
-
   /**
    * TODO
    */

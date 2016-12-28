@@ -34,16 +34,24 @@
     'Eugene', 'Utilities', 'Autoload.php']))) or trigger_error('Could not '.
     'load the project\'s autoload utility', E_USER_ERROR);
 
-  // Create locally-scoped aliases for the `Config` and `Path` classes
-  use \Eugene\{Runtime\Config, Utilities\Path};
+  // Create a locally-scoped alias for the `Path` class
+  use \Eugene\Utilities\Path;
 
   // Define the public root directory
   define('__PUBLICROOT__', Path::make(__PRIVATEROOT__, 'public'));
+  // Define the absolute path to the `config` directory
+  define('__CONFIGROOT__', Path::make(__PRIVATEROOT__, 'config'));
+  // Ensure that the config directory exists
+  is_dir(__CONFIGROOT__) or trigger_error('The `config` path is not a '.
+    'directory', E_USER_ERROR);
 
-  // Scan for project configuration files and restrict file access to the public
-  // document root (see http://php.net/manual/en/ini.core.php#ini.open-basedir
-  // for more information regarding file restriction)
-  Config::scan(); ini_set('open_basedir', Path::make(__PUBLICROOT__, null));
+  // Scan for project configuration files
+  \Eugene\Runtime\Config::scan();
+
+  // Restrict file access to the public document root (see
+  // http://php.net/manual/en/ini.core.php#ini.open-basedir for more information
+  // regarding file restriction)
+  ini_set('open_basedir', Path::make(__PUBLICROOT__, null));
 
   // Load the composer vendor autoloader to include all composer software
   silent_include(Path::make(__PRIVATEROOT__, 'vendor', 'autoload.php')) or
