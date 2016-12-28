@@ -86,7 +86,7 @@
     public function scan(): void {
       // Get a list of JSON files in the `config` directory
       $files = array_filter(array_map('realpath', glob(
-        Path::make($configPath, '*.json'))));
+        Path::make(__CONFIGROOT__, '*.json'))));
       // Filter the globular expression result to contain only files
       $files = array_filter(function($input) {
         // Check whether the directory entry is a file

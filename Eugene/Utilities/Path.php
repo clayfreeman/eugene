@@ -50,7 +50,7 @@
      *                               result using the appropriate directory
      *                               separators.
      */
-    public static function make(string ...$components): string {
+    public static function make(?string ...$components): string {
       // Generate a string containing the dirty, platform-specific path
       $path = implode(DIRECTORY_SEPARATOR, $components);
       // Attempt to resolve the absolute path to the requested target
