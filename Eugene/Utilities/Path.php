@@ -21,9 +21,6 @@
   silent_include($_class) or trigger_error('Could not load file at '.
     escapeshellarg($_class), E_USER_ERROR); }
 
-  // Create a locally-scoped alias for the `PathResolutionError` class
-  use \Eugene\Exceptions\PathResolutionError;
-
   /**
    * Helper class to aid in making platform-specific filesystem paths via
    * `DIRECTORY_SEPARATOR` implosion of path components.
@@ -59,9 +56,10 @@
       // Attempt to resolve the absolute path to the requested target
       $real_path = realpath($path);
       // Throw an exception if the absolute path could not be determined
-      if ($real_path === false) throw new PathResolutionError('Failed to '.
-        'determine the absolute path to '.escapeshellarg($path).': the '.
-        'requested target presumably does not exist.');
+      if ($real_path === false) throw new
+        \Eugene\Exceptions\PathResolutionError('Failed to determine the '.
+          'absolute path to '.escapeshellarg($path).': the requested target '.
+          'presumably does not exist.');
       // Return the resulting path string
       return $real_path;
     }

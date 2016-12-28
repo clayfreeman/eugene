@@ -14,21 +14,17 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
+  // Create locally-scoped aliases for the `Singleton` and `Registry` classes
+  use \Eugene\{DesignPatterns\Singleton, Runtime\Registry};
+
+  // Create locally-scoped aliases for the `Path` and `Security` classes
+  use \Eugene\Utilities\{Path,Security};
+
   // Define the absolute path to the `config` directory
-  define('__CONFIGROOT__', realpath(\Eugene\Utilities\Path::make(
-    __PRIVATEROOT__, 'config')));
+  define('__CONFIGROOT__', Path::make(__PRIVATEROOT__, 'config'));
   // Ensure that the config directory exists
-  (file_exists(__CONFIGROOT__) && !is_dir(__CONFIGROOT__)) or trigger_error(
-    'The `config` path must be a directory; file or otherwise found '.
-    'instead', E_USER_ERROR);
-
-  // Create locally-scoped aliases for the `Registry` and `Security` classes
-  use \Eugene\{Runtime\Registry, Utilities\Security};
-
-  // Create a locally-scoped alias for all possible exceptions that might be
-  // thrown by this class
-  use \Eugene\Exceptions\{NameUnavailableError, NameUnlockError,
-    ReadLockError, WriteLockError};
+  (file_exists(__CONFIGROOT__) && is_dir(__CONFIGROOT__)) or
+    trigger_error('The `config` directory must exist', E_USER_ERROR);
 
   /**
    * TODO
@@ -96,7 +92,7 @@
     public function scan(): void {
       // Get a list of JSON files in the `config` directory
       $files = array_filter(array_map('realpath', glob(
-        \Eugene\Utilities\Path::make($configPath, '*.json'))));
+        Path::make($configPath, '*.json'))));
       // Filter the globular expression result to contain only files
       $files = array_filter(function($input) {
         // Check whether the directory entry is a file
