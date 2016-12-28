@@ -45,8 +45,6 @@
 
     /**
      * TODO: MOVE THIS DEFINITION
-     * Mutability is defined as the ability to write to a directory entry
-     * directly or indirectly by using ownership to change file permissions.
      *
      * @see  Security::isMutableEntry()  For more information regarding how
      *                                   directory entries are checked for
@@ -58,7 +56,7 @@
      */
     protected function sanityCheck(?string $file = null): void {
       // Ensure that the `config` directory is non-writable by this process
-      !Security::isMutableEntry(__CONFIGROOT__) or trigger_error(
+      !Security::fileIsMutable(__CONFIGROOT__) or trigger_error(
         'The `config` directory should not be mutable by PHP (see this '.
         'method\'s documentation to find a definition of '.
         'mutability)', E_USER_WARNING);
@@ -73,7 +71,7 @@
         if (!is_readable($file))
           trigger_error('This configuration file is not '.
             'readable', E_USER_ERROR);
-        if (Security::isMutableEntry($file))
+        if (Security::fileIsMutable($file))
           trigger_error('This configuration file should not be mutable by PHP '.
             '(see this method\'s documentation to find a definition of '.
             'mutability)', E_USER_WARNING);
