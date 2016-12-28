@@ -48,28 +48,6 @@
     protected function __construct() {}
 
     /**
-     * [sanityCheck description]
-     *
-     * @param  string  $file  [description]
-     */
-    protected function sanityCheck(?string $file = null): void {
-      // Ensure that the `config` directory is non-writable by this process
-      !Security::isMutableEntry(__CONFIGROOT__) or trigger_error(
-        'The `config` directory should not be mutable by PHP (see this '.
-        'method\'s documentation to find a definition of '.
-        'mutability)', E_USER_WARNING);
-      if ($file !== null) {
-        if (substr(realpath($file), 0, strlen(__CONFIGROOT__)) !== __CONFIGROOT__)
-      }
-    }
-
-    /**
-     * Scans the `config` directory for configuration files to load.
-     *
-     * The `config` directory will be checked to ensure that the current process
-     * doesn't have write permissions to it. All subsequent configuration files
-     * will be automatically passed to the `parse(...)` method to be loaded.
-     *
      * TODO: MOVE THIS DEFINITION
      * Mutability is defined as the ability to write to a directory entry
      * directly or indirectly by using ownership to change file permissions.
@@ -78,12 +56,45 @@
      *                                   directory entries are checked for
      *                                   mutability and a definition of
      *                                   mutability.
-     * @see  parse()                     For more information regarding how
-     *                                   configuration files will be loaded.
+     *
+     * @param  string  $file  An optional absolute file path to check in
+     *                        addition to the `config` directory.
+     */
+    protected function sanityCheck(?string $file = null): void {
+      // Ensure that the `config` directory is non-writable by this process
+      !Security::isMutableEntry(__CONFIGROOT__) or trigger_error(
+        'The `config` directory should not be mutable by PHP (see this '.
+        'method\'s documentation to find a definition of '.
+        'mutability)', E_USER_WARNING);
+      // Only run file-specific tests if a file path was provided
+      if ($file !== null) {
+        // Ensure that the file path resides in the configuration root
+        if (substr($file, 0, strlen(__CONFIGROOT__)) !== __CONFIGROOT__)
+          trigger_error('This configuration file is not contained within the '.
+            '`config` directory', E_USER_ERROR);
+        if (!is_file($file))
+          trigger_error('This configuration path is not a file', E_USER_ERROR);
+        if (!is_readable($file))
+          trigger_error('This configuration file is not '.
+            'readable', E_USER_ERROR);
+        if (Security::isMutableEntry($file))
+          trigger_error('This configuration file should not be mutable by PHP '.
+            '(see this method\'s documentation to find a definition of '.
+            'mutability)', E_USER_WARNING);
+      }
+    }
+
+    /**
+     * Scans the `config` directory for configuration files matching the
+     * globular expression `*.json` and attempts to load them.
+     *
+     * @see  parse()  For more information regarding how configuration files
+     *                will be loaded.
      */
     public function scan(): void {
       // Get a list of JSON files in the `config` directory
-      $files = glob(\Eugene\Utilities\Path::make($configPath, '*.json'));
+      $files = array_filter(array_map('realpath', glob(
+        \Eugene\Utilities\Path::make($configPath, '*.json'))));
       // Filter the globular expression result to contain only files
       $files = array_filter(function($input) {
         // Check whether the directory entry is a file
@@ -101,14 +112,36 @@
      *
      * `{ "category": "...", "contents": ... }`
      *
+     * Optionally, a `lock` key can be set as a sibling of `category` with a
+     * boolean value describing whether to place a write lock on the
+     * configuration to prevent alteration. This value defaults to `false`
+     *
      * If the above requirements are met, the value of the "contents" key will
      * be assigned to the key with the value held by "category" in the
-     * `\Eugene\Runtime\Registry` class. This value can be accessed via this
-     * class' `getCategory(...)` method.
+     * `Registry` class. This value can be accessed via this class'
+     * `getCategory(...)` method.
      *
      * @param  string  $file  Absolute (non-writable) file path.
      */
     public function parse(string $file): void {
       // Ensure that we're using the absolute path
+      $file = realpath($file);
+      // Perform sanity checks on this file path
+      $this->sanityCheck($file);
+      // Read and JSON decode the file
+      $data = json_decode(file_get_contents($file), true);
+      // Ensure that the data array is properly formatted
+      if (is_array($data) && isset($data['category'])
+                          && isset($data['contents'])) {
+        // Ensure that the category is not locked
+        if (!$registry->isWriteLocked()) {
+          // Assign the resulting data to the requested category
+          $registry->set($data['category'], $data['contents']);
+          // Check to see whether the category should be locked
+          if ($data['lock'] ?? false) $registry->lock($data['category']);
+        } else trigger_error('This configuration file\'s requested category'.
+          'cannot be overridden', E_USER_WARNING);
+      } else trigger_error('This configuration file is improperly '.
+        'formatted', E_USER_WARNING);
     }
   }
