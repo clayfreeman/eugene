@@ -14,6 +14,9 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
+  // Create a locally-scoped alias for the `Singleton` class
+  use \Eugene\DesignPatterns\Singleton;
+
   /**
    * TODO
    */
