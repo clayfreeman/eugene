@@ -39,9 +39,10 @@
   // Define a list of allowed paths during application runtime. Include
   // directories should be checked for read-only access in addition to this
   // preventative security measure
-  $allowedDirectories = array_filter(function($input) {
-    return is_directory($input) && !stristr($input, PATH_SEPARATOR);
-  }, [__DATAROOT__, __CLASSPATH__, __PROJECTROOT__.__DS__.'vendor']);
+  $allowedDirectories = array_filter([__DATAROOT__, __CLASSPATH__,
+    __PROJECTROOT__.__DS__.'vendor'], function($input) {
+      return is_dir($input) && !stristr($input, PATH_SEPARATOR);
+  }); echo var_export($allowedDirectories, true)."\n";
   // Restrict file access to prevent unauthorized tampering of application (see
   // http://php.net/manual/en/ini.core.php#ini.open-basedir for more information
   // regarding file restriction)

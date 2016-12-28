@@ -16,14 +16,12 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   // Provide manual support for loading external dependencies
-  { $_class = realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__, 'Eugene',
-    'Exceptions', 'PathResolutionError.php']));
-  silent_include($_class) or trigger_error('Could not load file at '.
-    escapeshellarg($_class), E_USER_ERROR); }
+  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Exceptions',
+    'PathResolutionError.php'])); require_once($_class); }
 
   /**
    * Helper class to aid in making platform-specific filesystem paths via
-   * `DIRECTORY_SEPARATOR` implosion of path components.
+   * `__DS__` implosion of path components.
    */
   final class Path {
     /**
@@ -52,7 +50,7 @@
      */
     public static function make(?string ...$components): string {
       // Generate a string containing the dirty, platform-specific path
-      $path = implode(DIRECTORY_SEPARATOR, $components);
+      $path = implode(__DS__, $components);
       // Attempt to resolve the absolute path to the requested target
       $real_path = realpath($path);
       // Throw an exception if the absolute path could not be determined

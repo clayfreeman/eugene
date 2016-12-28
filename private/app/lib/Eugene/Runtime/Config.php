@@ -86,7 +86,7 @@
     public function scan(): void {
       // Get a list of JSON files in the `config` directory
       $files = array_filter(array_map('realpath', glob(
-        __CONFIGROOT__.DIRECTORY_SEPARATOR.'*.json')));
+        __CONFIGROOT__.__DS__.'*.json')));
       echo var_export($files, true)."\n";
       // Filter the globular expression result to contain only files
       $files = array_filter($files, 'is_file');
