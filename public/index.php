@@ -10,11 +10,5 @@
   declare(strict_types = 1);
 
   // Run the application bootstrap routine
-  // implode(DIRECTORY_SEPARATOR, [dirname(__DIR__), 'private', 'app', 'bootstrap.php'])
-  $bootstrap = realpath();
-  (is_file($bootstrap) && is_readable($bootstrap) && include_once($bootstrap))
-    or trigger_error("Could not load the bootstrap routine", E_USER_ERROR);
-
-  // Load the application logic file
-  silent_include(\Eugene\Utilities\Path::make(__PRIVATEROOT__, 'main.php'))
-    or trigger_error("Could not load the application logic file", E_USER_ERROR);
+  $pathComponents = [dirname(__DIR__), 'private', 'app', 'bootstrap.php'];
+  require_once(implode(DIRECTORY_SEPARATOR, $pathComponents));

@@ -10,15 +10,20 @@
   // Enable strict types for this file
   declare(strict_types = 1);
 
-  // Define the current file's parent directory as the private root
-  define('__PRIVATEROOT__', realpath(__DIR__));
-
   // Display and enable *all* types of errors
   ini_set('display_errors',         '1');
   ini_set('display_startup_errors', '1');
   ini_set('log_errors',             '1');
   ini_set('log_errors_max_len',     '0');
   error_reporting(E_ALL | E_STRICT);
+
+  // Define the required path constants for the application
+  define('__DS__',          DIRECTORY_SEPARATOR);
+  define('__CLASSPATH__',   realpath(__DIR__.__DS__.'vendor'));
+  define('__APPROOT__',     realpath(__DIR__));
+  define('__PRIVATEROOT__', realpath(dirname(__APPROOT__)));
+  define('__PROJECTROOT__', realpath(dirname(__PRIVATEROOT__)));
+  define('__PUBLICROOT__',  realpath(__PROJECTROOT__.__DS__.'public'));
 
   // Ensure that `var_export` is disabled
   !function_exists('var_export') or trigger_error('For maximum security the '.
@@ -30,15 +35,13 @@
     'This project requires at least PHP '.$minimum.' to run', E_USER_ERROR); }
 
   // Run the application autoload utility setup file
-  silent_include(realpath(implode(DIRECTORY_SEPARATOR, [__PRIVATEROOT__,
-    'Eugene', 'Utilities', 'Autoload.php']))) or trigger_error('Could not '.
-    'load the project\'s autoload utility', E_USER_ERROR);
+  require_once(realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
+    'Autoload.php']))) or trigger_error('Could not load the project\'s '.
+    'autoload utility', E_USER_ERROR);
 
   // Create a locally-scoped alias for the `Path` class
   use \Eugene\Utilities\Path;
 
-  // Define the data root directory
-  define('__DATAROOT__',   Path::make(__PRIVATEROOT__, 'data'));
   // Define the public root directory
   define('__PUBLICROOT__', Path::make(__PRIVATEROOT__, 'public'));
   // Define the config root directory
