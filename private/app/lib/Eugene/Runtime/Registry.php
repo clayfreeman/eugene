@@ -18,6 +18,9 @@
   // Create a locally-scoped alias for the `Singleton` class
   use \Eugene\DesignPatterns\Singleton;
 
+  // Create a locally-scoped alias for the `HiddenString` class
+  use \Eugene\Utilities\HiddenString;
+
   // Create a locally-scoped alias for all possible exceptions that might be
   // thrown by this class
   use \Eugene\Exceptions\{NameUnavailableError, NameUnlockError,
