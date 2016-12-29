@@ -90,7 +90,7 @@
       if (!($instance instanceof Singleton))
         // Throw an exception regarding the failure state of the method
         throw new InstantiationFailureError('Failed to create a new instance '.
-          'of '.get_called_class().': called class is not instantiable.');
+          'of '.get_called_class().': called class is not instantiable');
       // Return the currently held instance
       return $instance;
     }

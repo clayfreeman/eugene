@@ -57,7 +57,7 @@
       if ($real_path === false) throw new
         \Eugene\Exceptions\PathResolutionError('Failed to determine the '.
           'absolute path to '.escapeshellarg($path).': the requested target '.
-          'presumably does not exist.');
+          'presumably does not exist');
       // Return the resulting path string
       return $real_path;
     }
