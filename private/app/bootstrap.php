@@ -45,12 +45,17 @@
 
   // Begin the non-strict lockdown phase of execution (to still allow
   // configuration file parsing)
-  Security::getInstance()->lockdown();
+  ($security =  Security::getInstance())->lockdown();
 
-  use \Eugene\Runtime\Config;
+  // Scan for project configuration files (deferring all external side effects)
+  \Eugene\Runtime\Config::getInstance()->scan();
 
-  // Scan for project configuration files
-  Config::getInstance()->scan();
+  // Migrate to the final (strict) lockdown phase to exclude access to the
+  // configuration directory
+  $security->lockdown(true);
+
+  // // Process deferred side effects from the configuration files
+  // \Eugene\Runtime\Config::getInstance()->run();
 
   // Load the composer vendor autoloader to include all composer software
   require_once(Path::make(__PROJECTROOT__, 'vendor', 'autoload.php'));
