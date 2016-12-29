@@ -40,15 +40,12 @@
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__, 'Eugene', 'Utilities', 'Autoload.php'])));
 
-  // Create locally-scoped aliases for the `Path` and`Security` classes
-  use \Eugene\Utilities\{Path, Security};
-
   // Begin the non-strict lockdown phase of execution (to still allow
   // configuration file parsing)
-  ($security = Security::getInstance())->lockdown();
+  ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
 
   // Scan for project configuration files (deferring all external side effects)
-  ($config = \Eugene\Runtime\Config::getInstance())->scan();
+  ($config   =     \Eugene\Runtime\Config::getInstance())->scan();
 
   // Migrate to the final (strict) lockdown phase to exclude access to the
   // configuration directory
@@ -58,4 +55,5 @@
   // $config->run();
 
   // Load the composer vendor autoloader to include all composer software
-  require_once(Path::make(__PROJECTROOT__, 'vendor', 'autoload.php'));
+  require_once(\Eugene\Utilities\Path::make(
+    __PROJECTROOT__, 'vendor', 'autoload.php'));
