@@ -18,7 +18,7 @@
   use \Eugene\Utilities\{Address, HiddenString, NetworkEndpoint};
 
   // Attempt to access the protected database configuration category
-  Registry::getInstance()->get('database');
+  Registry::getInstance()->get('database', new HiddenString('test'));
 
   // Create the database key of the registry to hold our database instance
   $database = Registry::getInstance()->create('database', new MySQL(

@@ -100,8 +100,9 @@
     /**
      * Retrieves the value stored by the specified name.
      *
-     * @param   string  $key          The name used to reference the
+     * @param   string        $key    The name used to reference the
      *                                requested item.
+     * @param   HiddenString  $key    The password to access the given item.
      *
      * @throws  NameUnavailableError  Upon determining that the provided name
      *                                does not exist.
@@ -110,15 +111,17 @@
      *
      * @return  mixed                 The value stored at the specified name.
      */
-    public function get(string $key) {
+    public function get(string $key, ?HiddenString $password = null) {
       // Check if the requested name exists
       if (!$this->isset($key)) throw new NameUnavailableError('Failed to '.
         'get name '.escapeshellarg($key).' in the Registry: the provided name'.
         'does not exist');
-      // Check if the requested name is read-locked
-      if ($this->isReadLocked($key)) throw new ReadLockError('Failed to get '.
-        'name '.escapeshellarg($key).' in the Registry: the provided name is '.
-        'read-locked');
+      // Check if the requested name is read-locked and either no password or an
+      // invalid password was provided
+      if ($this->isReadLocked($key) && ($password === null ||
+          $this->locks[$key]->getString() !== $password->getString()))
+        throw new ReadLockError('Failed to get name '.escapeshellarg($key).' '.
+          'in the Registry: the provided name is read-locked');
       // Return the item stored by the specified name
       return $this->storage[$key];
     }
