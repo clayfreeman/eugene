@@ -4,7 +4,7 @@
    * the `\Eugene\Utilities\Path` class for platform-independent support.
    *
    * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
-   * @license    GNU General Public License v3 (GPL-3.0).
+   * @license    GNU Lesser General Public License v3 (LGPL-3.0).
    */
 
   // Enable strict types for this file
