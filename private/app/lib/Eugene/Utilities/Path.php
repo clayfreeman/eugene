@@ -38,8 +38,8 @@
      * is constructed, it is passed through `realpath()` to determine the
      * absolute path to the requested target.
      *
-     * @param   array  $components   An array of path components where directory
-     *                               separators should be inserted.
+     * @param   string  $components  A variadic argument list of path components
+     *                               where directory separators are needed.
      *
      * @throws  PathResolutionError  Upon failure when attempting to resolve the
      *                               absolute path to the requested target.

@@ -33,12 +33,18 @@
 
   // Ensure that `var_export` is disabled
   !function_exists('var_export') or trigger_error('For maximum security the '.
-    '\'var_export(...)\' function should be disabled using the '.
+    '\'var_export()\' function should be disabled using the '.
     '\'disable_functions\' directive', E_USER_WARNING);
 
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__, 'Eugene', 'Utilities', 'Autoload.php'])));
+
+  // Create a locally-scoped alias for the `Path` class
+  use \Eugene\Utilities\Path;
+
+  // Load the composer vendor autoloader to include all composer software
+  require_once(Path::make(__PROJECTROOT__, 'vendor', 'autoload.php'));
 
   // Begin the non-strict lockdown phase of execution (to still allow
   // configuration file parsing)
@@ -52,8 +58,7 @@
   $security->lockdown(true);
 
   // // Process deferred side effects from the configuration files
-  // $config->run();
+  // $config->process();
 
-  // Load the composer vendor autoloader to include all composer software
-  require_once(\Eugene\Utilities\Path::make(
-    __PROJECTROOT__, 'vendor', 'autoload.php'));
+  // Load the application's main logic file
+  require_once(Path::make(__APPROOT__, 'main.php'));

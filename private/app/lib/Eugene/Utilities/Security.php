@@ -1,6 +1,7 @@
 <?php
   /**
-   * TODO
+   * This file is responsible for declaring `Security`, a collection of useful
+   * security-related methods.
    *
    * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
    * @license    GNU General Public License v3 (GPL-3.0).
@@ -18,7 +19,8 @@
   use \Eugene\{DesignPatterns\Singleton, Utilities\Path};
 
   /**
-   * TODO
+   * Collection of useful security-related methods to help improve overall
+   * runtime application security.
    */
   final class Security extends Singleton {
     /**
@@ -93,9 +95,28 @@
     }
 
     /**
-     * [lockdown description]
+     * Restricts filesystem access outside of required application areas.
      *
-     * @param  bool  $strict  [description]
+     * By default, this method configures `open_basedir` to allow access to the
+     * following directories:
+     *
+     *  - `private/app` (read-only)
+     *  - `private/config` (read-only)
+     *  - `private/data` (read-write)
+     *  - `vendor` (read-only)
+     *
+     * However, when strict mode is enabled, access to `private/config` is
+     * revoked and access to configuration is arbitrated by the `Registry`
+     * class. This is to allow secure storage of application-specific
+     * credentials in the configuration directory.
+     *
+     * During runtime, `open_basedir` can be configured and later restricted
+     * further, but cannot be reversed once applied. The below link describes
+     * how `open_basedir` functions during runtime.
+     *
+     * @see    http://php.net/manual/en/ini.core.php#ini.open-basedir
+     *
+     * @param  bool  $strict  Whether strict mode should be enabled.
      */
     public function lockdown(bool $strict = false): void {
       // Define an array of paths that should be allowed if itself and all
@@ -112,7 +133,6 @@
       $allowed = array_filter(array_merge($ro, $rw), function($input) {
         return is_dir($input) && is_readable($input) &&
           !stristr($input, PATH_SEPARATOR); });
-      echo var_export($allowed, true)."\n";
       // Restrict file access to prevent unauthorized tampering of application
       // (see http://php.net/manual/en/ini.core.php#ini.open-basedir for more
       // information regarding file restriction)

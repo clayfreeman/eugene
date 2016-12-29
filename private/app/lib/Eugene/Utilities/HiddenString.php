@@ -17,9 +17,9 @@
 
   /**
    * Responsible for encapsulating a raw `string` so that its value is not
-   * leaked in error logs, exceptions, `var_dump(...)` and `print_r(...)`.
-   * Strings can still be leaked through the use of `var_export(...)` so it is
-   * recommended that `var_export(...)` be disabled.
+   * leaked in error logs, exceptions, `var_dump()` and `print_r()`. Strings can
+   * still be leaked through the use of `var_export()` so it is recommended that
+   * `var_export()` be disabled.
    *
    * This class is a wrapper for Halite's `HiddenString` class written by
    * Paragon Initiative Enterprises, LLC. The purpose of this wrapper is to

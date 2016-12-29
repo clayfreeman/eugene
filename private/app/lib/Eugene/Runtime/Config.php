@@ -1,6 +1,6 @@
 <?php
   /**
-   * TODO
+   * This file is responsible for declaring a configuration file scanner.
    *
    * @copyright  Copyright 2016 Clay Freeman. All rights reserved.
    * @license    GNU General Public License v3 (GPL-3.0).
@@ -18,10 +18,13 @@
   use \Eugene\{DesignPatterns\Singleton, Runtime\Registry};
 
   // Create locally-scoped aliases for the `Path` and `Security` classes
-  use \Eugene\Utilities\{Path,Security};
+  use \Eugene\Utilities\{Path, Security};
 
   /**
-   * TODO
+   * Public interface for the `config` directory scanner.
+   *
+   * Files matching the globular expression `*.json` will be matched by the
+   * `scan()` method and will attempt to be parsed.
    */
   final class Config extends Singleton {
     /**
@@ -32,21 +35,37 @@
     protected $allowUnlink = false;
 
     /**
+     * Dispatch queue container for read-lock configured category recipients.
+     *
+     * The keys in this array represent the configured recipient, whereas the
+     * value represents an array with the keys `category` and `password` to be
+     * delivered to the recipient.
+     *
+     * @var  array
+     */
+    protected $dispatch    = [];
+
+    /**
      * An empty constructor to satisfy the parent's abstract method
      * prototype definition.
      */
     protected function __construct() {}
 
     /**
-     * TODO: MOVE THIS DEFINITION
+     * Ensures that the `config` directory and (optionally) the provided file
+     * path are immutable by the current process.
      *
-     * @see  Security::isMutableEntry()  For more information regarding how
-     *                                   directory entries are checked for
-     *                                   mutability and a definition of
-     *                                   mutability.
+     * If a file path is provided, it will be checked to ensure that it is a
+     * readable file contained within the `config` directory.
      *
-     * @param  string  $file  An optional absolute file path to check in
-     *                        addition to the `config` directory.
+     * @see    Security::isMutableEntry()  For more information regarding how
+     *                                     directory entries are checked for
+     *                                     mutability and a definition of
+     *                                     mutability.
+     *
+     * @param  string  $file               An optional absolute file path to
+     *                                     check in addition to the `config`
+     *                                     directory.
      */
     protected function sanityCheck(?string $file = null): void {
       // Fetch a reference to the `Security` instance
@@ -75,10 +94,8 @@
     }
 
     /**
-     * TODO: http://php.net/manual/en/ini.core.php#ini.open-basedir
-     *
      * Scans the `config` directory for configuration files matching the
-     * globular expression `*.json` and attempts to load them.
+     * globular expression `*.json` and attempts to parse them.
      *
      * @see  parse()  For more information regarding how configuration files
      *                will be loaded.
@@ -96,22 +113,25 @@
     /**
      * Attempts to parse the requested file from the `config` directory.
      *
-     * The provided file path must be an absolute path to a non-writable file
+     * The provided file path must be an absolute path to an immutable file
      * inside the `config` directory. The file must also match the following
-     * JSON document specification (`*.json` naming scheme recommended):
+     * JSON document specification (`*.json` naming scheme recommended for
+     * autodetection in the `scan()` method):
      *
      * `{ "category": "...", "contents": ... }`
      *
      * Optionally, a `lock` key can be set as a sibling of `category` describing
      * how to lock the category. This value defaults to `false`, but may also be
-     * `true` (to place a write lock), or an `array` with `callable` members (to
-     * place a read lock) that will be invoked to grant them category access.
+     * `true` (to place a write lock), or an `array` (to place a read lock) with
+     * fully-qualified class names that will be invoked to grant them category
+     * access.
      *
-     * The `callable` members of a `lock` array must accept a `string` key for
-     * their first parameter and a `string` password for their second parameter.
+     * The class names of a `lock` array must extend the `Singleton` design
+     * pattern and implement the `ConfigDelegate` design pattern otherwise they
+     * will not be invoked.
      *
-     * If the above requirements are met, the value of the "contents" key will
-     * be assigned to the key with the value held by "category" in the
+     * If the above requirements are met, the value of the `contents` key will
+     * be assigned to the key with the value held by `category` in the
      * `Registry` class.
      *
      * @param  string  $file  Absolute (non-writable) file path.
@@ -131,16 +151,27 @@
         // Set default values in the data array where necessary
         $data['lock'] = $data['lock'] ?? false;
         // Ensure that the category is not locked
-        if (!$registry->isWriteLocked()) {
+        if (!$registry->isWriteLocked($data['category'])) {
           // Assign the resulting data to the requested category
           $registry->set($data['category'], $data['contents']);
           // Check to see whether the category should be locked
-          if ($data['lock'] === true)
+          if ($data['lock'] === false) {}
+          else if ($data['lock'] === true)
             // Perform a write lock if `true`
             $registry->lock($data['category']);
           else if (is_array($data['lock'])) {
-            // TODO: Lock with random password and inform `lock` members
-          }
+            // Generate a password using `random_bytes()`
+            $password = new \Eugene\Utilities\HiddenString(random_bytes(256));
+            // Update each configured recipient's dispatch queue
+            foreach ($data['lock'] as $recipient) {
+              // Create a queue for this recipient if it doesn't exist
+              $this->dispatch[$recipient] = $this->dispatch[$recipient] ?? [];
+              // Append the password to this recipient's dispatch queue
+              $this->dispatch[$recipient][] = ['category' => $data['category'],
+                'password' => $password];
+            } // Warn the user if there is an invalid value for this key
+          } else trigger_error('Ignoring invalid value for \'lock\' key in '.
+            'this configuration file', E_USER_WARNING);
         } else trigger_error('This configuration file\'s requested category'.
           'cannot be overridden', E_USER_WARNING);
       } else trigger_error('This configuration file is improperly '.
