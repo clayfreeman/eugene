@@ -36,29 +36,21 @@
     '\'var_export()\' function should be disabled using the '.
     '\'disable_functions\' directive', E_USER_WARNING);
 
+  // Load the composer vendor autoloader to include all composer software
+  require_once(realpath(implode(__DS__,
+    [__PROJECTROOT__, 'vendor', 'autoload.php'])));
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
-    [__CLASSPATH__, 'Eugene', 'Utilities', 'Autoload.php'])));
-
-  // Create a locally-scoped alias for the `Path` class
-  use \Eugene\Utilities\Path;
+    [__CLASSPATH__,   'Eugene', 'Utilities', 'Autoload.php'])));
 
   // Begin the non-strict lockdown phase of execution (to still allow
   // configuration file parsing)
   ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
-
-  // Load the composer vendor autoloader to include all composer software
-  require_once(Path::make(__PROJECTROOT__, 'vendor', 'autoload.php'));
-
   // Scan for project configuration files (deferring all external side effects)
-  ($config   =     \Eugene\Runtime\Config::getInstance())->scan();
-
+  ($config   = \Eugene\Runtime\Config::getInstance())->scan();
   // Migrate to the final (strict) lockdown phase to exclude access to the
-  // configuration directory
-  $security->lockdown(true);
-
-  // Process deferred side effects from the configuration files
-  $config->dispatchCredentials();
+  // configuration directory and process deferred side effects
+  $security->lockdown(true); $config->dispatchCredentials();
 
   // Load the application's main logic file
-  require_once(Path::make(__APPROOT__, 'main.php'));
+  require_once(\Eugene\Utilities\Path::make(__APPROOT__, 'main.php'));

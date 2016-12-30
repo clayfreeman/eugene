@@ -31,10 +31,21 @@
     protected $allowUnlink = false;
 
     /**
-     * An empty constructor to satisfy the parent's abstract method
-     * prototype definition.
+     * Responsible for generating the symmetric encryption key used by Halite if
+     * it doesn't already exist.
      */
-    protected function __construct() {}
+    protected function __construct() {
+      $keyPath = __CONFIGROOT__.__DS__.'secret.key';
+      // Check if the encryption key exists
+      if (is_file($keyPath))
+        // Load the encryption key from the filesystem
+        $this->key = \ParagonIE\Halite\KeyFactory::loadEncryptionKey($keyPath);
+      else {
+        // Generate an encryption key and save it to the filesystem
+        $this->key = \ParagonIE\Halite\KeyFactory::generateEncryptionKey();
+        \ParagonIE\Halite\KeyFactory::save($this->key, $keyPath);
+      }
+    }
 
     /**
      * Determines whether the provided file path is considered mutable.
