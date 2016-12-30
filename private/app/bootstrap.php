@@ -57,13 +57,8 @@
   // configuration directory
   $security->lockdown(true);
 
-  // // Process deferred side effects from the configuration files
-  // $config->process();
-
-  try {
-    $class = '\\Eugene\\Database\\MySQL';
-    echo var_export(class_exists($class), true)."\n";
-  } catch (\Exception $e) {}
+  // Process deferred side effects from the configuration files
+  $config->dispatchCredentials();
 
   // Load the application's main logic file
   require_once(Path::make(__APPROOT__, 'main.php'));
