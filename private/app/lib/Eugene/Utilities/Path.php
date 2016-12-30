@@ -49,16 +49,27 @@
      *                               separators.
      */
     public static function make(?string ...$components): string {
-      // Generate a string containing the dirty, platform-specific path
-      $path = implode(__DS__, $components);
-      // Attempt to resolve the absolute path to the requested target
-      $real_path = realpath($path);
-      // Throw an exception if the absolute path could not be determined
-      if ($real_path === false) throw new
-        \Eugene\Exceptions\PathResolutionError('Failed to determine the '.
-          'absolute path to '.escapeshellarg($path).': the requested target '.
-          'presumably does not exist');
-      // Return the resulting path string
-      return $real_path;
+      // Determine the root of the filesystem
+      $root = explode(__DS__, __DIR__)[0];
+      // If there were no provided path components, assume root of filesystem
+      if (count($components) === 0)    return $root;
+      // Replace the first `null` component with the root of the filesystem
+      if (reset($components) === null) $components[0] = $root;
+      // If only one path component was provided, return its value
+      if (count($components) === 1)    return array_shift($components);
+      // Remove all `null` path components to avoid confusion
+      $components = array_filter($components, function($input) {
+        return $input !== null; });
+      // Ensure that the target's parent can be resolved via `realpath()`
+      $path = realpath(implode(__DS__, $components)); $fail = $path === false;
+      $realpath = realpath($path .= __DS__.$lastComponent);
+      // If the parent cannot be resoved, throw an exception
+      if ($fail === true) throw new PathResolutionError('Failed to determine '.
+        'the absolute path to '.escapeshellarg($path).': the requested target '.
+        'presumably does not exist');
+      // If the target can be resolved using `realpath()` as well, prefer it;
+      // otherwise assume the file doesn't exist (yet)
+      $realpath = ($realpath !== false ? $realpath : $path);
+      return $realpath;
     }
   }
