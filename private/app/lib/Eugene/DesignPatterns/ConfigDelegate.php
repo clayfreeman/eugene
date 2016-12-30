@@ -15,8 +15,8 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   /**
-   * //
+   * TODO
    */
   interface ConfigDelegate {
-    //
+    // TODO
   }
