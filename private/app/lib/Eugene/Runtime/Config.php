@@ -63,8 +63,9 @@
       foreach ($this->dispatch as $class => $credentials) {
         // Ensure that the target class exists, extends `Singleton` and
         // implements `ConfigDelegate`
-        if (class_exists($class) && $class instanceof Singleton &&
-            $class instanceof \Eugene\DesignPatterns\ConfigDelegate) {
+        if (class_exists($class) && is_subclass_of($class,
+            '\\Eugene\\DesignPatterns\\Singleton') && is_subclass_of($class,
+            '\\Eugene\\DesignPatterns\\ConfigDelegate')) {
           // Fetch an instance of the target class
           $instance = $class::getInstance();
           // Iterate over each credential for delivery to this target
