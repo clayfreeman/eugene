@@ -18,6 +18,7 @@
   // Provide manual support for loading external dependencies
   { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Exceptions',
     'PathResolutionError.php'])); require_once($_class); }
+  use \Eugene\Exceptions\PathResolutionError;
 
   /**
    * Helper class to aid in making platform-specific filesystem paths via
@@ -60,6 +61,8 @@
       // Remove all `null` path components to avoid confusion
       $components = array_filter($components, function($input) {
         return $input !== null; });
+      // Fetch the last component to isolate the target's parent
+      $lastComponent = array_pop($components);
       // Ensure that the target's parent can be resolved via `realpath()`
       $path = realpath(implode(__DS__, $components)); $fail = $path === false;
       $realpath = realpath($path .= __DS__.$lastComponent);
