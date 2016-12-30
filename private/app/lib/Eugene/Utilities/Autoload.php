@@ -33,6 +33,7 @@
     try { // Attempt to create a platform-specific path string to load the class
       $class = Path::make(...$class);
       // Load the resulting path representing the requested class
-      require_once($class);
+      (include_once($class)) or trigger_error('Could not autoload the '.
+        'requested class', E_USER_WARNING);
     } catch (PathResolutionError $e) {}
   }, true, true);

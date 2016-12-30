@@ -52,62 +52,29 @@
     protected function __construct() {}
 
     /**
-     * Ensures that the `config` directory and (optionally) the provided file
-     * path are immutable by the current process.
+     * Processes the dispatch queue (if non-empty) to deliver any newly created
+     * credentials for configuration categories stored in the `Registry`.
      *
-     * If a file path is provided, it will be checked to ensure that it is a
-     * readable file contained within the `config` directory.
-     *
-     * @see    Security::isMutableEntry()  For more information regarding how
-     *                                     directory entries are checked for
-     *                                     mutability and a definition of
-     *                                     mutability.
-     *
-     * @param  string  $file               An optional absolute file path to
-     *                                     check in addition to the `config`
-     *                                     directory.
+     * Recipients must extend the `Singleton` design pattern and implement
+     * `ConfigDelegate` to be invoked.
      */
-    protected function sanityCheck(?string $file = null): void {
-      // Fetch a reference to the `Security` instance
-      $security = Security::getInstance();
-      // Ensure that the `config` directory is non-writable by this process
-      !$security->fileIsMutable(__CONFIGROOT__) or trigger_error(
-        'The `config` directory should not be mutable by PHP (see this '.
-        'method\'s documentation to find a definition of '.
-        'mutability)', E_USER_WARNING);
-      // Only run file-specific tests if a file path was provided
-      if ($file !== null) {
-        // Ensure that the file path resides in the configuration root
-        if (substr($file, 0, strlen(__CONFIGROOT__)) !== __CONFIGROOT__)
-          trigger_error('This configuration file is not contained within the '.
-            '`config` directory', E_USER_ERROR);
-        if (!is_file($file))
-          trigger_error('This configuration path is not a file', E_USER_ERROR);
-        if (!is_readable($file))
-          trigger_error('This configuration file is not '.
-            'readable', E_USER_ERROR);
-        if ($security->fileIsMutable($file))
-          trigger_error('This configuration file should not be mutable by PHP '.
-            '(see this method\'s documentation to find a definition of '.
-            'mutability)', E_USER_WARNING);
+    public function dispatchCredentials(): void {
+      // Iterate over each class' collection of credentials
+      foreach ($this->dispatch as $class => $credentials) {
+        // Ensure that the target class exists, extends `Singleton` and
+        // implements `ConfigDelegate`
+        if (class_exists($class) && $class instanceof Singleton &&
+            $class instanceof \Eugene\DesignPatterns\ConfigDelegate) {
+          // Fetch an instance of the target class
+          $instance = $class::getInstance();
+          // Iterate over each credential for delivery to this target
+          foreach ($credentials as $credential)
+            // Deliver this credential using the `ConfigDelegate` method
+            $instance->receiveCredential($credential['category'],
+              $credential['password']);
+        } else trigger_error('This class is not applicable to receive '.
+          'configuration credentials', E_USER_WARNING);
       }
-    }
-
-    /**
-     * Scans the `config` directory for configuration files matching the
-     * globular expression `*.json` and attempts to parse them.
-     *
-     * @see  parse()  For more information regarding how configuration files
-     *                will be loaded.
-     */
-    public function scan(): void {
-      // Get a list of JSON files in the `config` directory
-      $files = array_filter(array_map('realpath', glob(
-        __CONFIGROOT__.__DS__.'*.json')));
-      // Filter the globular expression result to contain only files
-      $files = array_filter($files, 'is_file');
-      // Attempt to parse each configuration file
-      foreach ($files as $file) $this->parse($file);
     }
 
     /**
@@ -178,5 +145,64 @@
           'cannot be overridden', E_USER_WARNING);
       } else trigger_error('This configuration file is improperly '.
         'formatted', E_USER_WARNING);
+    }
+
+    /**
+     * Ensures that the `config` directory and (optionally) the provided file
+     * path are immutable by the current process.
+     *
+     * If a file path is provided, it will be checked to ensure that it is a
+     * readable file contained within the `config` directory.
+     *
+     * @see    Security::isMutableEntry()  For more information regarding how
+     *                                     directory entries are checked for
+     *                                     mutability and a definition of
+     *                                     mutability.
+     *
+     * @param  string  $file               An optional absolute file path to
+     *                                     check in addition to the `config`
+     *                                     directory.
+     */
+    protected function sanityCheck(?string $file = null): void {
+      // Fetch a reference to the `Security` instance
+      $security = Security::getInstance();
+      // Ensure that the `config` directory is non-writable by this process
+      !$security->fileIsMutable(__CONFIGROOT__) or trigger_error(
+        'The `config` directory should not be mutable by PHP (see this '.
+        'method\'s documentation to find a definition of '.
+        'mutability)', E_USER_WARNING);
+      // Only run file-specific tests if a file path was provided
+      if ($file !== null) {
+        // Ensure that the file path resides in the configuration root
+        if (substr($file, 0, strlen(__CONFIGROOT__)) !== __CONFIGROOT__)
+          trigger_error('This configuration file is not contained within the '.
+            '`config` directory', E_USER_ERROR);
+        if (!is_file($file))
+          trigger_error('This configuration path is not a file', E_USER_ERROR);
+        if (!is_readable($file))
+          trigger_error('This configuration file is not '.
+            'readable', E_USER_ERROR);
+        if ($security->fileIsMutable($file))
+          trigger_error('This configuration file should not be mutable by PHP '.
+            '(see this method\'s documentation to find a definition of '.
+            'mutability)', E_USER_WARNING);
+      }
+    }
+
+    /**
+     * Scans the `config` directory for configuration files matching the
+     * globular expression `*.json` and attempts to parse them.
+     *
+     * @see  parse()  For more information regarding how configuration files
+     *                will be loaded.
+     */
+    public function scan(): void {
+      // Get a list of JSON files in the `config` directory
+      $files = array_filter(array_map('realpath', glob(
+        __CONFIGROOT__.__DS__.'*.json')));
+      // Filter the globular expression result to contain only files
+      $files = array_filter($files, 'is_file');
+      // Attempt to parse each configuration file
+      foreach ($files as $file) $this->parse($file);
     }
   }
