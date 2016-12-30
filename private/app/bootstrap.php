@@ -43,12 +43,12 @@
   // Create a locally-scoped alias for the `Path` class
   use \Eugene\Utilities\Path;
 
-  // Load the composer vendor autoloader to include all composer software
-  require_once(Path::make(__PROJECTROOT__, 'vendor', 'autoload.php'));
-
   // Begin the non-strict lockdown phase of execution (to still allow
   // configuration file parsing)
   ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
+
+  // Load the composer vendor autoloader to include all composer software
+  require_once(Path::make(__PROJECTROOT__, 'vendor', 'autoload.php'));
 
   // Scan for project configuration files (deferring all external side effects)
   ($config   =     \Eugene\Runtime\Config::getInstance())->scan();
