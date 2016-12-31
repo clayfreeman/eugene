@@ -72,9 +72,9 @@
       // Fetch the last component to isolate the target's parent
       $lastComponent = array_pop($components);
       // Ensure that the target's parent can be resolved via `realpath()`
-      $path = realpath($root.implode(__DS__, $components));
-      $fail = $path === false;
-      $realpath = realpath($path .=  __DS__. $lastComponent);
+      $path     = $root.implode(__DS__, $components);
+      $fail     = realpath($path) === false;
+      $realpath = realpath($path   .= __DS__.$lastComponent);
       // If the parent cannot be resoved, throw an exception
       if ($fail === true) throw new PathResolutionError('Failed to determine '.
         'the absolute path to '.escapeshellarg($path).': the requested target '.
