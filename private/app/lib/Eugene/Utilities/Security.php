@@ -159,7 +159,7 @@
     }
 
     /**
-     * Hashes a password using ParagonIE's Halite library with secure defaults.
+     * Hashes a password using ParagonIE's Halite library.
      *
      * @param   HiddenString  $password       The clear text to be hashed.
      * @param   string        $level          The strength at which to generate
@@ -174,5 +174,18 @@
         string $level = KeyFactory::INTERACTIVE): string {
       // Defer cryptography to ParagonIE's Halite library (with defaults)
       return Password::hash($password->getValue(), $this->key, $level);
+    }
+
+    /**
+     * Verifies a password against a hash using ParagonIE's Halite library.
+     *
+     * @param   HiddenString  $password  The clear text password to check.
+     * @param   string        $hash      The ciphertext to validate against.
+     *
+     * @return  bool                     Whether the password matches the hash.
+     */
+    public function passwordVerify(HiddenString $password, string $hash): bool {
+      // Defer cryptography to ParagonIE's Halite library (with defaults)
+      return Password::verify($password->getValue(), $hash, $this->key);
     }
   }

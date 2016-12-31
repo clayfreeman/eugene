@@ -13,5 +13,7 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   // Test the password hashing method of the `Security` class
-  echo \Eugene\Utilities\Security::getInstance()->passwordHash(
-    new \Eugene\Utilities\HiddenString('test'))."\n";
+  echo ($cipher = \Eugene\Utilities\Security::getInstance()->passwordHash(
+    new \Eugene\Utilities\HiddenString('test')))."\n";
+  echo var_export(\Eugene\Utilities\Security::getInstance()->passwordVerify(
+    new \Eugene\Utilities\HiddenString('test'), $cipher), true)."\n";
