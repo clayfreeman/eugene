@@ -34,6 +34,13 @@
     protected $allowUnlink = false;
 
     /**
+     * The symmetric key used for internal password hash encryption.
+     *
+     * @var  EncryptionKey
+     */
+    protected $key         = null;
+
+    /**
      * Responsible for generating the symmetric encryption key used by Halite if
      * it doesn't already exist.
      */
