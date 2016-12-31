@@ -24,6 +24,7 @@
   define('__PRIVATEROOT__', realpath(dirname(__APPROOT__)));
   define('__CONFIGROOT__',  realpath(__PRIVATEROOT__.__DS__.'config'));
   define('__DATAROOT__',    realpath(__PRIVATEROOT__.__DS__.'data'));
+  define('__KEYROOT__',     realpath(__PRIVATEROOT__.__DS__.'keys'));
   define('__PROJECTROOT__', realpath(dirname(__PRIVATEROOT__)));
   define('__PUBLICROOT__',  realpath(__PROJECTROOT__.__DS__.'public'));
   define('__VENDORROOT__',  realpath(__PROJECTROOT__.__DS__.'vendor'));

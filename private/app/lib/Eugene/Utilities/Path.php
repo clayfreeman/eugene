@@ -66,7 +66,7 @@
       $components = array_filter($components, function($input) {
         return $input !== null; });
       // If there were no provided path components, assume root of filesystem
-      if (count($components) === 0) return $root;
+      if (count($components) === 0) return $root; // TODO: realpath? --v
       // If only one path component was provided, return its value
       if (count($components) === 1) return $root.array_shift($components);
       // Fetch the last component to isolate the target's parent

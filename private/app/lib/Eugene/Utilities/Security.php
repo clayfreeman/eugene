@@ -35,7 +35,7 @@
      * it doesn't already exist.
      */
     protected function __construct() {
-      $keyPath = Path::make(__CONFIGROOT__, 'secret.key');
+      $keyPath = Path::make(__KEYROOT__, 'default.key');
       // Check if the encryption key exists
       if (is_file($keyPath))
         // Load the encryption key from the filesystem
@@ -113,12 +113,13 @@
      *  - `private/app` (read-only)
      *  - `private/config` (read-only)
      *  - `private/data` (read-write)
+     *  - `private/keys` (read-write)
      *  - `vendor` (read-only)
      *
-     * However, when strict mode is enabled, access to `private/config` is
-     * revoked and access to configuration is arbitrated by the `Registry`
-     * class. This is to allow secure storage of application-specific
-     * credentials in the configuration directory.
+     * However, when strict mode is enabled, access to `private/config` and
+     * `private/keys` is revoked and access to configuration is arbitrated by
+     * the `Registry` class. This is to allow secure storage of
+     * application-specific credentials.
      *
      * During runtime, `open_basedir` can be configured and later restricted
      * further, but cannot be reversed once applied. The below link describes
@@ -133,9 +134,12 @@
       // children are read-only
       $ro = [__APPROOT__, __VENDORROOT__];
       $rw = [__DATAROOT__];
-      // If operating under strict mode, `__CONFIGROOT__` should be excluded
-      if ($strict === false) $ro[] = __CONFIGROOT__;
-      // Filter the allowed read-only paths to only recursively immutable paths
+      // If operating under strict mode, `__CONFIGROOT__` and `__KEYROOT__`
+      // should be excluded
+      if ($strict === false) {
+        $ro[] = __CONFIGROOT__;
+        $rw[] = __KEYROOT__;
+      } // Filter the allowed read-only paths to recursively immutable paths
       $ro = array_filter($ro, function($input) {
         return Security::getInstance()->fileIsRecursivelyMutable($input); });
       // Define a list of allowed paths during application runtime based on the

@@ -1,4 +1,4 @@
 /private/config/*.json
-/private/config/*.key
+/private/keys/*.key
 /composer.lock
 /vendor
