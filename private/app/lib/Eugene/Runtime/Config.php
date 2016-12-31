@@ -17,8 +17,8 @@
   // Create locally-scoped aliases for the `Singleton` and `Registry` classes
   use \Eugene\{DesignPatterns\Singleton, Runtime\Registry};
 
-  // Create locally-scoped aliases for the `Path` and `Security` classes
-  use \Eugene\Utilities\{Path, Security};
+  // Create a locally-scoped alias for the `Security` class
+  use \Eugene\Utilities\Security;
 
   /**
    * Public interface for the `config` directory scanner.
@@ -200,7 +200,7 @@
     public function scan(): void {
       // Get a list of JSON files in the `config` directory
       $files = array_filter(array_map('realpath', glob(
-        Path::make(__CONFIGROOT__, '*.json'))));
+        \Eugene\Utilities\Path::make(__CONFIGROOT__, '*.json'))));
       // Filter the globular expression result to contain only files
       $files = array_filter($files, 'is_file');
       // Attempt to parse each configuration file
