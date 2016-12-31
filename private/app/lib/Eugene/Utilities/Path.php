@@ -39,33 +39,46 @@
      * is constructed, it is passed through `realpath()` to determine the
      * absolute path to the requested target.
      *
-     * @param   string  $components  A variadic argument list of path components
-     *                               where directory separators are needed.
+     * This method is tolerant of inexistent terminating components (i.e. files
+     * that don't exist yet, but their parent directory does).
      *
-     * @throws  PathResolutionError  Upon failure when attempting to resolve the
-     *                               absolute path to the requested target.
+     * @param   string  $components       A variadic argument list of path
+     *                                    components where directory separators
+     *                                    are needed.
      *
-     * @return  string               A string representing the `realpath()`
-     *                               result using the appropriate directory
-     *                               separators.
+     * @throws  InvalidArgumentException  If any provided path component
+     *                                    contains the directory separator
+     *                                    character.
+     * @throws  PathResolutionError       Upon failure when attempting to
+     *                                    resolve the absolute path to the
+     *                                    requested target.
+     *
+     * @return  string                    A string representing the `realpath()`
+     *                                    result using the appropriate directory
+     *                                    separators.
      */
     public static function make(?string ...$components): string {
-      // Determine the root of the filesystem
-      $root = explode(__DS__, __DIR__)[0];
-      // If there were no provided path components, assume root of filesystem
-      if (count($components) === 0)    return $root;
-      // Replace the first `null` component with the root of the filesystem
-      if (reset($components) === null) $components[0] = $root;
-      // If only one path component was provided, return its value
-      if (count($components) === 1)    return array_shift($components);
+      // Determine whether the root of the filesystem should be prepended
+      $root = explode(__DS__, __DIR__)[0].__DS__;
+      $root = reset($components) === null ||
+              reset($components) === false ? $root : null;
       // Remove all `null` path components to avoid confusion
       $components = array_filter($components, function($input) {
         return $input !== null; });
+      // Ensure that no path component contains the directory separator
+      foreach ($components as $component) if (stristr($component, __DS__))
+        throw new InvalidArgumentException('Path components cannot contain '.
+          'the directory separator');
+      // If there were no provided path components, assume root of filesystem
+      if (count($components) === 0) return $root;
+      // If only one path component was provided, return its value
+      if (count($components) === 1) return $root.array_shift($components);
       // Fetch the last component to isolate the target's parent
       $lastComponent = array_pop($components);
       // Ensure that the target's parent can be resolved via `realpath()`
-      $path = realpath(implode(__DS__, $components)); $fail = $path === false;
-      $realpath = realpath($path .= __DS__.$lastComponent);
+      $path = realpath($root.implode(__DS__, $components));
+      $fail = $path === false;
+      $realpath = realpath($path .=  __DS__. $lastComponent);
       // If the parent cannot be resoved, throw an exception
       if ($fail === true) throw new PathResolutionError('Failed to determine '.
         'the absolute path to '.escapeshellarg($path).': the requested target '.
