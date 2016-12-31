@@ -13,7 +13,7 @@
   // Display and enable *all* types of errors
   ini_set('display_errors',         '1');
   ini_set('display_startup_errors', '1');
-  ini_set('log_errors',             '0'); // TODO: SET TO '1'
+  ini_set('log_errors',             '1');
   ini_set('log_errors_max_len',     '0');
   error_reporting(E_ALL | E_STRICT);
 
