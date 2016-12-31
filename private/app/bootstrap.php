@@ -32,6 +32,10 @@
   { (version_compare(PHP_VERSION, $minimum = '7.1.0') >= 0) or trigger_error(
     'This project requires at least PHP '.$minimum.' to run', E_USER_ERROR); }
 
+  // Ensure that we're running under a POSIX-based system
+  function_exists('posix_kill') or trigger_error('This project requires the '.
+    'POSIX extension to be loaded', E_USER_ERROR);
+
   // Ensure that `var_export` is disabled
   !function_exists('var_export') or trigger_error('For maximum security the '.
     '\'var_export()\' function should be disabled using the '.

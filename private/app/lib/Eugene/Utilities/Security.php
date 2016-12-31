@@ -64,7 +64,6 @@
       if (file_exists($file)) {
         // Check whether the file is writable or is owned by this process
         return is_writable($file) || fileowner($file) == posix_getuid();
-        // TODO: RESTRICT USAGE TO POSIX SYSTEMS
       } return false;
     }
 
