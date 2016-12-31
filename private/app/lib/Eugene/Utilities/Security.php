@@ -18,6 +18,9 @@
   // Create locally-scoped aliases for the `Singleton` and `Path` classes
   use \Eugene\{DesignPatterns\Singleton, Utilities\Path};
 
+  // Create locally-scoped aliases for the `KeyFactory` and `Password` classes
+  use \ParagonIE\Halite\{Halite, KeyFactory, Password};
+
   /**
    * Collection of useful security-related methods to help improve overall
    * runtime application security.
@@ -35,15 +38,17 @@
      * it doesn't already exist.
      */
     protected function __construct() {
-      $keyPath = Path::make(__KEYROOT__, 'default.key');
+      // Ensure that Halite is able to work correctly
+      Halite::isLibsodiumSetupCorrectly(true) or die();
       // Check if the encryption key exists
+      $keyPath = Path::make(__KEYROOT__, 'default.key');
       if (is_file($keyPath))
         // Load the encryption key from the filesystem
-        $this->key = \ParagonIE\Halite\KeyFactory::loadEncryptionKey($keyPath);
+        $this->key = KeyFactory::loadEncryptionKey($keyPath);
       else {
         // Generate an encryption key and save it to the filesystem
-        $this->key = \ParagonIE\Halite\KeyFactory::generateEncryptionKey();
-        \ParagonIE\Halite\KeyFactory::save($this->key, $keyPath);
+        $this->key = KeyFactory::generateEncryptionKey();
+        KeyFactory::save($this->key, $keyPath);
       }
     }
 
@@ -151,5 +156,17 @@
       // (see http://php.net/manual/en/ini.core.php#ini.open-basedir for more
       // information regarding file restriction)
       ini_set('open_basedir', implode(PATH_SEPARATOR, $allowed));
+    }
+
+    /**
+     * Hashes a password using ParagonIE's Halite library with secure defaults.
+     *
+     * @param   HiddenString  $password  The clear text to be hashed.
+     *
+     * @return  string                   The resulting ciphertext.
+     */
+    public function passwordHash(HiddenString $password): string {
+      // Defer cryptography to ParagonIE's Halite library (with defaults)
+      return Password::hash($password, $this->key, KeyFactory::SENSITIVE);
     }
   }
