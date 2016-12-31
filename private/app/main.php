@@ -11,3 +11,7 @@
 
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
+
+  // Test the password hashing method of the `Security` class
+  echo \Eugene\Utilities\Security::getInstance()->passwordHash(
+    new \Eugene\Utilities\HiddenString('test'))."\n";

@@ -55,4 +55,13 @@
     public function getString(): string {
       return $this->value->getString();
     }
+
+    /**
+     * Fetches the internal `HiddenString` instance.
+     *
+     * @return  ParagonIE\Halite\HiddenString  The internal value.
+     */
+    public function getValue(): \ParagonIE\Halite\HiddenString {
+      return $this->value;
+    }
   }
