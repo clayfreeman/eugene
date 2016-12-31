@@ -67,7 +67,7 @@
         return $input !== null; });
       // Ensure that no path component contains the directory separator
       foreach ($components as $component) if (stristr($component, __DS__))
-        throw new InvalidArgumentException('Path components cannot contain '.
+        throw new \InvalidArgumentException('Path components cannot contain '.
           'the directory separator');
       // If there were no provided path components, assume root of filesystem
       if (count($components) === 0) return $root;
