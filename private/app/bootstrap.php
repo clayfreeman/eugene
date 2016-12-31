@@ -11,10 +11,10 @@
   declare(strict_types = 1);
 
   // Display and enable *all* types of errors
-  ini_set('display_errors',         '1');
-  ini_set('display_startup_errors', '1');
-  ini_set('log_errors',             '1');
-  ini_set('log_errors_max_len',     '0');
+  ini_set('display_errors',                               '1');
+  ini_set('display_startup_errors',                       '1');
+  ini_set('log_errors', php_sapi_name() === 'cli' ? '0' : '1');
+  ini_set('log_errors_max_len',                           '0');
   error_reporting(E_ALL | E_STRICT);
 
   // Define the required path constants for the application
