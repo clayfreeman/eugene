@@ -65,10 +65,6 @@
       // Remove all `null` path components to avoid confusion
       $components = array_filter($components, function($input) {
         return $input !== null; });
-      // Ensure that no path component contains the directory separator
-      foreach ($components as $component) if (stristr($component, __DS__))
-        throw new \InvalidArgumentException('Path components cannot contain '.
-          'the directory separator');
       // If there were no provided path components, assume root of filesystem
       if (count($components) === 0) return $root;
       // If only one path component was provided, return its value
