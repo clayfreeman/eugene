@@ -161,18 +161,18 @@
     /**
      * Hashes a password using ParagonIE's Halite library with secure defaults.
      *
-     * @param   HiddenString  $password   The clear text to be hashed.
-     * @param   bool          $sensitive  Whether the password is sensitive
-     *                                    (defaults to false; takes longer).
+     * @param   HiddenString  $password       The clear text to be hashed.
+     * @param   string        $level          The strength at which to generate
+     *                                        the password hash.
      *
-     * @return  string                    The resulting ciphertext.
+     * @see     \ParagonIE\Halite\KeyFactory  For more information regarding
+     *                                        available hash strengths.
+     *
+     * @return  string                        The resulting ciphertext.
      */
     public function passwordHash(HiddenString $password,
-        bool $sensitive = false): string {
+        string $level = KeyFactory::INTERACTIVE): string {
       // Defer cryptography to ParagonIE's Halite library (with defaults)
-      return Password::hash(
-        $password->getValue(),
-        $this->key,
-        $sensitive ? KeyFactory::SENSITIVE : KeyFactory::MODERATE);
+      return Password::hash($password->getValue(), $this->key, $level);
     }
   }
