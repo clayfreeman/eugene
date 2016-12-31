@@ -26,6 +26,7 @@
   define('__DATAROOT__',    realpath(__PRIVATEROOT__.__DS__.'data'));
   define('__PROJECTROOT__', realpath(dirname(__PRIVATEROOT__)));
   define('__PUBLICROOT__',  realpath(__PROJECTROOT__.__DS__.'public'));
+  define('__VENDORROOT__',  realpath(__PROJECTROOT__.__DS__.'vendor'));
 
   // Check the PHP version number and complain if unsatisfactory
   { (version_compare(PHP_VERSION, $minimum = '7.1.0') >= 0) or trigger_error(
@@ -37,11 +38,10 @@
     '\'disable_functions\' directive', E_USER_WARNING);
 
   // Load the composer vendor autoloader to include all composer software
-  require_once(realpath(implode(__DS__,
-    [__PROJECTROOT__, 'vendor', 'autoload.php'])));
+  require_once(realpath(implode(__DS__, [__VENDORROOT__, 'autoload.php'])));
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
-    [__CLASSPATH__,   'Eugene', 'Utilities', 'Autoload.php'])));
+    [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
 
   // Begin the non-strict lockdown phase of execution (to still allow
   // configuration file parsing)

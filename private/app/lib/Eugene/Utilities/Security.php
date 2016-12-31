@@ -132,7 +132,7 @@
     public function lockdown(bool $strict = false): void {
       // Define an array of paths that should be allowed if itself and all
       // children are read-only
-      $ro = [__APPROOT__, Path::make(__PROJECTROOT__, 'vendor')]; // TODO
+      $ro = [__APPROOT__, __VENDORROOT__]; // TODO
       $rw = [__DATAROOT__];
       // If operating under strict mode, `__CONFIGROOT__` should be excluded
       if ($strict === false) $ro[] = __CONFIGROOT__;
