@@ -46,7 +46,12 @@
      * @param  string  $target  [description]
      */
     protected function parse(?string $url, ?string $target): void {
-      $expr = // Define our regular expression to parse URLs
+      // Trigger an error if the provided target doesn't exist or won't work
+      if (strlen($target ?? '') === 0 || !class_exists($target) ||
+          !is_subclass_of($target, '\\Eugene\\DesignPatterns\\RouteDelegate')) {
+        trigger_error('This target is not applicable to receive routed '.
+          'requests; ignoring route', E_USER_WARNING); return;
+      } $expr = // Define our regular expression to parse URLs
         '/# Only match if surrounded by start of string
         (?:^
           # Determine if the token is optional and match the colon marker
