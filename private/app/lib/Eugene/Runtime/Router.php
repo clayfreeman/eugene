@@ -45,13 +45,9 @@
      * @param  string  $url     [description]
      * @param  string  $target  [description]
      */
-    protected function parse(?string $url, string $target): void {
-      $types   = [ // Define our type matching expressions
-        'int'    => '\\d+',
-        'float'  => '\\.|\\d+|\\d+\\.|\\.\\d+|\\d+\\.\\d+',
-        'string' => '[^\\/]+'
-      ]; $expr = // Define our regular expression to parse URLs
-        "/# Only match if surrounded by start of string
+    protected function parse(?string $url, ?string $target): void {
+      $expr = // Define our regular expression to parse URLs
+        '/# Only match if surrounded by start of string
         (?:^
           # Determine if the token is optional and match the colon marker
         (?P<optional>\\?)?:
@@ -60,28 +56,39 @@
           # Match the provided name for the token
             (?P<name>[a-z_][a-z0-9_]*)  ?
           # Only match if surrounded by end of string
-        $)/ixm";
-      // Split the URL into path components (removing extraneous `null`s) and
-      // attempt to parse the components using our expression. After parsing,
-      // reassemble the URL into a path matching regular expression
-      $route = '/^\\/'.implode('\\/', array_filter(array_map(
+        $)/ixm';
+      $types   = [ // Define our type matching expressions
+        'int'    => '\\d+',
+        'float'  => '\\.|\\d+|\\d+\\.|\\.\\d+|\\d+\\.\\d+',
+        'string' => '[^\\/]+'
+      ]; // Join each path component by a terminal character to match as a path
+         // separator and prepend the matching expression prefix
+      $this->routes['/^\\/'.implode('\\/', array_filter(array_map(
+        // Replace each item in the array with its own matching expression
         function($input) use ($types, $expr) {
+          // Attempt to parse the provided path component using our expression
           if (preg_match($expr, $input, $matches)) {
+            // Check if a name was provided before continuing
             if ($name = $matches['name'] ?? false) {
+              // Determine whether this token is optional
+              $optional = ($matches['optional'] ?? null);
               // Determine the specific type matching expression
               $type = $types[$matches['type'] ?? 'string'] ?? $types['string'];
               // Determine the name matching expression for this group
               $name = ($name ? '?P<'.$name.'>' : null);
-              // Determine whether this token is optional
-              $optional = ($matches['optional'] ?? null);
               // Return the assembled token matching expression
               return '('.$name.$type.')'.$optional;
               // Return `false` if no name was provided
             } return false;
+            // If this component cannot be parsed, treat it as a terminal
+            // sequence of characters to match
           } else return preg_quote($input, '/');
+          // Remove all empty or `null` path components from the URL
         }, array_filter(explode('/', $url ?? ''), function($input) {
-          return strlen($input) > 0;
-        })))).'\\/?$/'; echo var_export($route, true)."\n";
+          // Check that the provided input is non-`null` and non-empty
+          return isset($input) && strlen($input) > 0;
+          // Append the matching expression suffix
+        })))).'\\/?$/'] = $target;
     }
 
     /**
