@@ -52,7 +52,7 @@
           # Determine if the token is optional and match the colon marker
         (?P<optional>\\?)?:
           # Determine if a type should be enforced for the token
-        (?:<(?P<type>string|int|float)>)?
+        (?:<(?P<type>[a-z_][a-z0-9_]*)>)?
           # Match the provided name for the token
             (?P<name>[a-z_][a-z0-9_]*)  ?
           # Only match if surrounded by end of string
@@ -73,13 +73,19 @@
               // Determine whether this token is optional
               $optional = ($matches['optional'] ?? null);
               // Determine the specific type matching expression
-              $type = $types[$matches['type'] ?? 'string'] ?? $types['string'];
-              // Determine the name matching expression for this group
-              $name = ($name ? '?P<'.$name.'>' : null);
-              // Return the assembled token matching expression
-              return '('.$name.$type.')'.$optional;
-              // Return `false` if no name was provided
-            } return false;
+              $type = $types[$matches['type'] ?? 'string'] ?? false;
+              // Ensure that a valid type was provided before continuing
+              if ($type !== false) {
+                // Determine the name matching expression for this group
+                $name = ($name ? '?P<'.$name.'>' : null);
+                // Return the assembled token matching expression
+                return '('.$name.$type.')'.$optional;
+              } else trigger_error('Invalid type provided for this route '.
+                'configuration; ignoring token', E_USER_WARNING);
+            } else trigger_error('Name not provided for this route '.
+              'configuration; ignoring token', E_USER_WARNING);
+            // Return `false` if no name was provided
+            return false;
             // If this component cannot be parsed, treat it as a terminal
             // sequence of characters to match
           } else return preg_quote($input, '/');
