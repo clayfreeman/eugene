@@ -14,6 +14,9 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
+  // Create a locally-scoped alias for the `HiddenString` class
+  use \Eugene\Utilities\HiddenString;
+
   /**
    * Interface for ensuring the implementation of a credential receiver for the
    * `Config` class.
@@ -22,8 +25,8 @@
     /**
      * This method is required for read-lock credential delivery.
      *
-     * @param   string        $category  The category the credential belongs to.
-     * @param   HiddenString  $password  The password for this category.
+     * @param  string        $category  The category the credential belongs to.
+     * @param  HiddenString  $password  The password for this category.
      */
     public function receiveCredential(string $category,
       HiddenString $password): void;
