@@ -45,7 +45,7 @@
      * @param  string  $url     [description]
      * @param  string  $target  [description]
      */
-    protected function parse(string $url, string $target): void {
+    protected function parse(?string $url, string $target): void {
       $types   = [ // Define our type matching expressions
         'int'    => '\\d+',
         'float'  => '\\.|\\d+|\\d+\\.|\\.\\d+|\\d+\\.\\d+',
@@ -79,9 +79,9 @@
               // Return `false` if no name was provided
             } return false;
           } else return preg_quote($input, '/');
-        }, array_filter(explode('/', $url), function($input) {
+        }, array_filter(explode('/', $url ?? ''), function($input) {
           return strlen($input) > 0;
-        })))).'$/'; echo var_export($route, true)."\n";
+        })))).'\\/?$/'; echo var_export($route, true)."\n";
     }
 
     /**
