@@ -16,10 +16,10 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
-  // Create locally-scoped aliases for the `ConfigDelegate` and `Singleton` classes
+  // Create locally-scoped aliases for `ConfigDelegate` and `Singleton`
   use \Eugene\DesignPatterns\{ConfigDelegate, Singleton};
 
-  // Create locally-scoped aliases for the `Registry` and `HiddenString` classes
+  // Create locally-scoped aliases for `Registry` and `HiddenString`
   use \Eugene\{Runtime\Registry, Utilities\HiddenString};
 
   /**
