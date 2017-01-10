@@ -128,7 +128,7 @@
     public function run(): void {
       // Fetch the desired URL from the client's request
       $url = $_SERVER['REQUEST_URI'];
-      echo "<pre>\n".var_export($this->routes, true)."\n</pre>";
+      echo "<pre>\n".htmlentities(var_export($this->routes, true))."\n</pre>";
       // Iterate over each configured route to determine eligibility
       foreach ($this->routes as $route => $destination) {
         // Attempt to match the desired URL to this route
@@ -138,7 +138,7 @@
             return !is_numeric($input);
           }, ARRAY_FILTER_USE_KEY);
           // Dump the matches for this route
-          echo "<pre>\n".var_export($matches, true)."\n</pre>";
+          echo "<pre>\n".htmlentities(var_export($matches, true))."\n</pre>";
           // Stop trying additional routes on our first successful match
           break;
         }
