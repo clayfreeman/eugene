@@ -34,6 +34,13 @@
     protected $allowUnlink = false;
 
     /**
+     * TODO
+     *
+     * @var  array
+     */
+    protected $routes      = [];
+
+    /**
      * An empty constructor to satisfy the parent's abstract method
      * prototype definition.
      */
