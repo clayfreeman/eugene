@@ -13,7 +13,7 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   // Dump the server super global
-  echo "<pre>\n".var_export($_SERVER, true)."\n</pre>";
+  echo "<pre>\n".var_export(htmlentities($_SERVER), true)."\n</pre>";
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
