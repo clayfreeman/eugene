@@ -134,7 +134,9 @@
         // Attempt to match the desired URL to this route
         if (preg_match($route, $url, $matches)) {
           // Dump the matches for this route
-          echo "<pre>\n".var_export($matches, true)."\n</pre>";
+          echo "<pre>\n".var_export(array_filter($matches, function($input) {
+            return !is_numeric($input);
+          }, ARRAY_FILTER_USE_KEY), true)."\n</pre>";
           // Stop trying additional routes on our first successful match
           break;
         }
