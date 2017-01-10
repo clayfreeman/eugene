@@ -73,7 +73,10 @@
         function($input) use ($types, $expr) {
           // Attempt to parse the provided path component using our expression
           if (preg_match($expr, $input, $matches)) {
-            // Check if a name was provided before continuing
+            // Remove empty entries in the array of matches
+            $matches = array_filter($matches, function($input) {
+              return isset($input) && strlen($input) > 0;
+            }); // Check if a name was provided before continuing
             if ($name = $matches['name'] ?? false) {
               // Determine whether this token is optional
               $optional = ($matches['optional'] ?? null);
