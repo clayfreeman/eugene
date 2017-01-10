@@ -50,7 +50,7 @@
       if (strlen($target ?? '') === 0 || !class_exists($target) ||
           !is_subclass_of($target, '\\Eugene\\DesignPatterns\\RouteDelegate')) {
         trigger_error('This target is not applicable to receive routed '.
-          'requests; ignoring route', E_USER_WARNING); return;
+          'requests; ignoring route', E_USER_WARNING); // return; // TODO
       } $expr = // Define our regular expression to parse URLs
         '/# Only match if surrounded by start of string
         (?:^
