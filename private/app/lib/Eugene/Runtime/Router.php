@@ -143,7 +143,7 @@
           }); // Dump the matches for this route
           echo "<pre>\n".htmlentities(var_export($matches, true))."\n</pre>";
           // Stop trying additional routes on our first successful match
-          break;
+          return;
         }
       }
     }
