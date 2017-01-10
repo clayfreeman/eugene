@@ -68,7 +68,7 @@
         'string' => '[^\\/]+'
       ]; // Join each path component by a terminal character to match as a path
          // separator and prepend the matching expression prefix
-      $this->routes['/^\\/'.implode(null, array_filter(array_map(
+      $this->routes['/^'.implode(null, array_filter(array_map(
         // Replace each item in the array with its own matching expression
         function($input) use ($types, $expr) {
           // Attempt to parse the provided path component using our expression
