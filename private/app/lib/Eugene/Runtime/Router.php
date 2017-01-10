@@ -137,7 +137,10 @@
           $matches = array_filter($matches, function($input) {
             return is_string($input) && strlen($input) > 0;
           }, ARRAY_FILTER_USE_KEY);
-          // Dump the matches for this route
+          // Remove empty (optional) values from the array of matches
+          $matches = array_filter($matches, function($input) {
+            return isset($input) && strlen($input) > 0;
+          }); // Dump the matches for this route
           echo "<pre>\n".htmlentities(var_export($matches, true))."\n</pre>";
           // Stop trying additional routes on our first successful match
           break;
