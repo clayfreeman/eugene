@@ -116,6 +116,7 @@
         HiddenString $password): void {
       // Fetch the read-locked category from the `Registry` class
       $results = Registry::getInstance()->get($category, $password);
+      echo "<pre>\n".htmlentities(var_export($results, true))."\n</pre>";
       // Iterate over each result for parsing
       foreach ($results as $result)
         // Use default `null` values for URL and target
