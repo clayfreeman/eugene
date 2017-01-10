@@ -125,6 +125,7 @@
     public function run(): void {
       // Fetch the desired URL from the client's request
       $url = $_SERVER['REQUEST_URI'];
+      echo "<pre>\n".var_export($this->routes, true)."\n</pre>";
       // Iterate over each configured route to determine eligibility
       foreach ($this->routes as $route => $destination) {
         // Attempt to match the desired URL to this route
