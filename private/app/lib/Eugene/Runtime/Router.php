@@ -50,7 +50,7 @@
       if (strlen($target ?? '') === 0 || !class_exists($target) ||
           !is_subclass_of($target, '\\Eugene\\DesignPatterns\\RouteDelegate')) {
         trigger_error('This target is not applicable to receive routed '.
-          'requests; ignoring route', E_USER_WARNING); // return; // TODO
+          'requests; ignoring route', E_USER_WARNING); return;
       } $expr = // Define our regular expression to parse URLs
         '/# Only match if surrounded by start of string
         (?:^
@@ -116,7 +116,6 @@
         HiddenString $password): void {
       // Fetch the read-locked category from the `Registry` class
       $results = Registry::getInstance()->get($category, $password);
-      echo "<pre>\n".htmlentities(var_export($results, true))."\n</pre>";
       // Iterate over each result for parsing
       foreach ($results as $result)
         // Use default `null` values for URL and target
@@ -129,9 +128,8 @@
     public function run(): void {
       // Fetch the desired URL from the client's request
       $url = $_SERVER['REQUEST_URI'];
-      echo "<pre>\n".htmlentities(var_export($this->routes, true))."\n</pre>";
       // Iterate over each configured route to determine eligibility
-      foreach ($this->routes as $route => $destination) {
+      foreach ($this->routes as $route => $target) {
         // Attempt to match the desired URL to this route
         if (preg_match($route, $url, $matches)) {
           // Remove all numeric keys from the array of matches
@@ -141,8 +139,8 @@
           // Remove empty (optional) values from the array of matches
           $matches = array_filter($matches, function($input) {
             return isset($input) && strlen($input) > 0;
-          }); // Dump the matches for this route
-          echo "<pre>\n".htmlentities(var_export($matches, true))."\n</pre>";
+          }); // Call the provided target with the parsed tokens
+          $target::getInstance()->receiveRequest($matches);
           // Stop trying additional routes on our first successful match
           return;
         }
