@@ -68,7 +68,7 @@
         'string' => '[^\\/]+'
       ]; // Join each path component by a terminal character to match as a path
          // separator and prepend the matching expression prefix
-      $this->routes['/^\\/'.implode('\\/', array_filter(array_map(
+      $this->routes['/^\\/'.implode(null, array_filter(array_map(
         // Replace each item in the array with its own matching expression
         function($input) use ($types, $expr) {
           // Attempt to parse the provided path component using our expression
@@ -84,7 +84,7 @@
                 // Determine the name matching expression for this group
                 $name = ($name ? '?P<'.$name.'>' : null);
                 // Return the assembled token matching expression
-                return '('.preg_quote('/', '/').'('.$name.$type.'))'.$optional;
+                return '(\\/('.$name.$type.'))'.$optional;
               } else trigger_error('Invalid type provided for this route '.
                 'configuration; ignoring token', E_USER_WARNING);
             } else trigger_error('Name not provided for this route '.
@@ -93,7 +93,7 @@
             return false;
             // If this component cannot be parsed, treat it as a terminal
             // sequence of characters to match
-          } else return preg_quote('/'.$input, '/');
+          } else return '\\/'.preg_quote($input, '/');
           // Remove all empty or `null` path components from the URL
         }, array_filter(explode('/', $url ?? ''), function($input) {
           // Check that the provided input is non-`null` and non-empty
