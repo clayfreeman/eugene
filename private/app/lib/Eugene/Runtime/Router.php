@@ -118,4 +118,22 @@
         // Use default `null` values for URL and target
         $this->parse($result['url'] ?? null, $result['target'] ?? null);
     }
+
+    /**
+     * TODO
+     */
+    public function run(): void {
+      // Fetch the desired URL from the client's request
+      $url = $_SERVER['REQUEST_URI'];
+      // Iterate over each configured route to determine eligibility
+      foreach ($this->routes as $route => $destination) {
+        // Attempt to match the desired URL to this route
+        if (preg_match($route, $url, $matches)) {
+          // Dump the matches for this route
+          echo "<pre>\n".var_export($matches, true)."\n</pre>";
+          // Stop trying additional routes on our first successful match
+          break;
+        }
+      }
+    }
   }
