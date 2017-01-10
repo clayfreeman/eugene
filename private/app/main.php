@@ -14,3 +14,6 @@
 
   // Dump the server super global
   echo "<pre>\n".var_export($_SERVER, true)."\n</pre>";
+
+  // Attempt to run the router
+  \Eugene\Runtime\Router::getInstance()->run();
