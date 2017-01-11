@@ -149,7 +149,7 @@
           $matches = array_filter($matches, function($input) {
             return isset($input) && strlen($input) > 0;
           }); // Call the provided target with the parsed tokens
-          $target::receiveRequest($matches);
+          $target::receiveRequest(array_map('urldecode', $matches));
           // Stop trying additional routes on our first successful match
           return;
         }
