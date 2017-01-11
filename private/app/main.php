@@ -12,8 +12,5 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
-  // Dump the server super global
-  echo "<pre>\n".htmlentities(var_export($_SERVER, true))."\n</pre>";
-
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
