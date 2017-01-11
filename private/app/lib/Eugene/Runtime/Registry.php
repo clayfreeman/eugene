@@ -282,6 +282,8 @@
      *
      * @param   string  $key    The name that should be undefined.
      *
+     * @throws  ReadLockError   Upon encountering a read-lock using the
+     *                          specified name.
      * @throws  WriteLockError  Upon encountering a write-lock using the
      *                          specified name.
      */
