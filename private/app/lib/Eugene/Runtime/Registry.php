@@ -119,7 +119,8 @@
       // Check if the requested name is read-locked and either no password or an
       // invalid password was provided
       if ($this->isReadLocked($key) && ($password === null ||
-          !Security::passwordVerify($password, $this->locks[$key])))
+          !Security::getInstance()->passwordVerify($password,
+          $this->locks[$key])))
         throw new ReadLockError('Failed to get name '.escapeshellarg($key).' '.
           'in the Registry: the provided name is read-locked');
       // Return the item stored by the specified name
@@ -202,7 +203,7 @@
       // Check that the requested name is not currently locked
       if ($this->isset($key) && !$this->isWriteLocked($key)) {
         // Store the requested locking information in the registry
-        $this->locks[$key] = Security::passwordHash($password);
+        $this->locks[$key] = Security::getInstance()->passwordHash($password);
         // Return a valid state
         return true;
       } // Return a failure state
@@ -235,8 +236,8 @@
             'is locked');
         // Throw a read-lock related error if read-locked and an invalid
         // password was provided
-        else if ($password === null ||
-            !Security::passwordVerify($password, $this->locks[$key]))
+        else if ($password === null || !Security::getInstance()->passwordVerify(
+            $password, $this->locks[$key]))
           throw new ReadLockError('Failed to write using name '.
             escapeshellarg($key).' to the Registry: the provided name '.
             'is locked');
@@ -263,7 +264,8 @@
       // Check that the requested name is currently read-locked
       if ($this->isset($key) && $this->isReadLocked($key)) {
         // Ensure that the provided password matches the read-lock password
-        if (!Security::passwordVerify($password, $this->locks[$key]))
+        if (!Security::getInstance()->passwordVerify($password,
+            $this->locks[$key]))
           throw new NameUnlockError('Failed to unlock using name '.
             escapeshellarg($key).' in the Registry: the provided password '.
             'is invalid');
@@ -293,8 +295,8 @@
             'is locked');
         // Throw a read-lock related error if read-locked and an invalid
         // password was provided
-        else if ($password === null ||
-            !Security::passwordVerify($password, $this->locks[$key]))
+        else if ($password === null || !Security::getInstance()->passwordVerify(
+            $password, $this->locks[$key]))
           throw new ReadLockError('Failed to unset using name '.
             escapeshellarg($key).' to the Registry: the provided name '.
             'is locked');
