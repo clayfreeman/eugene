@@ -119,14 +119,15 @@
      * @param  string        $category  The category the credential belongs to.
      * @param  HiddenString  $password  The password for this category.
      */
-    public function receiveCredential(string $category,
+    public static function receiveCredential(string $category,
         HiddenString $password): void {
       // Fetch the read-locked category from the `Registry` class
       $results = Registry::getInstance()->get($category, $password);
       // Iterate over each result for parsing
       foreach ($results as $result)
         // Use default `null` values for URL and target
-        $this->parse($result['url'] ?? null, $result['target'] ?? null);
+        (self::getInstance())->parse($result['url'] ?? null,
+          $result['target'] ?? null);
     }
 
     /**

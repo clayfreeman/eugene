@@ -28,6 +28,6 @@
      * @param  string        $category  The category the credential belongs to.
      * @param  HiddenString  $password  The password for this category.
      */
-    public function receiveCredential(string $category,
+    public static function receiveCredential(string $category,
       HiddenString $password): void;
   }

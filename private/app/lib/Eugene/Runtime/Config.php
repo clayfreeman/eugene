@@ -55,23 +55,18 @@
      * Processes the dispatch queue (if non-empty) to deliver any newly created
      * credentials for configuration categories stored in the `Registry`.
      *
-     * Recipients must extend the `Singleton` design pattern and implement
-     * `ConfigDelegate` to be invoked.
+     * Recipients must implement `ConfigDelegate` to be invoked.
      */
     public function dispatchCredentials(): void {
       // Iterate over each class' collection of credentials
       foreach ($this->dispatch as $class => $credentials) {
-        // Ensure that the target class exists, extends `Singleton` and
-        // implements `ConfigDelegate`
+        // Ensure that the target class exists and implements `ConfigDelegate`
         if (class_exists($class) && is_subclass_of($class,
-            '\\Eugene\\DesignPatterns\\Singleton') && is_subclass_of($class,
             '\\Eugene\\DesignPatterns\\ConfigDelegate')) {
-          // Fetch an instance of the target class
-          $instance = $class::getInstance();
           // Iterate over each credential for delivery to this target
           foreach ($credentials as $credential)
-            // Deliver this credential using the `ConfigDelegate` method
-            $instance->receiveCredential($credential['category'],
+            // Deliver this credential using the `ConfigDelegate` interface
+            $class::receiveCredential($credential['category'],
               $credential['password']);
         } else trigger_error('This class is not applicable to receive '.
           'configuration credentials', E_USER_WARNING);
@@ -94,9 +89,8 @@
      * fully-qualified class names that will be invoked to grant them category
      * access.
      *
-     * The class names of a `lock` array must extend the `Singleton` design
-     * pattern and implement the `ConfigDelegate` design pattern otherwise they
-     * will not be invoked.
+     * The class names of a `lock` array must implement the `ConfigDelegate`
+     * design pattern otherwise they will not be invoked.
      *
      * If the above requirements are met, the value of the `contents` key will
      * be assigned to the key with the value held by `category` in the
