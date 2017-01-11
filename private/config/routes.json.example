@@ -1,0 +1,12 @@
+{
+    "category": "routes",
+    "contents": [
+      {
+        "url": "/hello/?:name",
+        "target": "\\Examples\\Router\\RouteTarget"
+      }
+    ],
+    "lock": [
+      "\\Eugene\\Runtime\\Router"
+    ]
+}
