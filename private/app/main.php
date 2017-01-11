@@ -14,3 +14,7 @@
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
+
+  // Dump the registry
+  echo "<pre>\n".htmlentities(var_export(
+    \Eugene\Runtime\Registry::getInstance(), true))."\n</pre>";
