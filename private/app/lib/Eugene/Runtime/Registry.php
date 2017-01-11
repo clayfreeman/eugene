@@ -18,8 +18,8 @@
   // Create a locally-scoped alias for the `Singleton` class
   use \Eugene\DesignPatterns\Singleton;
 
-  // Create a locally-scoped alias for the `HiddenString` class
-  use \Eugene\Utilities\HiddenString;
+  // Create locally-scoped aliases for the `HiddenString` and `Security` classes
+  use \Eugene\Utilities\{HiddenString, Security};
 
   // Create a locally-scoped alias for all possible exceptions that might be
   // thrown by this class
@@ -84,7 +84,7 @@
      * @throws  NameUnavailableError  Upon encountering an existing entry using
      *                                the specified name.
      *
-     * @return                        A reference to the provided data (after
+     * @return  mixed                 A reference to the provided data (after
      *                                being stored in the registry).
      */
     public function create(string $key, $data) {
@@ -119,7 +119,7 @@
       // Check if the requested name is read-locked and either no password or an
       // invalid password was provided
       if ($this->isReadLocked($key) && ($password === null ||
-          $this->locks[$key]->getString() !== $password->getString()))
+          !Security::passwordVerify($password, $this->locks[$key])))
         throw new ReadLockError('Failed to get name '.escapeshellarg($key).' '.
           'in the Registry: the provided name is read-locked');
       // Return the item stored by the specified name
@@ -137,8 +137,7 @@
     public function isReadLocked(string $key): bool {
       // Check if the internal locking system contains a value not equivalent to
       // `null` for the specified name
-      return isset ($this->locks[$key])  && $this->locks[$key] !== null &&
-             strlen($this->locks[$key]->getString()) !== 0;
+      return isset($this->locks[$key]) && strlen($this->locks[$key]) !== 0;
     }
 
     /**
@@ -152,7 +151,7 @@
     public function isWriteLocked(string $key): bool {
       // Check if the internal locking system contains a value for the
       // specified name
-      return isset ($this->locks[$key]);
+      return isset($this->locks[$key]);
     }
 
     /**
@@ -186,23 +185,24 @@
      * Read-locks can be cleared via the `unlock()` method by providing the
      * initial lock password.
      *
-     * @see     unlock()           For more information regarding the process of
-     *                             clearing read-locks.
+     * @see     unlock()                 For more information regarding the
+     *                                   process of clearing read-locks.
      *
-     * @param   string  $key       The name that should be locked.
-     * @param   string  $password  If a password (i.e. non-null value) is
-     *                             provided then a temporary read-lock will be
-     *                             placed, however if `null` is provided then
-     *                             a permanent write-lock will be placed.
+     * @param   string        $key       The name that should be locked.
+     * @param   HiddenString  $password  If a password (i.e. non-null value) is
+     *                                   provided then a temporary read-lock
+     *                                   will be placed, however if `null` is
+     *                                   provided then a permanent write-lock
+     *                                   will be placed.
      *
-     * @return  bool               `true`  if the provided name was locked,
-     *                             `false` otherwise.
+     * @return  bool                     `true`  if the provided name was
+     *                                   locked, `false` otherwise.
      */
-    public function lock(string $key, HiddenString $password = null): bool {
+    public function lock(string $key, ?HiddenString $password = null): bool {
       // Check that the requested name is not currently locked
       if ($this->isset($key) && !$this->isWriteLocked($key)) {
         // Store the requested locking information in the registry
-        $this->locks[$key] = $password;
+        $this->locks[$key] = Security::passwordHash($password);
         // Return a valid state
         return true;
       } // Return a failure state
@@ -213,20 +213,33 @@
      * Used to store an item by the specified name (overriding any already
      * existing value).
      *
-     * @param   string  $key    The name used to reference the provided item.
-     * @param   mixed   $data   The item to store in the registry.
+     * @param   string        $key   The name used to reference the item.
+     * @param   mixed         $data  The item to store in the registry.
+     * @param   HiddenString  $data  The item to store in the registry.
      *
-     * @throws  WriteLockError  Upon encountering a write-lock using the
-     *                          specified name.
+     * @throws  ReadLockError        Upon encountering a read-lock using the
+     *                               specified name.
+     * @throws  WriteLockError       Upon encountering a write-lock using the
+     *                               specified name.
      *
-     * @return                  A reference to the provided data (after being
-     *                          stored in the registry).
+     * @return  mixed                A reference to the provided data (after
+     *                               being stored in the registry).
      */
-    public function set(string $key, $data) {
-      // Check that the requested name is not currently write-locked
-      if ($this->isWriteLocked($key)) throw new WriteLockError('Failed to '.
-        'write using name '.escapeshellarg($key).' to the Registry: the '.
-        'provided name is locked');
+    public function set(string $key, $data, ?HiddenString $password = null) {
+      // Check that the requested name is not currently locked
+      if ($this->isWriteLocked($key))
+        // Throw a write-lock related error if not read-locked
+        if (!$this->isReadLocked($key))
+          throw new WriteLockError('Failed to write using name '.
+            escapeshellarg($key).' to the Registry: the provided name '.
+            'is locked');
+        // Throw a read-lock related error if read-locked and an invalid
+        // password was provided
+        else if ($password === null ||
+            !Security::passwordVerify($password, $this->locks[$key]))
+          throw new ReadLockError('Failed to write using name '.
+            escapeshellarg($key).' to the Registry: the provided name '.
+            'is locked');
       // Store the provided data at the requested name
       $this->storage[$key] = $data;
       // Return a reference to the stored data
@@ -236,21 +249,21 @@
     /**
      * Attempts to unlock the requested name with the supplied password.
      *
-     * @param   string  $key       The name that should be unlocked.
-     * @param   string  $password  The password that was originally used to
-     *                             read-lock the specified name.
+     * @param   string        $key       The name that should be unlocked.
+     * @param   HiddenString  $password  The password that was originally used
+     *                                   to read-lock the specified name.
      *
-     * @throws  NameUnlockError    Upon encountering an incorrect password
-     *                             supplied for use in unlocking a name.
+     * @throws  NameUnlockError          Upon encountering an incorrect password
+     *                                   supplied for use in unlocking a name.
      *
-     * @return  bool               `true`  if the specified name was unlocked,
-     *                             `false` otherwise.
+     * @return  bool                     `true`  if the specified name was
+     *                                   unlocked, `false` otherwise.
      */
     public function unlock(string $key, HiddenString $password): bool {
       // Check that the requested name is currently read-locked
       if ($this->isset($key) && $this->isReadLocked($key)) {
         // Ensure that the provided password matches the read-lock password
-        if ($this->locks[$key]->getString() !== $password->getString())
+        if (!Security::passwordVerify($password, $this->locks[$key]))
           throw new NameUnlockError('Failed to unlock using name '.
             escapeshellarg($key).' in the Registry: the provided password '.
             'is invalid');
@@ -270,11 +283,21 @@
      * @throws  WriteLockError  Upon encountering a write-lock using the
      *                          specified name.
      */
-    public function unset(string $key): void {
-      // Check that the requested name is not currently write-locked
-      if ($this->isWriteLocked($key)) throw new WriteLockError('Failed to '.
-        'unset using name '.escapeshellarg($key).' from the Registry: the '.
-        'provided name is locked');
+    public function unset(string $key, ?HiddenString $password = null): void {
+      // Check that the requested name is not currently locked
+      if ($this->isWriteLocked($key))
+        // Throw a write-lock related error if not read-locked
+        if (!$this->isReadLocked($key))
+          throw new WriteLockError('Failed to unset using name '.
+            escapeshellarg($key).' to the Registry: the provided name '.
+            'is locked');
+        // Throw a read-lock related error if read-locked and an invalid
+        // password was provided
+        else if ($password === null ||
+            !Security::passwordVerify($password, $this->locks[$key]))
+          throw new ReadLockError('Failed to unset using name '.
+            escapeshellarg($key).' to the Registry: the provided name '.
+            'is locked');
       // Remove the element by the specified name
       if (isset($this->storage[$key])) unset($this->storage[$key]);
     }
