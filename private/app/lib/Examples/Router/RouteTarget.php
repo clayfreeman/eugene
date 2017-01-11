@@ -20,7 +20,7 @@
   /**
    * An example route target delegate for the `Router` class.
    */
-  final class RouteTarget extends RouterDelegate {
+  final class RouteTarget implements RouterDelegate {
     /**
      * An example route target endpoint for the `Router` class.
      *
