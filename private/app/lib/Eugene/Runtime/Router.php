@@ -149,7 +149,7 @@
           $matches = array_filter($matches, function($input) {
             return isset($input) && strlen($input) > 0;
           }); // Call the provided target with the parsed tokens
-          $target::getInstance()->receiveRequest($matches);
+          $target::receiveRequest($matches);
           // Stop trying additional routes on our first successful match
           return;
         }
