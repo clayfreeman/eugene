@@ -18,3 +18,14 @@
   // Dump the registry
   echo "<pre>\n".htmlentities(print_r(
     \Eugene\Runtime\Registry::getInstance(), true))."\n</pre>";
+
+  // Dump the registry
+  echo "<pre>\n".htmlentities(serialize(
+    \Eugene\Runtime\Registry::getInstance()))."\n</pre>";
+
+  // Dump the registry
+  echo "<pre>\n".var_dump(\Eugene\Runtime\Registry::getInstance())."\n</pre>";
+
+  // Dump the registry
+  echo "<pre>\n".htmlentities(print_r((stdClass)
+    (\Eugene\Runtime\Registry::getInstance()), true))."\n</pre>";
