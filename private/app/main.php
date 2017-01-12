@@ -16,5 +16,5 @@
   \Eugene\Runtime\Router::getInstance()->run();
 
   // Dump the registry
-  echo "<pre>\n".htmlentities(var_export(
+  echo "<pre>\n".htmlentities(print_r(
     \Eugene\Runtime\Registry::getInstance(), true))."\n</pre>";
