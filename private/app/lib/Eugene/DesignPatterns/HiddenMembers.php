@@ -16,10 +16,13 @@
 
   /**
    * Trait to ensure that all class members are hidden from functions such as
-   * `serialize()`, `print_r()`, and `var_dump()`.
+   * `print_r()`, and `var_dump()`, as well as casting to `string`.
    *
    * This will not work for `var_export()`, hence our recommendation for
    * disabling it.
+   *
+   * @see  PreventSerialize  For information regarding how to prevent calls to
+   *                         `serialize()` as well.
    */
   trait HiddenMembers {
     /**
@@ -28,15 +31,7 @@
      *
      * @return  array  An empty array.
      */
-    public function __debugInfo(): array  { return []; }
-
-    /**
-     * Implementation of the `__sleep()` magic method to prevent this class from
-     * being serialized in a meaningful way.
-     *
-     * @return  array  An empty array.
-     */
-    public function     __sleep(): array  { return []; }
+    final public function __debugInfo(): array { return []; }
 
     /**
      * Implementation of the `__toString()` magic method to force the `string`
@@ -44,5 +39,5 @@
      *
      * @return  string  The class name.
      */
-    public function  __toString(): string { return get_class($this); }
+    final public function __toString(): string { return get_class($this); }
   }

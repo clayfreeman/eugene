@@ -26,6 +26,9 @@
    * current instance.
    */
   abstract class Singleton {
+    // Prevent serialization of any `Singleton` class
+    use \Eugene\DesignPatterns\PreventSerialize;
+
     /**
      * Allows the subclass to determine whether it can be unlinked via
      * subsequent calls to `getInstance(true)`.
@@ -47,16 +50,6 @@
      *                       fetched (created) on request.
      */
     abstract protected function __construct();
-
-    /**
-     * Disregard all incoming requests to serialize data.
-     */
-    final public function __sleep(): void {}
-
-    /**
-     * Disregard all incoming requests to unserialize data.
-     */
-    final private function __wakeup(): void {}
 
     /**
      * Fetches the only instance for a given `Singleton` class or creates an
