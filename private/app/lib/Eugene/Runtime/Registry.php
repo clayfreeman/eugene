@@ -206,7 +206,7 @@
       if ($this->isset($key) && !$this->isWriteLocked($key)) {
         // Store the requested locking information in the registry
         $this->locks[$key] = new HiddenString(
-          password_hash($password, PASSWORD_DEFAULT));
+          password_hash($password->getString(), PASSWORD_DEFAULT));
         // Return a valid state
         return true;
       } // Return a failure state
