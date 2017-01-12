@@ -29,6 +29,10 @@
    * runtime application security.
    */
   final class Security extends Singleton {
+    // Safely hide members of this class (`Singleton` implies the use of
+    // `PreventSerialize` to complete this feature)
+    use \Eugene\DesignPatterns\HiddenMembers;
+
     /**
      * Disallow unlinks via `getInstance(true)`.
      *

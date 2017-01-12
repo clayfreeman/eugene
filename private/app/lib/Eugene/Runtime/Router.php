@@ -26,6 +26,10 @@
    * TODO
    */
   final class Router extends Singleton implements ConfigDelegate {
+    // Safely hide members of this class (`Singleton` implies the use of
+    // `PreventSerialize` to complete this feature)
+    use \Eugene\DesignPatterns\HiddenMembers;
+
     /**
      * Disallow unlinks via `getInstance(true)`.
      *
