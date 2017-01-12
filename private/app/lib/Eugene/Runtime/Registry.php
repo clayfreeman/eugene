@@ -31,6 +31,9 @@
    * commonly required during runtime by various other mechanisms.
    */
   final class Registry extends Singleton {
+    // Safely hide members of this class
+    use \Eugene\DesignPatterns\HiddenMembers;
+
     /**
      * Disallow unlinks via `getInstance(true)`.
      *
