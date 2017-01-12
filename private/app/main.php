@@ -14,3 +14,16 @@
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
+
+  use \Eugene\Utilities\HiddenString;
+  use \ParagonIE\Halite\KeyFactory;
+  $security = \Eugene\Runtime\Security::getInstance();
+  $hash     = $security->passwordHash(new HiddenString('test'));
+  echo "\n<br />\nHash\n<br />\n".htmlentities(var_export($hash, true));
+  if ($security->passwordRehash(new HiddenString('test'), $hash)) {
+    echo "\n<br />\nRehash 1\n<br />\n".htmlentities(var_export($hash, true));
+  } else if ($security->passwordRehash(new HiddenString('test'), $hash, KeyFactory::MODERATE)) {
+    echo "\n<br />\nRehash 2\n<br />\n".htmlentities(var_export($hash, true));
+  } else {
+    echo "\n<br />\nHash\n<br />\n".htmlentities(var_export($hash, true));
+  }
