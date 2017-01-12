@@ -17,7 +17,7 @@
 
   use \Eugene\Utilities\HiddenString;
   use \ParagonIE\Halite\KeyFactory;
-  $security = \Eugene\Runtime\Security::getInstance();
+  $security = \Eugene\Utilities\Security::getInstance();
   $hash     = $security->passwordHash(new HiddenString('test'));
   echo "\n<br />\nHash\n<br />\n".htmlentities(var_export($hash, true));
   if ($security->passwordRehash(new HiddenString('test'), $hash)) {
