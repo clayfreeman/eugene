@@ -14,18 +14,3 @@
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
-
-  // Dump the registry
-  echo "<pre>\n".htmlentities(print_r(
-    \Eugene\Runtime\Registry::getInstance(), true))."\n</pre>";
-
-  // Dump the registry
-  echo "<pre>\n".htmlentities(serialize(
-    \Eugene\Runtime\Registry::getInstance()))."\n</pre>";
-
-  // Dump the registry
-  echo "<pre>\n".var_dump(\Eugene\Runtime\Registry::getInstance())."\n</pre>";
-
-  // Dump the registry
-  echo "<pre>\n".htmlentities(print_r((object)
-    (\Eugene\Runtime\Registry::getInstance()), true))."\n</pre>";
