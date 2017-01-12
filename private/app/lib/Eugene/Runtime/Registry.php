@@ -32,7 +32,7 @@
    */
   final class Registry extends Singleton {
     // Safely hide members of this class
-    use \Eugene\DesignPatterns\HiddenMembers;
+    use \Eugene\DesignPatterns\HiddenMembers { __sleep as private ___sleep; }
 
     /**
      * Disallow unlinks via `getInstance(true)`.
