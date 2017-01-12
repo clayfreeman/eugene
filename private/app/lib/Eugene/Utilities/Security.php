@@ -15,8 +15,11 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
-  // Create locally-scoped aliases for the `Singleton` and `Path` classes
-  use \Eugene\{DesignPatterns\Singleton, Utilities\Path};
+  // Create a locally-scoped alias for the `Singleton` class
+  use \Eugene\DesignPatterns\Singleton;
+
+  // Create locally-scoped aliases for the `HiddenString` and `Path` classes
+  use \Eugene\Utilities\{HiddenString, Path};
 
   // Create locally-scoped aliases for the `KeyFactory` and `Password` classes
   use \ParagonIE\Halite\{Halite, KeyFactory, Password};
@@ -153,7 +156,9 @@
         $rw[] = __KEYROOT__;
       } // Filter the allowed read-only paths to recursively immutable paths
       $ro = array_filter($ro, function($input) {
-        return Security::getInstance()->fileIsRecursivelyMutable($input); });
+        if ($retval = Security::getInstance()->fileIsRecursivelyMutable($input))
+          trigger_error('This path is recursively mutable', E_USER_WARNING);
+        return !$retval; });
       // Define a list of allowed paths during application runtime based on the
       // restricted read-only and read-write paths
       $allowed = array_filter(array_merge($ro, $rw), function($input) {
@@ -181,6 +186,34 @@
         string $level = KeyFactory::INTERACTIVE): string {
       // Defer cryptography to ParagonIE's Halite library (with defaults)
       return Password::hash($password->getValue(), $this->key, $level);
+    }
+
+    /**
+     * Rehashes a password using ParagonIE's Halite library.
+     *
+     * The provided hash will be updated by reference if necessary.
+     *
+     * @param   HiddenString  $password       The clear text to be hashed.
+     * @param   string        $hash           The ciphertext to be rehashed.
+     * @param   string        $level          The strength at which to generate
+     *                                        the password hash.
+     *
+     * @see     \ParagonIE\Halite\KeyFactory  For more information regarding
+     *                                        available hash strengths.
+     *
+     * @return  bool                          `true`  if the hash was changed,
+     *                                        `false` otherwise.
+     */
+    public function passwordRehash(HiddenString $password, string &$hash,
+        string $level = KeyFactory::INTERACTIVE): bool {
+      // Determine if the provided password needs to be rehashed
+      if (Password::needsRehash($hash, $this->key, $level)) {
+        // Rehash the password if necessary
+        $hash = $this->passwordHash($password, $level);
+        // Return `true` if the password was rehashed
+        return true;
+        // Return `false` if the hash did not change
+      } return false;
     }
 
     /**

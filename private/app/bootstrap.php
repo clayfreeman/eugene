@@ -37,25 +37,27 @@
   function_exists('posix_kill') or trigger_error('This project requires the '.
     'POSIX extension to be loaded', E_USER_ERROR);
 
-  // Ensure that `var_export` is disabled
+  // Recommend that `var_export` is disabled for `Registry` security
   !function_exists('var_export') or trigger_error('For maximum security the '.
     '\'var_export()\' function should be disabled using the '.
     '\'disable_functions\' directive', E_USER_WARNING);
 
-  // Load the composer vendor autoloader to include all composer software
+  // Load the composer vendor autoloader to include all composer software.
+  // NOTE: It is important to depend only on secure Composer packages since they
+  //       will always be loaded before any project code
   require_once(realpath(implode(__DS__, [__VENDORROOT__, 'autoload.php'])));
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
 
-  // Begin the non-strict lockdown phase of execution (to still allow
-  // configuration file parsing)
-  ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
-  // Scan for project configuration files (deferring all external side effects)
-  ($config   = \Eugene\Runtime\Config::getInstance())->scan();
-  // Migrate to the final (strict) lockdown phase to exclude access to the
-  // configuration directory and process deferred side effects
-  $security->lockdown(true); $config->dispatchCredentials();
+  { // Begin the non-strict lockdown phase of execution (to still allow
+    // configuration file parsing)
+    ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
+    // Scan for project configuration files (deferring all side effects)
+    ($config   = \Eugene\Runtime\Config::getInstance())->scan();
+    // Migrate to the final (strict) lockdown phase to exclude access to the
+    // configuration directory and process deferred side effects
+    $security->lockdown(true); $config->dispatchCredentials(); }
 
   // Load the application's main logic file
   require_once(\Eugene\Utilities\Path::make(__APPROOT__, 'main.php'));

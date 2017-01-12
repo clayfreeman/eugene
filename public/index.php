@@ -10,5 +10,5 @@
   declare(strict_types = 1);
 
   // Run the application bootstrap routine
-  $pathComponents = [dirname(__DIR__), 'private', 'app', 'bootstrap.php'];
-  require_once(implode(DIRECTORY_SEPARATOR, $pathComponents));
+  { $pathComponents = [dirname(__DIR__), 'private', 'app', 'bootstrap.php'];
+  require_once(implode(DIRECTORY_SEPARATOR, $pathComponents)); }
