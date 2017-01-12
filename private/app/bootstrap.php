@@ -38,7 +38,7 @@
     'POSIX extension to be loaded', E_USER_ERROR);
 
   // Recommend that `var_export` is disabled for `Registry` security
-  !function_exists('var_export') or trigger_error('For maximum security the '.
+  (!function_exists('var_export')) or trigger_error('For maximum security the '.
     '\'var_export()\' function should be disabled using the '.
     '\'disable_functions\' directive', E_USER_WARNING);
 
