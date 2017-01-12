@@ -140,7 +140,7 @@
      */
     public function run(): void {
       // Fetch the desired URL from the client's request
-      $url = $_SERVER['REQUEST_URI'];
+      $url = $_SERVER['REQUEST_URI'] ?? '/';
       // Iterate over each configured route to determine eligibility
       foreach ($this->routes as $route => $target) {
         // Attempt to match the desired URL to this route
