@@ -27,5 +27,5 @@
   echo "<pre>\n".var_dump(\Eugene\Runtime\Registry::getInstance())."\n</pre>";
 
   // Dump the registry
-  echo "<pre>\n".htmlentities(print_r((stdClass)
+  echo "<pre>\n".htmlentities(print_r((object)
     (\Eugene\Runtime\Registry::getInstance()), true))."\n</pre>";
