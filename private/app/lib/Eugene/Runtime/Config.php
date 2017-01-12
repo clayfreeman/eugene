@@ -127,7 +127,7 @@
             $registry->lock($data['category']);
           else if (is_array($data['lock'])) {
             // Generate a password using `random_bytes()`
-            $password = new \Eugene\Utilities\HiddenString(random_bytes(72));
+            $password = new \Eugene\Utilities\HiddenString(random_bytes(256));
             // Perform a read lock on the category
             $registry->lock($data['category'], $password);
             // Update each configured recipient's dispatch queue
