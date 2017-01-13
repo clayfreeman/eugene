@@ -80,10 +80,17 @@
      */
     public function fileIsMutable(string $file): bool {
       // Fetch runtime information about the current process
-      $gid = array_merge([posix_getegid(), posix_getgid()], posix_getgroups());
-      $uid =             [posix_geteuid(), posix_getuid()];
+      $gid  = array_merge([posix_getegid(), posix_getgid()], posix_getgroups());
+      $uid  =             [posix_geteuid(), posix_getuid()];
       // Attempt to fetch ownership and file mode information for the given path
-      return is_array($stat = @stat($file)) &&
+      $stat =   @stat($file);
+      // Ensure that an error did not occur while checking this file
+      if (!is_array($stat)) trigger_error('Could not stat() this '.
+        'file', E_USER_ERROR);
+      // Ensure that this file is not owned by UID/GID zero
+      if ($root = ($stat['uid'] == 0 || $stat['gid'] == 0))
+        trigger_error('UID/GID cannot be zero (sanity check)', E_USER_WARNING);
+      return $root || // In addition to the warning, mark the file as mutable
         // Check if the file can be modified via other or user access
         (in_array($stat['uid'], $uid) || ($stat['mode'] & 0002) != 0 ||
         // Check if the file can be modified via group access
