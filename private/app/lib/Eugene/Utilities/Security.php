@@ -84,11 +84,9 @@
         if ($file == '.' || $file == '..') continue;
         // Convert the relative file name to an absolute file name
         $file = $path.__DS__.$file;
-        // If this file is a directory, expand it and merge the results
-        if (is_dir($file)) $results = array_merge($results,
+        // Expand this path and merge the results
+        $results = array_merge($results, 
           $this->fastRecursiveFileEnumerator($file));
-        // Otherwise, simply append this file to the results
-        else $results[] = $file;
       // Return the array filled with file paths
       } return $results;
     }
