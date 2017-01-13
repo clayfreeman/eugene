@@ -207,7 +207,7 @@
       // Check that the requested name is not currently locked
       if ($this->isset($key) && !$this->isWriteLocked($key)) {
         // Store the requested locking information in the registry
-        $this->locks[$key] = new HiddenString($password);
+        $this->locks[$key] = $password;
         // Return a valid state
         return true;
       } // Return a failure state
