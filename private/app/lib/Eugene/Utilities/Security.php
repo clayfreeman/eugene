@@ -67,6 +67,33 @@
     }
 
     /**
+     * TODO
+     *
+     * @param   string  $path  [description]
+     *
+     * @return  array          [description]
+     */
+    protected function fastRecursiveFileEnumerator(string $path): array {
+      // Allocate an array to hold the results (initialized with the given path)
+      $results = [$path];
+      // Get a list of all directory entries for the provided path
+      $scandir = @scandir($path, SCANDIR_SORT_NONE);
+      // Iterate over each directory entry to expand child directories
+      if (is_array($scandir)) foreach ($scandir as $file) {
+        // Skip dot file results to prevent duplicate entries
+        if ($file == '.' || $file == '..') continue;
+        // Convert the relative file name to an absolute file name
+        $file = $path.__DS__.$file;
+        // If this file is a directory, expand it and merge the results
+        if (is_dir($file)) $results = array_merge($results,
+          $this->fastRecursiveFileEnumerator($file));
+        // Otherwise, simply append this file to the results
+        else $results[] = $file;
+      // Return the array filled with file paths
+      } return $results;
+    }
+
+    /**
      * Determines whether the provided file path is considered mutable.
      *
      * Mutability is defined as the ability to write to a directory entry
@@ -118,11 +145,8 @@
         // Begin by checking the provided file path itself
         $result = $this->fileIsMutable($file);
         if ($result === false && is_dir($file)) {
-          // Create a `RecursiveDirectoryIterator` for the provided file path
-          $entries = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($file,
-                \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST);
+          // Call `fastRecursiveFileEnumerator` with the provided file path
+          $entries = $this->fastRecursiveFileEnumerator($file);
           // Check the children of the provided file path
           foreach ($entries as $name => $entry) {
             // Check this specific child node for mutability
