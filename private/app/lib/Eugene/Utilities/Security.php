@@ -79,11 +79,15 @@
      * @return  bool           Whether the provided file is mutable.
      */
     public function fileIsMutable(string $file): bool {
-      // Check whether the provided file path exists
-      if (file_exists($file)) {
-        // Check whether the file is writable or is owned by this process
-        return is_writable($file) || fileowner($file) == posix_getuid();
-      } return false;
+      // Fetch runtime information about the current process
+      $gid = array_merge([posix_getegid(), posix_getgid()], posix_getgroups());
+      $uid =             [posix_geteuid(), posix_getuid()];
+      // Attempt to fetch ownership and file mode information for the given path
+      return is_array($stat = @stat($file)) &&
+        // Check if the file can be modified via other or user access
+        (in_array($stat['uid'], $uid) || ($stat['mode'] & 0002) != 0 ||
+        // Check if the file can be modified via group access
+        (in_array($stat['gid'], $gid) && ($stat['mode'] & 0020) != 0));
     }
 
     /**
