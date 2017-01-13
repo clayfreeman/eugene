@@ -140,7 +140,7 @@
       $result = false;
       // Begin by checking the provided file path itself
       $result = $this->fileIsMutable($file);
-      if ($result === false) {
+      if ($result === false && is_dir($file)) {
         // Call `fastRecursiveFileEnumerator` with the provided file path
         $entries = $this->fastRecursiveFileEnumerator($file);
         // Check the children of the provided file path
