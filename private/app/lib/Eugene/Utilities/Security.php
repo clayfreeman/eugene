@@ -85,7 +85,7 @@
         // Convert the relative file name to an absolute file name
         $file = $path.__DS__.$file;
         // Expand this path and merge the results
-        $results = array_merge($results, 
+        $results = array_merge($results,
           $this->fastRecursiveFileEnumerator($file));
       // Return the array filled with file paths
       } return $results;
@@ -138,22 +138,20 @@
     public function fileIsRecursivelyMutable(string $file): bool {
       // Assume that the provided file path is not recursively mutable
       $result = false;
-      // Ensure that the file exists before continuing
-      if (file_exists($file)) {
-        // Begin by checking the provided file path itself
-        $result = $this->fileIsMutable($file);
-        if ($result === false && is_dir($file)) {
-          // Call `fastRecursiveFileEnumerator` with the provided file path
-          $entries = $this->fastRecursiveFileEnumerator($file);
-          // Check the children of the provided file path
-          foreach ($entries as $name) {
-            // Check this specific child node for mutability
-            $result = $this->fileIsMutable($name);
-            // If the file is mutable, stop looping to save time
-            if ($result === true) break;
-          }
-        } // Return the mutability test results
-      } return $result;
+      // Begin by checking the provided file path itself
+      $result = $this->fileIsMutable($file);
+      if ($result === false) {
+        // Call `fastRecursiveFileEnumerator` with the provided file path
+        $entries = $this->fastRecursiveFileEnumerator($file);
+        // Check the children of the provided file path
+        foreach ($entries as $name) {
+          // Check this specific child node for mutability
+          $result = $this->fileIsMutable($name);
+          // If the file is mutable, stop looping to save time
+          if ($result === true) break;
+        }
+      } // Return the mutability test results
+      return $result;
     }
 
     /**
