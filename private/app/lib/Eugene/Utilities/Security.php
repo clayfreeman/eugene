@@ -148,7 +148,7 @@
           // Call `fastRecursiveFileEnumerator` with the provided file path
           $entries = $this->fastRecursiveFileEnumerator($file);
           // Check the children of the provided file path
-          foreach ($entries as $name => $entry) {
+          foreach ($entries as $name) {
             // Check this specific child node for mutability
             $result = $this->fileIsMutable($name);
             // If the file is mutable, stop looping to save time
