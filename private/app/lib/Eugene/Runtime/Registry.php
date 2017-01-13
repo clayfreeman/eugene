@@ -123,7 +123,7 @@
       // Check if the requested name is read-locked and either no password or an
       // invalid password was provided
       if ($this->isReadLocked($key) && ($password === null || !hash_equals(
-          $password->getString(), $this->locks[$key]->getString())))
+          $this->locks[$key]->getString(), $password->getString())))
         throw new ReadLockError('Failed to get name '.escapeshellarg($key).' '.
           'in the Registry: the provided name is read-locked');
       // Return the item stored by the specified name
@@ -240,8 +240,8 @@
             'is locked');
         // Throw a read-lock related error if read-locked and an invalid
         // password was provided
-        else if ($password === null || !hash_equals($password->getString(),
-            $this->locks[$key]->getString()))
+        else if ($password === null || !hash_equals(
+            $this->locks[$key]->getString(), $password->getString()))
           throw new ReadLockError('Failed to write using name '.
             escapeshellarg($key).' to the Registry: the provided name '.
             'is locked');
@@ -268,8 +268,8 @@
       // Check that the requested name is currently read-locked
       if ($this->isset($key) && $this->isReadLocked($key)) {
         // Ensure that the provided password matches the read-lock password
-        if (!hash_equals($password->getString(),
-            $this->locks[$key]->getString()))
+        if (!hash_equals($this->locks[$key]->getString(),
+            $password->getString()))
           throw new NameUnlockError('Failed to unlock using name '.
             escapeshellarg($key).' in the Registry: the provided password '.
             'is invalid');
@@ -301,8 +301,8 @@
             'is locked');
         // Throw a read-lock related error if read-locked and an invalid
         // password was provided
-        else if ($password === null || !hash_equals($password->getString(),
-            $this->locks[$key]->getString()))
+        else if ($password === null || !hash_equals(
+            $this->locks[$key]->getString(), $password->getString()))
           throw new ReadLockError('Failed to unset using name '.
             escapeshellarg($key).' to the Registry: the provided name '.
             'is locked');
