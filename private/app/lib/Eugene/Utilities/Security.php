@@ -41,6 +41,13 @@
     protected $allowUnlink = false;
 
     /**
+     * TODO
+     *
+     * @var  array
+     */
+    protected $gids        = [];
+
+    /**
      * The symmetric key used for internal password hash encryption.
      *
      * @var  EncryptionKey
@@ -48,10 +55,22 @@
     protected $key         = null;
 
     /**
+     * TODO
+     *
+     * @var  array
+     */
+    protected $uids        = [];
+
+    /**
      * Responsible for generating the symmetric encryption key used by Halite if
      * it doesn't already exist.
      */
     protected function __construct() {
+      // Fetch the remaining supplementary groups for this process
+      $this->gids = array_merge([posix_getegid(), posix_getgid()],
+        posix_getgroups());
+      // Fetch runtime information about the current process
+      $this->uids =             [posix_geteuid(), posix_getuid()];
       // Ensure that Halite is able to work correctly
       Halite::isLibsodiumSetupCorrectly(true) or die();
       // Check if the encryption key exists
@@ -104,22 +123,19 @@
      * @return  bool           Whether the provided file is mutable.
      */
     public function fileIsMutable(string $file): bool {
-      // Fetch runtime information about the current process
-      $gid  = array_merge([posix_getegid(), posix_getgid()], posix_getgroups());
-      $uid  =             [posix_geteuid(), posix_getuid()];
       // Attempt to fetch ownership and file mode information for the given path
-      $stat =   @stat($file);
+      $stat = @stat($file);
       // Ensure that an error did not occur while checking this file
       if (!is_array($stat)) trigger_error('Could not stat() this '.
         'file', E_USER_ERROR);
       // Ensure that this file is not owned by UID/GID zero
       if ($root = ($stat['uid'] == 0 || $stat['gid'] == 0))
         trigger_error('UID/GID cannot be zero (sanity check)', E_USER_WARNING);
-      return $root || // In addition to the warning, mark the file as mutable
+      return $root || // In addition to any warning, mark the file as mutable
         // Check if the file can be modified via other or user access
-        (in_array($stat['uid'], $uid) || ($stat['mode'] & 0002) != 0 ||
+        (in_array($stat['uid'], $this->uids) || ($stat['mode'] & 0002) != 0 ||
         // Check if the file can be modified via group access
-        (in_array($stat['gid'], $gid) && ($stat['mode'] & 0020) != 0));
+        (in_array($stat['gid'], $this->gids) && ($stat['mode'] & 0020) != 0));
     }
 
     /**
@@ -136,6 +152,9 @@
      *                           directory entries are mutable.
      */
     public function fileIsRecursivelyMutable(string $file): bool {
+      // Check if any recursive directory entry of the provided path is mutable
+      return count(array_filter(array_map([$this, 'fileIsMutable'],
+        $this->fastRecursiveFileEnumerator($file)))) > 0;
       // Assume that the provided file path is not recursively mutable
       $result = false;
       // Begin by checking the provided file path itself
