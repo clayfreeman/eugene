@@ -124,10 +124,8 @@
      */
     public function fileIsMutable(string $file): bool {
       // Attempt to fetch ownership and file mode information for the given path
-      $stat = @stat($file);
-      // Ensure that an error did not occur while checking this file
-      if (!is_array($stat)) trigger_error('Could not stat() this '.
-        'file', E_USER_ERROR);
+      if (!is_array($stat = @stat($file)))
+        trigger_error('Unable to stat() this file', E_USER_ERROR);
       // Ensure that this file is not owned by UID/GID zero
       if ($root = ($stat['uid'] == 0 || $stat['gid'] == 0))
         trigger_error('UID/GID cannot be zero (sanity check)', E_USER_WARNING);
@@ -155,22 +153,6 @@
       // Check if any recursive directory entry of the provided path is mutable
       return count(array_filter(array_map([$this, 'fileIsMutable'],
         $this->fastRecursiveFileEnumerator($file)))) > 0;
-      // Assume that the provided file path is not recursively mutable
-      $result = false;
-      // Begin by checking the provided file path itself
-      $result = $this->fileIsMutable($file);
-      if ($result === false && is_dir($file)) {
-        // Call `fastRecursiveFileEnumerator` with the provided file path
-        $entries = $this->fastRecursiveFileEnumerator($file);
-        // Check the children of the provided file path
-        foreach ($entries as $name) {
-          // Check this specific child node for mutability
-          $result = $this->fileIsMutable($name);
-          // If the file is mutable, stop looping to save time
-          if ($result === true) break;
-        }
-      } // Return the mutability test results
-      return $result;
     }
 
     /**
@@ -199,25 +181,20 @@
      * @param  bool  $strict  Whether strict mode should be enabled.
      */
     public function lockdown(bool $strict = false): void {
-      // Define an array of paths that should be allowed if itself and all
-      // children are read-only
-      $ro = [__APPROOT__, __VENDORROOT__];
-      $rw = [__DATAROOT__];
-      // If operating under strict mode, `__CONFIGROOT__` and `__KEYROOT__`
-      // should be excluded
-      if ($strict === false) {
-        $ro[] = __CONFIGROOT__;
-        $rw[] = __KEYROOT__;
-      } // Filter the allowed read-only paths to recursively immutable paths
+      // Define some arrays of paths that should be conditionally allowed
+      $ro = [__APPROOT__, __VENDORROOT__]; $rw = [__DATAROOT__];
+      // Include `__CONFIGROOT__` and `__KEYROOT__` in non-strict mode
+      if ($strict === false) { $ro[] = __CONFIGROOT__; $rw[] = __KEYROOT__; }
+      // Ensure that only recursively immutable paths are allowed in the
+      // read-only array of paths
       $ro = array_filter($ro, function($input) {
-        if ($retval = Security::getInstance()->fileIsRecursivelyMutable($input))
+        if ($retval = $this->fileIsRecursivelyMutable($input))
           trigger_error('This path is recursively mutable', E_USER_WARNING);
         return !$retval; });
       // Define a list of allowed paths during application runtime based on the
       // restricted read-only and read-write paths
       $allowed = array_filter(array_merge($ro, $rw), function($input) {
-        return is_dir($input) && is_readable($input) &&
-          !stristr($input, PATH_SEPARATOR); });
+        return !strstr($input, PATH_SEPARATOR); });
       // Restrict file access to prevent unauthorized tampering of application
       // (see http://php.net/manual/en/ini.core.php#ini.open-basedir for more
       // information regarding file restriction)
