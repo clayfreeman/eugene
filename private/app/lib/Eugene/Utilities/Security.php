@@ -96,7 +96,7 @@
       // Allocate an array to hold the results (initialized with the given path)
       $results = [$path];
       // Get a list of all directory entries for the provided path
-      $scandir = @array_diff(@scandir($path, SCANDIR_SORT_NONE), ['.', '..']);
+      $scandir = @array_diff(@scandir($path, SCANDIR_SORT_NONE) || [], ['.', '..']);
       // Iterate over each directory entry to expand child directories
       foreach ($scandir as $file)
         // Expand this path and merge the results
