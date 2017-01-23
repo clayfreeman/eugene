@@ -96,18 +96,13 @@
       // Allocate an array to hold the results (initialized with the given path)
       $results = [$path];
       // Get a list of all directory entries for the provided path
-      $scandir = @scandir($path, SCANDIR_SORT_NONE);
+      $scandir = @array_diff(@scandir($path, SCANDIR_SORT_NONE), ['.', '..']);
       // Iterate over each directory entry to expand child directories
-      if (is_array($scandir)) foreach ($scandir as $file) {
-        // Skip dot file results to prevent duplicate entries
-        if ($file == '.' || $file == '..') continue;
-        // Convert the relative file name to an absolute file name
-        $file = $path.__DS__.$file;
+      foreach ($scandir as $file)
         // Expand this path and merge the results
-        $results = array_merge($results,
-          $this->fastRecursiveFileEnumerator($file));
+        $results += $this->fastRecursiveFileEnumerator($path.__DS__.$file);
       // Return the array filled with file paths
-      } return $results;
+      return $results;
     }
 
     /**
