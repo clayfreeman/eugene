@@ -124,7 +124,7 @@
      */
     public function fileIsMutable(string $file): bool {
       // Check if the file is mutable via rudamentary means
-      return is_writable($file) || ($owner = @fileowner($file)) !== false ||
+      return is_writable($file) || ($owner = @fileowner($file)) === false ||
         in_array($owner, $this->uids);
     }
 
