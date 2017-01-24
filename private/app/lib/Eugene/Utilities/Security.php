@@ -123,17 +123,9 @@
      * @return  bool           Whether the provided file is mutable.
      */
     public function fileIsMutable(string $file): bool {
-      // Attempt to fetch ownership and file mode information for the given path
-      if (!is_array($stat = @stat($file)))
-        trigger_error('Unable to stat() this file', E_USER_ERROR);
-      // Ensure that this file is not owned by UID/GID zero
-      if ($root = ($stat['uid'] == 0 || $stat['gid'] == 0))
-        trigger_error('UID/GID cannot be zero (sanity check)', E_USER_WARNING);
-      return $root || // In addition to any warning, mark the file as mutable
-        // Check if the file can be modified via other or user access
-        (in_array($stat['uid'], $this->uids) || ($stat['mode'] & 0002) != 0 ||
-        // Check if the file can be modified via group access
-        (in_array($stat['gid'], $this->gids) && ($stat['mode'] & 0020) != 0));
+      // Check if the file is mutable via rudamentary means
+      return is_writable($file) || ($owner = @fileowner($file)) !== false ||
+        in_array($owner, $this->uids);
     }
 
     /**
