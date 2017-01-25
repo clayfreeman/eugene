@@ -105,8 +105,6 @@
     protected function parse(string $file): void {
       // Ensure that we're using the absolute path
       $file = realpath($file);
-      // Perform sanity checks on this file path
-      $this->sanityCheck($file);
       // Read and JSON decode the file
       $data = json_decode(file_get_contents($file), true);
       // Ensure that the data array is properly formatted
@@ -144,48 +142,6 @@
           'cannot be overridden', E_USER_WARNING);
       } else trigger_error('This configuration file is improperly '.
         'formatted', E_USER_WARNING);
-    }
-
-    /**
-     * Ensures that the `config` directory and (optionally) the provided file
-     * path are immutable by the current process.
-     *
-     * If a file path is provided, it will be checked to ensure that it is a
-     * readable file contained within the `config` directory.
-     *
-     * @see    Security::isMutableEntry()  For more information regarding how
-     *                                     directory entries are checked for
-     *                                     mutability and a definition of
-     *                                     mutability.
-     *
-     * @param  string  $file               An optional absolute file path to
-     *                                     check in addition to the `config`
-     *                                     directory.
-     */
-    protected function sanityCheck(?string $file = null): void {
-      // Fetch a reference to the `Security` instance
-      $security = Security::getInstance();
-      // Ensure that the `config` directory is non-writable by this process
-      !$security->fileIsMutable(__CONFIGROOT__) or trigger_error(
-        'The `config` directory should not be mutable by PHP (see this '.
-        'method\'s documentation to find a definition of '.
-        'mutability)', E_USER_WARNING);
-      // Only run file-specific tests if a file path was provided
-      if ($file !== null) {
-        // Ensure that the file path resides in the configuration root
-        if (substr($file, 0, strlen(__CONFIGROOT__)) !== __CONFIGROOT__)
-          trigger_error('This configuration file is not contained within the '.
-            '`config` directory', E_USER_ERROR);
-        if (!is_file($file))
-          trigger_error('This configuration path is not a file', E_USER_ERROR);
-        if (!is_readable($file))
-          trigger_error('This configuration file is not '.
-            'readable', E_USER_ERROR);
-        if ($security->fileIsMutable($file))
-          trigger_error('This configuration file should not be mutable by PHP '.
-            '(see this method\'s documentation to find a definition of '.
-            'mutability)', E_USER_WARNING);
-      }
     }
 
     /**
