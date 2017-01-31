@@ -254,7 +254,7 @@
             }
           }
         }
-      } echo '<pre>'.htmlentities(var_export($this, true)).'</pre>';
+      } echo '<pre>'.htmlentities(print_r([$this->PSR0, $this->PSR4], true)).'</pre>';
     }
 
     /**
