@@ -45,7 +45,6 @@
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
-  (new Autoload())->addPSR4(__CLASSPATH__);
 
   { // Begin the non-strict lockdown phase of execution (to still allow
     // configuration file parsing)
