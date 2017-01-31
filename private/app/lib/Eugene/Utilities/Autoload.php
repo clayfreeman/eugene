@@ -254,7 +254,7 @@
             }
           }
         }
-      }
+      } echo '<pre>'.htmlentities(var_export($this, true)).'</pre>';
     }
 
     /**
