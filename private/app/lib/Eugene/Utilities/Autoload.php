@@ -241,14 +241,15 @@
           if (is_array($installed)) {
             // Iterate over each package and import its autoloader definition
             foreach ($installed as $package) {
+              // Fetch required keys from this package
+              $name = $package['name']; $autoload = $package['autoload'];
               // Determine the base directory for this package
-              $base = Path::make(__VENDORROOT__, ...explode('/',
-                $package['name']));
+              $base = Path::make(__VENDORROOT__, ...explode('/', $name));
               // Add each PSR-0 autoloader definition
-              foreach ($package['autoload']['psr-0'] ?? [] as $filter => $dir)
+              foreach ($autoload['psr-0'] ?? [] as $filter => $dir)
                 $this->addPSR0(Path::make($base, trim($dir, __DS__)), $filter);
               // Add each PSR-4 autoloader definition
-              foreach ($package['autoload']['psr-4'] ?? [] as $filter => $dir)
+              foreach ($autoload['psr-4'] ?? [] as $filter => $dir)
                 $this->addPSR0(Path::make($base, trim($dir, __DS__)), $filter);
             }
           }
