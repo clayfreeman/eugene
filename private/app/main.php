@@ -14,3 +14,7 @@
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
+
+  $loader = new Twig_Loader_Array(array(
+    'index' => 'Hello {{ name }}!',
+  ));
