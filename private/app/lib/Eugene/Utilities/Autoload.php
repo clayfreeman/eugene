@@ -266,8 +266,6 @@
      * Files that are considered mutable (i.e. writable or owned by the current
      * process user) will silently refuse to load.
      *
-     * This method will not generate side effects unless a file can be loaded.
-     *
      * @param  string  $class  Fully-qualified class name to include.
      */
     public function run(?string $class): void {
