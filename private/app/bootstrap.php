@@ -45,7 +45,7 @@
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
-  (\Eugene\Utilities\Autoloader::getInstance())->importComposer();
+  (\Eugene\Utilities\Autoload::getInstance())->importComposer();
 
   { // Begin the non-strict lockdown phase of execution (to still allow
     // configuration file parsing)
