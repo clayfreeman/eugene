@@ -19,4 +19,5 @@
     'index' => 'Hello {{ name }}!',
   ));
 
-  echo '<pre>'.htmlentities(__STARTTIME__ - microtime(true)).'</pre>';
+  echo '<pre>'.htmlentities(print_r(__STARTTIME__ - microtime(true),
+    true)).'</pre>';
