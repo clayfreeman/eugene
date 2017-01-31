@@ -18,17 +18,18 @@
   error_reporting(E_ALL | E_STRICT);
 
   // Define the required path constants for the application
-  define('__DS__',          DIRECTORY_SEPARATOR);
-  define('__CLASSPATH__',   realpath(__DIR__.__DS__.'lib'));
-  define('__APPROOT__',     realpath(__DIR__));
-  define('__PRIVATEROOT__', realpath(dirname(__APPROOT__)));
-  define('__CONFIGROOT__',  realpath(__PRIVATEROOT__.__DS__.'config'));
-  define('__DATAROOT__',    realpath(__PRIVATEROOT__.__DS__.'data'));
-  define('__KEYROOT__',     realpath(__PRIVATEROOT__.__DS__.'keys'));
-  define('__PROJECTROOT__', realpath(dirname(__PRIVATEROOT__)));
-  define('__PUBLICROOT__',  realpath(__PROJECTROOT__.__DS__.'public'));
-  define('__VENDORROOT__',  realpath(__PROJECTROOT__.__DS__.'vendor'));
-  define('__STARTTIME__',   microtime(true));
+  define('__DS__',           DIRECTORY_SEPARATOR);
+  define('__CLASSPATH__',    realpath(__DIR__.__DS__.'lib'));
+  define('__TEMPLATEROOT__', realpath(__DIR__.__DS__.'templates'));
+  define('__APPROOT__',      realpath(__DIR__));
+  define('__PRIVATEROOT__',  realpath(dirname(__APPROOT__)));
+  define('__CONFIGROOT__',   realpath(__PRIVATEROOT__.__DS__.'config'));
+  define('__DATAROOT__',     realpath(__PRIVATEROOT__.__DS__.'data'));
+  define('__KEYROOT__',      realpath(__PRIVATEROOT__.__DS__.'keys'));
+  define('__PROJECTROOT__',  realpath(dirname(__PRIVATEROOT__)));
+  define('__PUBLICROOT__',   realpath(__PROJECTROOT__.__DS__.'public'));
+  define('__VENDORROOT__',   realpath(__PROJECTROOT__.__DS__.'vendor'));
+  define('__STARTTIME__',    microtime(true));
 
   // Check the PHP version number and complain if unsatisfactory
   { (version_compare(PHP_VERSION, $minimum = '7.1.0') >= 0) or trigger_error(
@@ -46,6 +47,7 @@
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
+  // Import all installed Composer package autoloader definitions
   (\Eugene\Utilities\Autoload::getInstance())->importComposer();
 
   { // Begin the non-strict lockdown phase of execution (to still allow
