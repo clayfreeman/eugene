@@ -42,13 +42,10 @@
     '\'var_export()\' function should be disabled using the '.
     '\'disable_functions\' directive', E_USER_WARNING);
 
-  // Load the composer vendor autoloader to include all composer software.
-  // NOTE: It is important to depend only on secure Composer packages since they
-  //       will always be loaded before any project code
-  require_once(realpath(implode(__DS__, [__VENDORROOT__, 'autoload.php'])));
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
+  (new Autoload())->addPSR4(__CLASSPATH__);
 
   { // Begin the non-strict lockdown phase of execution (to still allow
     // configuration file parsing)

@@ -15,6 +15,12 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
+  // Provide manual support for loading external dependencies
+  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Exceptions',
+    'InstantiationFailureError.php'])); require_once($_class); }
+  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene',
+    'DesignPatterns', 'PreventSerialize.php'])); require_once($_class); }
+
   // Create a locally-scoped alias for the `InstantiationFailureError` class
   use \Eugene\Exceptions\InstantiationFailureError;
 
