@@ -25,6 +25,8 @@
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
   use \Eugene\{Exceptions\PathResolutionError, Utilities\Path};
+
+  // Create a locally-scoped alias for the `Singleton` class
   use \Eugene\DesignPatterns\Singleton;
 
   /**
@@ -216,6 +218,42 @@
       return '/\\b(?:'.implode('|', array_map(function($value) {
         return preg_quote($value, '/');
       }, $danger)).')\\b/i';
+    }
+
+    /**
+     * Imports all of Composer's installed package PSR-0/4 autoloaders.
+     *
+     * This file references `vendor/composer/installed.json` to determine which
+     * autoloader definitions should be added.
+     */
+    public function importComposer(): void {
+      // Initialize a static member to hold state
+      static $runOnce = true;
+      // Check that we have not ran already then mark as ran
+      if ($runOnce) { $runOnce = false;
+        // Determine the path to the `installed.json` file
+        $installed = Path::make(__VENDORROOT__, 'composer', 'installed.json');
+        // Load Composer's `installed.json` file to import autoloaders
+        if (is_readable($installed)) {
+          // Attempt to parse the file as JSON
+          $installed = @json_decode(@file_get_contents($installed), true);
+          // Ensure that the resulting content is an array
+          if (is_array($installed)) {
+            // Iterate over each package and import its autoloader definition
+            foreach ($installed as $package) {
+              // Determine the base directory for this package
+              $base = Path::make(__VENDORROOT__, ...explode('/',
+                $package['name']));
+              // Add each PSR-0 autoloader definition
+              foreach ($package['autoload']['psr-0'] ?? [] as $filter => $dir)
+                $this->addPSR0(Path::make($base, trim($dir, __DS__)), $filter);
+              // Add each PSR-4 autoloader definition
+              foreach ($package['autoload']['psr-4'] ?? [] as $filter => $dir)
+                $this->addPSR0(Path::make($base, trim($dir, __DS__)), $filter);
+            }
+          }
+        }
+      }
     }
 
     /**
