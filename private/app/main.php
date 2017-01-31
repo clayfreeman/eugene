@@ -21,4 +21,4 @@
 
   echo '<pre>'.htmlentities(print_r(
     round((microtime(true) - __STARTTIME__) * 1000),
-  true).' ms').'</pre>';
+  true).'ms').'</pre>';
