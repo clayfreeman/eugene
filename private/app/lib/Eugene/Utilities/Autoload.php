@@ -155,7 +155,7 @@
      */
     protected function getFileIncludePaths(string $class) {
       // Build a list of search paths based on the array of PSR0 autoloaders
-      $input = array_merge(...array_map(function($value) use ($class) {
+      $input = array_merge([], ...array_map(function($value) use ($class) {
         // Determine the relative file path based on the requested class
         $delta = explode('\\', $class); $terminalClass = array_pop($delta);
         $delta = array_merge($delta, explode('_', $terminalClass.'.php'));
