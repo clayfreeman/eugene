@@ -285,7 +285,7 @@
           $owner    =                         fileowner($path);
           $contents = ($readable ? php_strip_whitespace($path): '');
           // Keep only safe files, silently discard others
-          $retVal   = $readable && !$writable && !in_array($uids, $owner) &&
+          $retVal   = $readable && !$writable && !in_array($owner, $uids) &&
             !preg_match($this->getSecurityExpression(), $contents);
           // Trigger a warning when a mutable file is encountered
           if ($readable && !$retVal) trigger_error('Refusing to load mutable '.
