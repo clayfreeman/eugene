@@ -250,11 +250,11 @@
                 $this->addPSR0(Path::make($base, trim($dir, __DS__)), $filter);
               // Add each PSR-4 autoloader definition
               foreach ($autoload['psr-4'] ?? [] as $filter => $dir)
-                $this->addPSR0(Path::make($base, trim($dir, __DS__)), $filter);
+                $this->addPSR4(Path::make($base, trim($dir, __DS__)), $filter);
             }
           }
         }
-      } echo '<pre>'.htmlentities(print_r([$this->PSR0, $this->PSR4], true)).'</pre>';
+      }
     }
 
     /**
