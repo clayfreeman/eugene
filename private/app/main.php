@@ -18,3 +18,5 @@
   $loader = new Twig_Loader_Array(array(
     'index' => 'Hello {{ name }}!',
   ));
+
+  echo '<pre>'.htmlentities(__STARTTIME__ - microtime(true)).'</pre>';

@@ -28,6 +28,7 @@
   define('__PROJECTROOT__', realpath(dirname(__PRIVATEROOT__)));
   define('__PUBLICROOT__',  realpath(__PROJECTROOT__.__DS__.'public'));
   define('__VENDORROOT__',  realpath(__PROJECTROOT__.__DS__.'vendor'));
+  define('__STARTTIME__',   microtime(true));
 
   // Check the PHP version number and complain if unsatisfactory
   { (version_compare(PHP_VERSION, $minimum = '7.1.0') >= 0) or trigger_error(
