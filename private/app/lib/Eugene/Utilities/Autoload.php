@@ -133,11 +133,11 @@
      * @return  string          Canonical fully-qualified class name.
      */
     protected function canonicalizeClass(?string $class): string {
-      // Remove duplicate namespace separators from the provided string
-      $class = preg_replace('/(\\\\{2,})/',                 '\\', $class);
       // Remove any existing leading namespace separator or non-identifier
       // characters from the provided string
-      return   preg_replace('/(^\\\\)|([^a-z0-9_\\\\]+)/i', '',   $class);
+      $class = preg_replace('/([^a-z0-9_\\\\]+)/i', '',  ltrim($class, '\\'));
+      // Remove duplicate namespace separators from the provided string
+      return   preg_replace('/(\\\\{2,})/',         '\\',      $class);
     }
 
     /**
@@ -264,7 +264,7 @@
      * generate file include paths.
      *
      * Files that are considered mutable (i.e. writable or owned by the current
-     * process user) will silently refuse to load.
+     * process user) will refuse to load.
      *
      * @param  string  $class  Fully-qualified class name to include.
      */
@@ -284,12 +284,12 @@
           $writable =                       is_writable($path);
           $owner    =                         fileowner($path);
           $contents = ($readable ? php_strip_whitespace($path): '');
-          // Keep only safe files, silently discard others
+          // Keep only safe files, discard others
           $retVal   = $readable && !$writable && !in_array($owner, $uids) &&
             !preg_match($this->getSecurityExpression(), $contents);
           // Trigger a warning when a mutable file is encountered
-          if ($readable && !$retVal) trigger_error('Refusing to load mutable '.
-            'file '.escapeshellarg($path), E_USER_WARNING);
+          if ($readable && !$retVal) trigger_error('Refusing to load insecure '.
+            'file at '.escapeshellarg($path), E_USER_WARNING);
           return $retVal;
         }));
       }
