@@ -12,12 +12,12 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
-  echo print_r(\Eugene\Runtime\Registry::getInstance(), true)."\n";
-  echo print_r(\Eugene\Utilities\Security::getInstance(), true)."\n";
+  echo htmlentities(print_r(\Eugene\Runtime\Registry::getInstance(), true))."\n";
+  echo htmlentities(print_r(\Eugene\Utilities\Security::getInstance(), true))."\n";
   var_dump(\Eugene\Runtime\Registry::getInstance()); echo "\n";
   var_dump(\Eugene\Utilities\Security::getInstance()); echo "\n";
-  echo var_export(\Eugene\Runtime\Registry::getInstance(), true)."\n";
-  echo var_export(\Eugene\Utilities\Security::getInstance(), true)."\n";
+  echo htmlentities(var_export(\Eugene\Runtime\Registry::getInstance(), true))."\n";
+  echo htmlentities(var_export(\Eugene\Utilities\Security::getInstance(), true))."\n";
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
