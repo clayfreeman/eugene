@@ -8,7 +8,7 @@
   {% block body %}{% endblock %}
   <!--
     Render Time:
-    {{ microtime(true) - constant('__STARTTIME__') }} ms
+    {{ ((microtime(true) - constant('__STARTTIME__')) * 1000)|round }} ms
   -->
 </body>
 </html>
