@@ -1,0 +1,8 @@
+{% extends 'Page.twig' %}
+
+{% block body %}
+<p>
+  {% set name = 'World' if name is empty %}
+  Hello, {{name}}!
+</p>
+{% endblock %}

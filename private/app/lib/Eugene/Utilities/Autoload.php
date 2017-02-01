@@ -211,7 +211,7 @@
      */
     protected function getSecurityExpression(): string {
       // Define a list of dangerous function calls
-      $danger = [ 'chmod', 'chown', 'eval', 'exec', 'include', 'include_once',
+      $danger = [ 'chmod', 'chown', 'exec', 'include', 'include_once',
         'passthru', 'pcntl_exec', 'popen', 'proc_open', 'require',
         'require_once', 'shell_exec', 'system' ];
       // Compile a regular expression to match any dangerous function call
