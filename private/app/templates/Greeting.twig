@@ -2,7 +2,9 @@
 
 {% block body %}
 <p>
-  {% set name = 'World' if name is empty %}
+  {% if name is empty %}
+  {% set name = 'World' %}
+  {% endif %}
   Hello, {{name}}!
 </p>
 {% endblock %}
