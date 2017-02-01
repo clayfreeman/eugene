@@ -14,5 +14,4 @@
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
-  echo "<!--\n".htmlentities(var_export(\Eugene\Runtime\Registry::getInstance(),
-    true))."\n-->";
+  echo htmlentities(var_export(\Eugene\Runtime\Registry::getInstance(), true));
