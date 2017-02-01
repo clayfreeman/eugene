@@ -155,6 +155,9 @@
           }); // Setup an instance of Twig_Environment for the router delegate
           $loader = new \Twig_Loader_Filesystem($tmp = __TEMPLATEROOT__, $tmp);
           $twig   = new \Twig_Environment($loader);
+          $twig->addExtension(new class extends \Twig_Extension {
+            public function getFunctions() {
+              return [new \Twig_Function('microtime', 'microtime')]; } });
           // Call the provided target with the parsed tokens
           $target::receiveRequest($twig, array_map('urldecode', $matches));
           // Stop trying additional routes on our first successful match
