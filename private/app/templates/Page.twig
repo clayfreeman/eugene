@@ -5,10 +5,9 @@
   <title>{% block title %}Eugene{% endblock %}</title>
 </head>
 <body>
-  {% block body %}{% endblock %}
-  <!--
-    Render Time:
-    {{ ((microtime(true) - constant('__STARTTIME__')) * 1000)|round }} ms
-  -->
+{% block body %}{% endblock %}
+<!--
+  Page rendered in {{ rendertime() }} ms.
+-->
 </body>
 </html>
