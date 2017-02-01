@@ -204,23 +204,6 @@
     }
 
     /**
-     * Generates a regular expression to match any function in a list of
-     * dangerous functions.
-     *
-     * @return  string  The regular expression.
-     */
-    protected function getSecurityExpression(): string {
-      // Define a list of dangerous function calls
-      $danger = [ 'chmod', 'chown', 'exec', 'include', 'include_once',
-        'passthru', 'pcntl_exec', 'popen', 'proc_open', 'require',
-        'require_once', 'shell_exec', 'system' ];
-      // Compile a regular expression to match any dangerous function call
-      return '/\\b(?:'.implode('|', array_map(function($value) {
-        return preg_quote($value, '/');
-      }, $danger)).')\\b/i';
-    }
-
-    /**
      * Imports all of Composer's installed package PSR-0/4 autoloaders.
      *
      * This file references `vendor/composer/installed.json` to determine which
@@ -285,8 +268,7 @@
           $owner    =                         fileowner($path);
           $contents = ($readable ? php_strip_whitespace($path): '');
           // Keep only safe files, discard others
-          $retVal   = $readable && !$writable && !in_array($owner, $uids) &&
-            !preg_match($this->getSecurityExpression(), $contents);
+          $retVal   = $readable && !$writable && !in_array($owner, $uids);
           // Trigger a warning when a mutable file is encountered
           if ($readable && !$retVal) trigger_error('Refusing to load insecure '.
             'file at '.escapeshellarg($path), E_USER_WARNING);
