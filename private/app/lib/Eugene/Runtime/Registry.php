@@ -127,7 +127,7 @@
         throw new ReadLockError('Failed to get name '.escapeshellarg($key).' '.
           'in the Registry: the provided name is read-locked');
       // Return the item stored by the specified name
-      return $this->storage[$key];
+      return $this->storage[$key]();
     }
 
     /**
@@ -246,7 +246,7 @@
             escapeshellarg($key).' to the Registry: the provided name '.
             'is locked');
       // Store the provided data at the requested name
-      $this->storage[$key] = $data;
+      $this->storage[$key] = function() use($data) { return $data; };
       // Return a reference to the stored data
       return $this->get($key);
     }

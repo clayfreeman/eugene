@@ -39,11 +39,6 @@
   function_exists('posix_kill') or trigger_error('This project requires the '.
     'POSIX extension to be loaded', E_USER_ERROR);
 
-  // Recommend that `var_export` is disabled for `Registry` security
-  (!function_exists('var_export')) or trigger_error('For maximum security the '.
-    '\'var_export()\' function should be disabled using the '.
-    '\'disable_functions\' directive', E_USER_WARNING);
-
   // Run the application autoload utility setup file
   require_once(realpath(implode(__DS__,
     [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
