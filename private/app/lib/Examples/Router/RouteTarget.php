@@ -24,15 +24,11 @@
     /**
      * An example route target endpoint for the `Router` class.
      *
-     * This route expects the 'name' token to be available.
-     *
      * @param  array  $tokens  All tokens parsed from the request URL.
      */
     public static function receiveRequest(\Twig_Environment $twig,
         array $tokens): void {
-      // Render the 'Greeting' template file using some of the provided tokens
-      echo $twig->render('Greeting.twig', [
-        'name' => $tokens['name'] ?? ''
-      ]);
+      // Render the 'Greeting' template file using the provided tokens
+      $twig->display('Greeting.twig', $tokens);
     }
   }
