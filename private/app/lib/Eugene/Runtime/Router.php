@@ -152,8 +152,11 @@
           // Remove empty (optional) values from the array of matches
           $matches = array_filter($matches, function($input) {
             return isset($input) && strlen($input) > 0;
-          }); // Call the provided target with the parsed tokens
-          $target::receiveRequest(array_map('urldecode', $matches));
+          }); // Setup an instance of Twig_Environment for the router delegate
+          $loader = new \Twig_Loader_Filesystem(__TEMPLATEROOT__);
+          $twig   = new \Twig_Environment($loader);
+          // Call the provided target with the parsed tokens
+          $target::receiveRequest($twig, array_map('urldecode', $matches));
           // Stop trying additional routes on our first successful match
           return;
         }

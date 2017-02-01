@@ -28,8 +28,11 @@
      *
      * @param  array  $tokens  All tokens parsed from the request URL.
      */
-    public static function receiveRequest(array $tokens): void {
-      // Show a greeting based on the provided tokens
-      echo 'Hello, '.htmlentities($tokens['name'] ?? 'World')."!\n";
+    public static function receiveRequest(\Twig_Environment $twig,
+        array $tokens): void {
+      // Render the 'Greeting' template file using some of the provided tokens
+      $twig->render('Greeting.twig', [
+        'name' => $tokens['name'] ?? ''
+      ]);
     }
   }

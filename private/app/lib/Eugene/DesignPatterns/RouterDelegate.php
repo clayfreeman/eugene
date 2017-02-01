@@ -24,5 +24,6 @@
      *
      * @param  array  $tokens  All tokens parsed from the request URL.
      */
-    public static function receiveRequest(array $tokens): void;
+    public static function receiveRequest(\Twig_Environment $twig,
+      array $tokens): void;
   }

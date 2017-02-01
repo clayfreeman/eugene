@@ -14,11 +14,3 @@
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
-
-  $loader = new Twig_Loader_Array(array(
-    'index' => 'Hello {{ name }}!',
-  ));
-
-  echo '<!-- '.htmlentities(print_r(
-    round((microtime(true) - __STARTTIME__) * 1000),
-  true).' ms').' -->';
