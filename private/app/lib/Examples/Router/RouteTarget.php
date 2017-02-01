@@ -31,7 +31,7 @@
     public static function receiveRequest(\Twig_Environment $twig,
         array $tokens): void {
       // Render the 'Greeting' template file using some of the provided tokens
-      $twig->render('Greeting.twig', [
+      echo $twig->render('Greeting.twig', [
         'name' => $tokens['name'] ?? ''
       ]);
     }
