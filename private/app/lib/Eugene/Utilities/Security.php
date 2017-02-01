@@ -60,7 +60,7 @@
      */
     protected function __construct() {
       // Fetch runtime information about the current process
-      $this->uids  = [posix_geteuid(), posix_getuid()];
+      $this->uids  = array_unique([posix_geteuid(), posix_getuid()]);
       // Ensure that Halite is able to work correctly
       Halite::isLibsodiumSetupCorrectly(true) or die();
       // Check if the encryption key exists
