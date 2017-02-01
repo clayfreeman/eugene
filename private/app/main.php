@@ -12,7 +12,7 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
-  echo var_export(\Eugene\Utilities\Security::getInstance(), true)."\n";
+  echo var_export(\Eugene\Runtime\Registry::getInstance(), true)."\n";
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
