@@ -60,18 +60,20 @@
      */
     protected function __construct() {
       // Fetch runtime information about the current process
-      $this->uids =             [posix_geteuid(), posix_getuid()];
+      $this->uids  = [posix_geteuid(), posix_getuid()];
       // Ensure that Halite is able to work correctly
       Halite::isLibsodiumSetupCorrectly(true) or die();
       // Check if the encryption key exists
       $keyPath = Path::make(__KEYROOT__, 'default.key');
-      if (is_file($keyPath))
+      if (is_file($keyPath)) {
         // Load the encryption key from the filesystem
-        $this->key = KeyFactory::loadEncryptionKey($keyPath);
-      else {
+        $key       = KeyFactory::loadEncryptionKey($keyPath);
+        $this->key = function() use ($key) { return $key; };
+      } else {
         // Generate an encryption key and save it to the filesystem
-        $this->key = KeyFactory::generateEncryptionKey();
-        KeyFactory::save($this->key, $keyPath);
+        $key       = KeyFactory::generateEncryptionKey();
+        $this->key = function() use ($key) { return $key; };
+        KeyFactory::save($key, $keyPath);
       }
     }
 

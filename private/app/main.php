@@ -13,6 +13,7 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   echo var_export(\Eugene\Runtime\Registry::getInstance(), true)."\n";
+  echo var_export(\Eugene\Utilities\Security::getInstance(), true)."\n";
 
   // Attempt to run the router
   \Eugene\Runtime\Router::getInstance()->run();
