@@ -2,9 +2,6 @@
 
 {% block body %}
 <p>
-  {% if name is empty %}
-  {% set name = 'World' %}
-  {% endif %}
-  Hello, {{name}}!
+  Hello, {{ name|default('World') }}!
 </p>
 {% endblock %}

@@ -153,7 +153,7 @@
           $matches = array_filter($matches, function($input) {
             return isset($input) && strlen($input) > 0;
           }); // Setup an instance of Twig_Environment for the router delegate
-          $loader = new \Twig_Loader_Filesystem(__TEMPLATEROOT__);
+          $loader = new \Twig_Loader_Filesystem($tmp = __TEMPLATEROOT__, $tmp);
           $twig   = new \Twig_Environment($loader);
           // Call the provided target with the parsed tokens
           $target::receiveRequest($twig, array_map('urldecode', $matches));
