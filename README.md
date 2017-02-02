@@ -1,3 +1,11 @@
+# To-do List
+
+* Load `Security` class early so that we can consolidate code for checking file
+  mutability.
+* Look into revising lockdown method for more security and dynamic
+  configuration.
+* Test `Crypto` class.
+
 # License
 
 This program is free software: you can redistribute it and/or modify
