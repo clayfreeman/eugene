@@ -82,7 +82,7 @@
      *
      * The provided file path must be an absolute path to an immutable file
      * inside the `config` directory. The file must also match the following
-     * JSON document specification (`*.json` naming scheme recommended for
+     * JSON document specification (`*.json` naming scheme required for
      * autodetection in the `scan()` method):
      *
      * `{ "category": "...", "contents": ... }`
@@ -100,7 +100,7 @@
      * be assigned to the key with the value held by `category` in the
      * `Registry` class.
      *
-     * @param  string  $file  Absolute (non-writable) file path.
+     * @param  string  $file  Absolute file path to an immutable file.
      */
     protected function parse(string $file): void {
       // Ensure that we're using the absolute path

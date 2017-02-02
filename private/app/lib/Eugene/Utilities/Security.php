@@ -18,12 +18,6 @@
   // Create a locally-scoped alias for the `Singleton` class
   use \Eugene\DesignPatterns\Singleton;
 
-  // Create locally-scoped aliases for the `HiddenString` and `Path` classes
-  use \Eugene\Utilities\{HiddenString, Path};
-
-  // Create locally-scoped aliases for the `KeyFactory` and `Password` classes
-  use \ParagonIE\Halite\{Halite, KeyFactory, Password};
-
   /**
    * Collection of useful security-related methods to help improve overall
    * runtime application security.
@@ -41,50 +35,32 @@
     protected $allowUnlink = false;
 
     /**
-     * The symmetric key used for internal password hash encryption.
-     *
-     * @var  EncryptionKey
-     */
-    protected $key         = null;
-
-    /**
-     * TODO
+     * An array of UIDs that this process can assume.
      *
      * @var  array
      */
     protected $uids        = [];
 
     /**
-     * Responsible for generating the symmetric encryption key used by Halite if
-     * it doesn't already exist.
+     * Responsible for determining the UIDs of the current process.
      */
     protected function __construct() {
       // Fetch runtime information about the current process
       $this->uids  = array_unique([posix_geteuid(), posix_getuid()]);
-      // Ensure that Halite is able to work correctly
-      Halite::isLibsodiumSetupCorrectly(true) or die();
-      // Check if the encryption key exists
-      $keyPath = Path::make(__KEYROOT__, 'default.key');
-      if (is_file($keyPath)) {
-        // Load the encryption key from the filesystem
-        $key       = KeyFactory::loadEncryptionKey($keyPath);
-        $this->key = function() use ($key) { return $key; };
-      } else {
-        // Generate an encryption key and save it to the filesystem
-        $key       = KeyFactory::generateEncryptionKey();
-        $this->key = function() use ($key) { return $key; };
-        KeyFactory::save($key, $keyPath);
-      }
     }
 
     /**
-     * TODO
+     * Uses `scandir()` to recursively enumerate the provided file path.
      *
-     * @param   string  $path  [description]
+     * This method specializes in minimal required system calls being used for
+     * optimal performance. If the provided file path does not exist or is not
+     * a directory it will be returned in a single element array.
      *
-     * @return  array          [description]
+     * @param   string  $path  An input file to recursively enumerate.
+     *
+     * @return  array          An array of absolute file paths.
      */
-    protected function fastRecursiveFileEnumerator(string $path): array {
+    public function fastRecursiveFileEnumerator(string $path): array {
       // Allocate an array to hold the results (initialized with the given path)
       $results = [$path];
       // Get a list of all directory entries for the provided path
@@ -92,7 +68,7 @@
       // Iterate over each directory entry to expand child directories
       if (is_array($scandir)) foreach ($scandir as $file) {
         // Skip dot file results to prevent duplicate entries
-        if ($file == '.' || $file == '..') continue;
+        if (strlen($file) < 3 && ($file == '.' || $file == '..')) continue;
         // Convert the relative file name to an absolute file name
         $file = $path.__DS__.$file;
         // Expand this path and merge the results
@@ -108,7 +84,7 @@
      * Mutability is defined as the ability to write to a directory entry
      * directly or indirectly by using ownership to change file permissions.
      *
-     * If the provided file path does not exist, `false` will be returned.
+     * If the provided file path does not exist, `true` will be returned.
      *
      * @param   string  $file  The path to check for mutability.
      *
@@ -124,7 +100,7 @@
      * Determines whether the provided file path or any subsequent directory
      * entries are considered mutable
      *
-     * If the provided file path does not exist, `false` will be returned.
+     * If the provided file path does not exist, `true` will be returned.
      *
      * @see     fileIsMutable()  For more information regarding mutability test.
      *
@@ -145,11 +121,11 @@
      * By default, this method configures `open_basedir` to allow access to the
      * following directories:
      *
-     *  - `private/app` (read-only)
-     *  - `private/config` (read-only)
-     *  - `private/data` (read-write)
-     *  - `private/keys` (read-write)
-     *  - `vendor` (read-only)
+     *  - `private/app`
+     *  - `private/config`
+     *  - `private/data`
+     *  - `private/keys`
+     *  - `vendor`
      *
      * However, when strict mode is enabled, access to `private/config` and
      * `private/keys` is revoked and access to configuration is arbitrated by
@@ -166,8 +142,7 @@
      */
     public function lockdown(bool $strict = false): void {
       // Define some arrays of paths that should be conditionally allowed
-      $ro = [__TEMPLATEROOT__]; $rw = [__APPROOT__,
-        __DATAROOT__, __VENDORROOT__];
+      $ro = []; $rw = [__APPROOT__, __DATAROOT__, __VENDORROOT__];
       // Include `__CONFIGROOT__` and `__KEYROOT__` in non-strict mode
       if ($strict === false) { $ro[] = __CONFIGROOT__; $rw[] = __KEYROOT__; }
       // Ensure that only recursively immutable paths are allowed in the
@@ -184,64 +159,5 @@
       // (see http://php.net/manual/en/ini.core.php#ini.open-basedir for more
       // information regarding file restriction)
       ini_set('open_basedir', implode(PATH_SEPARATOR, $allowed));
-    }
-
-    /**
-     * Hashes a password using ParagonIE's Halite library.
-     *
-     * @param   HiddenString  $password       The clear text to be hashed.
-     * @param   string        $level          The strength at which to generate
-     *                                        the password hash.
-     *
-     * @see     \ParagonIE\Halite\KeyFactory  For more information regarding
-     *                                        available hash strengths.
-     *
-     * @return  string                        The resulting ciphertext.
-     */
-    public function passwordHash(HiddenString $password,
-        string $level = KeyFactory::INTERACTIVE): string {
-      // Defer cryptography to ParagonIE's Halite library (with defaults)
-      return Password::hash($password->getValue(), $this->key, $level);
-    }
-
-    /**
-     * Rehashes a password using ParagonIE's Halite library.
-     *
-     * The provided hash will be updated by reference if necessary.
-     *
-     * @param   HiddenString  $password       The clear text to be hashed.
-     * @param   string        $hash           The ciphertext to be rehashed.
-     * @param   string        $level          The strength at which to generate
-     *                                        the password hash.
-     *
-     * @see     \ParagonIE\Halite\KeyFactory  For more information regarding
-     *                                        available hash strengths.
-     *
-     * @return  bool                          `true`  if the hash was changed,
-     *                                        `false` otherwise.
-     */
-    public function passwordRehash(HiddenString $password, string &$hash,
-        string $level = KeyFactory::INTERACTIVE): bool {
-      // Determine if the provided password needs to be rehashed
-      if (Password::needsRehash($hash, $this->key, $level)) {
-        // Rehash the password if necessary
-        $hash = $this->passwordHash($password, $level);
-        // Return `true` if the password was rehashed
-        return true;
-        // Return `false` if the hash did not change
-      } return false;
-    }
-
-    /**
-     * Verifies a password against a hash using ParagonIE's Halite library.
-     *
-     * @param   HiddenString  $password  The clear text password to check.
-     * @param   string        $hash      The ciphertext to validate against.
-     *
-     * @return  bool                     Whether the password matches the hash.
-     */
-    public function passwordVerify(HiddenString $password, string $hash): bool {
-      // Defer cryptography to ParagonIE's Halite library (with defaults)
-      return Password::verify($password->getValue(), $hash, $this->key);
     }
   }

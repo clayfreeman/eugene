@@ -48,10 +48,12 @@
   { // Begin the non-strict lockdown phase of execution (to still allow
     // configuration file parsing)
     ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
+    // Initialize cryptographic operations by fetching an instance to `Crypto`
+    \Eugene\Utilities\Crypto::getInstance();
     // Scan for project configuration files (deferring all side effects)
     ($config   = \Eugene\Runtime\Config::getInstance())->scan();
     // Migrate to the final (strict) lockdown phase to exclude access to the
-    // configuration directory and process deferred side effects
+    // configuration and secret key directory and process deferred side effects
     $security->lockdown(true); $config->dispatchCredentials(); }
 
   // Load the application's main logic file
