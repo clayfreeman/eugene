@@ -247,11 +247,13 @@
      * generate file include paths.
      *
      * Files that are considered mutable (i.e. writable or owned by the current
-     * process user) will refuse to load.
+     * process user) or dangerous (i.e. containing disallowed tokens
+     * `require_once`, `include`, etc) will refuse to load.
      *
      * @param  string  $class  Fully-qualified class name to include.
      */
     public function run(?string $class): void {
+      $security = Security::getInstance();
       // Ensure that the requested class name is not empty
       if (strlen($class = $this->canonicalizeClass($class)) > 0) {
         // Fetch an array of all file paths to attempt to include

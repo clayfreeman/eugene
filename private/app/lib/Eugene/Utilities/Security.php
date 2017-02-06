@@ -79,6 +79,34 @@
     }
 
     /**
+     * [fileIsDangerous description]
+     *
+     * @param   string  $file  [description]
+     *
+     * @return  bool           [description]
+     */
+    public function fileIsDangerous(string $file): bool {
+      // Define an array of blacklisted tokens
+      $danger = ['T_EVAL', 'T_HALT_COMPILER', 'T_INCLUDE', 'T_INCLUDE_ONCE',
+        'T_REQUIRE', 'T_REQUIRE_ONCE'];
+      // Ensure that the file is readable before continuing
+      if (is_readable($file)) {
+        // Fetch all tokens from the contents of the file at the provided path
+        $tokens = array_map(function($input) {
+          // If this array entry is an array, we have a token
+          if (is_array($input))
+            // Return the token name from the given input
+            return token_name($input[0] ?? '');
+          // Return false if this is not a token
+          return false;
+        }, token_get_all(file_get_contents($file)));
+        // Check if any of the blacklisted tokens appear in the file
+        return count(array_intersect($danger, $tokens)) > 0;
+      // Assume that the file is dangerous
+      } return true;
+    }
+
+    /**
      * Determines whether the provided file path is considered mutable.
      *
      * Mutability is defined as the ability to write to a directory entry
