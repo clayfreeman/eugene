@@ -72,8 +72,8 @@
             // Deliver this credential using the `ConfigDelegate` interface
             $class::receiveCredential($credential['category'],
               $credential['password']);
-        } else trigger_error('This class is not applicable to receive '.
-          'configuration credentials', E_USER_WARNING);
+        } else trigger_error(escapeshellarg($class).' is not applicable to '.
+          'receive configuration credentials', E_USER_WARNING);
       }
     }
 
@@ -137,11 +137,11 @@
                 'password' => $password];
             } // Warn the user if there is an invalid value for this key
           } else trigger_error('Ignoring invalid value for \'lock\' key in '.
-            'this configuration file', E_USER_WARNING);
-        } else trigger_error('This configuration file\'s requested category'.
-          'cannot be overridden', E_USER_WARNING);
-      } else trigger_error('This configuration file is improperly '.
-        'formatted', E_USER_WARNING);
+            escapeshellarg($file), E_USER_WARNING);
+        } else trigger_error('The requested category in '.
+          escapeshellarg($file).' cannot be overridden', E_USER_WARNING);
+      } else trigger_error('The configuration file at '.
+        escapeshellarg($file).' is improperly formatted', E_USER_WARNING);
     }
 
     /**

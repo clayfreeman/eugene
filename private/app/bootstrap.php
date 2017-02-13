@@ -40,14 +40,19 @@
     'POSIX extension to be loaded', E_USER_ERROR);
 
   // Run the application autoload utility setup file
-  require_once(realpath(implode(__DS__,
-    [__CLASSPATH__,  'Eugene', 'Utilities', 'Autoload.php'])));
-  // Import all installed Composer package autoloader definitions
-  (\Eugene\Utilities\Autoload::getInstance())->importComposer();
+  require_once(realpath(implode(__DS__, [__CLASSPATH__,  'Eugene',
+    'Utilities', 'Autoload.php'])));
 
   { // Begin the non-strict lockdown phase of execution (to still allow
     // configuration file parsing)
     ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
+    // Add security exceptions for the Twig templating engine
+    $security->addDangerException(\Eugene\Utilities\Path::make(__VENDORROOT__,
+      'twig', 'twig', 'lib', 'Twig', 'Cache', 'Filesystem.php'));
+    $security->addDangerException(\Eugene\Utilities\Path::make(__VENDORROOT__,
+      'twig', 'twig', 'lib', 'Twig', 'Environment.php'));
+    // Import all installed Composer package autoloader definitions
+    \Eugene\Utilities\Autoload::getInstance()->importComposer();
     // Initialize cryptographic operations by fetching an instance to `Crypto`
     \Eugene\Utilities\Crypto::getInstance();
     // Scan for project configuration files (deferring all side effects)

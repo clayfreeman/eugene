@@ -61,8 +61,9 @@
       if (strlen($target ?? '') === 0 ||
           !class_exists($target) || !is_subclass_of($target,
           '\\Eugene\\DesignPatterns\\RouterDelegate')) {
-        trigger_error('This target is not applicable to receive routed '.
-          'requests; ignoring route', E_USER_WARNING); return;
+        trigger_error('The target '.escapeshellarg($target).' is not '.
+          'applicable to receive routed requests; ignoring '.
+          'route', E_USER_WARNING); return;
       } $expr = // Define our regular expression to parse URLs
         '/# Only match if surrounded by start of string
         (?:^
@@ -100,10 +101,12 @@
                 $name = ($name ? '?P<'.$name.'>' : null);
                 // Return the assembled token matching expression
                 return '(\\/('.$name.$type.'))'.$optional;
-              } else trigger_error('Invalid type provided for this route '.
-                'configuration; ignoring token', E_USER_WARNING);
-            } else trigger_error('Name not provided for this route '.
-              'configuration; ignoring token', E_USER_WARNING);
+              } else trigger_error('Invalid type provided for the route '.
+                'configuration '.escapeshellarg($input).'; ignoring '.
+                'token', E_USER_WARNING);
+            } else trigger_error('Name not provided for the route '.
+              'configuration '.escapeshellarg($input).'; ignoring '.
+              'token', E_USER_WARNING);
             // Return `false` if no name was provided
             return false;
             // If this component cannot be parsed, treat it as a terminal
@@ -140,7 +143,7 @@
      */
     public function run(): void {
       // Fetch the desired URL from the client's request
-      $url = $_SERVER['REQUEST_URI'] ?? '/';
+      $url = $_SERVER['REQUEST_URI'] ?? $GLOBALS['argv'][1] ?? '/';
       // Iterate over each configured route to determine eligibility
       foreach ($this->routes as $route => $target) {
         // Attempt to match the desired URL to this route

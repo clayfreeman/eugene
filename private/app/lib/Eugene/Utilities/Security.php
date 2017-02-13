@@ -35,6 +35,13 @@
     protected $allowUnlink = false;
 
     /**
+     * TODO
+     *
+     * @var  array
+     */
+    protected $except      = [];
+
+    /**
      * An array of UIDs that this process can assume.
      *
      * @var  array
@@ -47,6 +54,18 @@
     protected function __construct() {
       // Fetch runtime information about the current process
       $this->uids  = array_unique([posix_geteuid(), posix_getuid()]);
+    }
+
+    /**
+     * Adds an exception for the provided file for the `fileIsDangerous()`
+     * method of this class.
+     *
+     * @param  string  $file  Path to a readable, immutable file.
+     */
+    public function addDangerException(string $file): void {
+      // Add a danger exception only if the provided file is readable/immutable
+      if (is_file($file) && is_readable($file) && !$this->fileIsMutable($file))
+        $this->except[] = $file;
     }
 
     /**
@@ -89,8 +108,10 @@
       // Define an array of blacklisted tokens
       $danger = ['T_EVAL', 'T_HALT_COMPILER', 'T_INCLUDE', 'T_INCLUDE_ONCE',
         'T_REQUIRE', 'T_REQUIRE_ONCE'];
-      // Ensure that the file is readable before continuing
-      if (is_readable($file)) {
+      // Ensure that the file is readable and immutable before continuing
+      if (is_readable($file) && !$this->fileIsMutable($file)) {
+        // If this file is in the list of security exceptions, mark as safe
+        if (in_array($file, $this->except)) return false;
         // Fetch all tokens from the contents of the file at the provided path
         $tokens = array_map(function($input) {
           // If this array entry is an array, we have a token
@@ -177,7 +198,8 @@
       // read-only array of paths
       $ro = array_filter($ro, function($input) {
         if ($retval = $this->fileIsRecursivelyMutable($input))
-          trigger_error('This path is recursively mutable', E_USER_WARNING);
+          trigger_error(escapeshellarg($input).' is recursively '.
+            'mutable', E_USER_WARNING);
         return !$retval; });
       // Define a list of allowed paths during application runtime based on the
       // restricted read-only and read-write paths

@@ -22,6 +22,8 @@
     'DesignPatterns', 'Singleton.php'])); require_once($_class); }
   { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene',
     'DesignPatterns', 'HiddenMembers.php'])); require_once($_class); }
+  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
+    'Security.php'])); require_once($_class); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
   use \Eugene\{Exceptions\PathResolutionError, Utilities\Path};
@@ -260,21 +262,13 @@
         $files = array_map(function($file) {
           // Require each resulting file path (should be fail-safe)
           require_once($file);
-        }, array_filter($this->getFileIncludePaths($class), function($path) {
-          // Assemble an array of UIDs that this process can take on (`false` to
-          // trigger on `fileowner()` error)
-          $uids     = [posix_getuid(), posix_geteuid(), false];
-          // Determine characteristics for this file path
-          $readable =                       is_readable($path);
-          $writable =                       is_writable($path);
-          $owner    =                         fileowner($path);
-          $contents = ($readable ? php_strip_whitespace($path): '');
-          // Keep only safe files, discard others
-          $retVal   = $readable && !$writable && !in_array($owner, $uids);
-          // Trigger a warning when a mutable file is encountered
-          if ($readable && !$retVal) trigger_error('Refusing to load insecure '.
+        }, array_filter($this->getFileIncludePaths($class),
+        function($path) use ($security) {
+          $dangerous = $security->fileIsDangerous($path);
+          // Trigger a warning when a dangerous file is encountered
+          if ($dangerous) trigger_error('Refusing to load insecure '.
             'file at '.escapeshellarg($path), E_USER_WARNING);
-          return $retVal;
+          return !$dangerous;
         }));
       }
     }
