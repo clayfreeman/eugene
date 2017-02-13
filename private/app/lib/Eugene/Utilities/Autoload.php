@@ -264,10 +264,10 @@
           require_once($file);
         }, array_filter($this->getFileIncludePaths($class),
         function($path) use ($security) {
-          $dangerous = $security->fileIsDangerous($path);
           // Trigger a warning when a dangerous file is encountered
-          if ($dangerous) trigger_error('Refusing to load insecure '.
-            'file at '.escapeshellarg($path), E_USER_WARNING);
+          if ($dangerous = $security->fileIsDangerous($path))
+            trigger_error('Refusing to load insecure file at '.
+              escapeshellarg($path), E_USER_WARNING);
           return !$dangerous;
         }));
       }

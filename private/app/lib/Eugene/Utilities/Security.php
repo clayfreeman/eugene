@@ -114,12 +114,8 @@
         if (in_array($file, $this->except)) return false;
         // Fetch all tokens from the contents of the file at the provided path
         $tokens = array_map(function($input) {
-          // If this array entry is an array, we have a token
-          if (is_array($input))
-            // Return the token name from the given input
-            return token_name($input[0] ?? '');
-          // Return false if this is not a token
-          return false;
+          // Return the token name from the given input
+          return isset($input[0]) ? token_name($input[0]) : false;
         }, token_get_all(file_get_contents($file)));
         // Check if any of the blacklisted tokens appear in the file
         return count(array_intersect($danger, $tokens)) > 0;
