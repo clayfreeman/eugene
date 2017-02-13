@@ -1,4 +1,5 @@
 /private/config/*.json
+/private/data/twig
 /private/keys/*.key
 /composer.lock
 /vendor
