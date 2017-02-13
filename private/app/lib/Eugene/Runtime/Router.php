@@ -158,7 +158,7 @@
           }); // Setup an instance of Twig_Environment for the router delegate
           $loader = new \Twig_Loader_Filesystem($tmp = __TEMPLATEROOT__, $tmp);
           $twig   = new \Twig_Environment($loader, ['cache' =>
-            Path::make(__DATAROOT__, 'twig')]);
+            \Eugene\Utilities\Path::make(__DATAROOT__, 'twig')]);
           $twig->addFunction(new \Twig_Function('rendertime', function() {
             return round((microtime(true) - __STARTTIME__) * 1000);
           })); // Call the provided target with the parsed tokens
