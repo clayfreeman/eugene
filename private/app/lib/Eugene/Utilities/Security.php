@@ -109,14 +109,14 @@
       $danger = ['T_EVAL', 'T_HALT_COMPILER', 'T_INCLUDE', 'T_INCLUDE_ONCE',
         'T_REQUIRE', 'T_REQUIRE_ONCE'];
       // Ensure that the file is readable and immutable before continuing
-      if (is_readable($file) && !$this->fileIsMutable($file)) {
+      if (!$this->fileIsMutable($file)) {
         // If this file is in the list of security exceptions, mark as safe
         if (in_array($file, $this->except)) return false;
         // Fetch all tokens from the contents of the file at the provided path
         $tokens = array_map(function($input) {
           // Return the token name from the given input
           return isset($input[0]) ? token_name($input[0]) : false;
-        }, token_get_all(file_get_contents($file)));
+        }, token_get_all(@file_get_contents($file)));
         // Check if any of the blacklisted tokens appear in the file
         return count(array_intersect($danger, $tokens)) > 0;
       // Assume that the file is dangerous

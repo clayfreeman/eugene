@@ -22,8 +22,6 @@
     'DesignPatterns', 'Singleton.php'])); require_once($_class); }
   { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene',
     'DesignPatterns', 'HiddenMembers.php'])); require_once($_class); }
-  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
-    'Security.php'])); require_once($_class); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
   use \Eugene\{Exceptions\PathResolutionError, Utilities\Path};
@@ -53,6 +51,13 @@
     protected $allowUnlink = false;
 
     /**
+     * Reference to an instance of the `Security` class.
+     *
+     * @var  \Eugene\Utilities\Security
+     */
+    protected $security = null;
+
+    /**
      * An array containing all PSR-0 autoloader entries.
      *
      * @var  array
@@ -70,8 +75,9 @@
      * Register our autoloader using the SPL function `spl_autoload_register`.
      */
     protected function __construct() {
-      spl_autoload_register([$this, 'run'], true, true);
       $this->addPSR4(__CLASSPATH__);
+      spl_autoload_register([$this, 'run'], true, true);
+      $this->security = \Eugene\Utilities\Security::getInstance();
     }
 
     /**
@@ -255,17 +261,15 @@
      * @param  string  $class  Fully-qualified class name to include.
      */
     public function run(?string $class): void {
-      $security = Security::getInstance();
       // Ensure that the requested class name is not empty
       if (strlen($class = $this->canonicalizeClass($class)) > 0) {
         // Fetch an array of all file paths to attempt to include
         $files = array_map(function($file) {
           // Require each resulting file path (should be fail-safe)
           require_once($file);
-        }, array_filter($this->getFileIncludePaths($class),
-        function($path) use ($security) {
+        }, array_filter($this->getFileIncludePaths($class), function($path) {
           // Trigger a warning when a dangerous file is encountered
-          if ($dangerous = $security->fileIsDangerous($path))
+          if ($dangerous = $this->security->fileIsDangerous($path))
             trigger_error('Refusing to load insecure file at '.
               escapeshellarg($path), E_USER_WARNING);
           return !$dangerous;

@@ -12,5 +12,5 @@
   // End script execution if the private root is not defined
   if (!defined('__PRIVATEROOT__')) die();
 
-  // Attempt to run the router
+  // Attempt to route this request to the appropriate target
   \Eugene\Runtime\Router::getInstance()->run();
