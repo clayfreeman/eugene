@@ -115,8 +115,7 @@
         // Fetch all tokens from the contents of the file at the provided path
         $tokens = array_map(function($input) {
           // Return the token name from the given input
-          return (is_array($input) && isset($input[0])) ?
-            token_name($input[0]) : false;
+          return is_array($input) ? token_name(intval($input[0])) : false;
         }, token_get_all(@file_get_contents($file)));
         // Check if any of the blacklisted tokens appear in the file
         return count(array_intersect($danger, $tokens)) > 0;
