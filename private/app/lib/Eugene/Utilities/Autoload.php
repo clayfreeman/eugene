@@ -22,6 +22,8 @@
     'DesignPatterns', 'Singleton.php'])); require_once($_class); }
   { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene',
     'DesignPatterns', 'HiddenMembers.php'])); require_once($_class); }
+  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
+    'Security.php'])); require_once($_class); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
   use \Eugene\{Exceptions\PathResolutionError, Utilities\Path};
