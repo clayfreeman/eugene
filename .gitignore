@@ -1,3 +1,4 @@
+/private/app.phar
 /private/app/vendor
 /private/config/*.json
 /private/data/twig/*
