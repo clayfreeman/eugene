@@ -12,20 +12,11 @@
   // Run the application bootstrap routine
   (function() {
     // Build an array of path components referring to important items
-    $privateDir = [dirname(__DIR__), 'private'];
     $appPhar    = implode(DIRECTORY_SEPARATOR,
-      array_merge($privateDir, ['app.phar']));
+      [dirname(__DIR__), 'private', 'app.phar']);
     $bootstrap  = implode(DIRECTORY_SEPARATOR,
-      array_merge($privateDir, ['app', 'bootstrap.php']));
+      [dirname(__DIR__), 'private', 'app', 'bootstrap.php']);
     // Check if a pre-compiled application binary exists
-    if (is_file($appPhar) && is_readable($appPhar)) {
-      // Load the app archive to continue
-      require_once($appPhar);
-    } else {
-      // Emit a warning to encourage the user to compile the app for security
-      trigger_error('It is recommended to compile the application using '.
-        '`php build.php`', E_USER_WARNING);
-      // Load the app directly from disk to continue
-      require_once($bootstrap);
-    }
+    require_once(is_file($appPhar) && is_readable($appPhar) ?
+      $appPhar : $bootstrap);
   })();
