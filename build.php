@@ -19,3 +19,5 @@
 
   // Create a default stub to the application's bootstrapper
   $phar->setDefaultStub(implode(__DS__, 'app', 'bootstrap.php'));
+
+  // TODO: OpenSSL Signature of PHAR file
