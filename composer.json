@@ -1,4 +1,7 @@
 {
+    "config": {
+        "vendor-dir": "private/app/vendor"
+    },
     "require": {
         "bjeavons/zxcvbn-php": "^0.3.0",
         "paragonie/halite": "^3.2",
