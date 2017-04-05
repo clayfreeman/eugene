@@ -7,8 +7,9 @@
   }
 
   // Define the required well-known paths for the application
-  define('__DS__',      DIRECTORY_SEPARATOR);
-  define('__APPDEST__', implode(__DS__, [__DIR__, 'private', 'app.phar']));
+  define('__DS__',          DIRECTORY_SEPARATOR);
+  define('__PRIVATEROOT__', implode(__DS__, [__DIR__,         'private']));
+  define('__APPDEST__',     implode(__DS__, [__PRIVATEROOT__, 'app.phar']));
 
   // Remove any pre-existing compiled application
   @unlink(__APPDEST__);
@@ -18,6 +19,6 @@
   $phar->buildFromDirectory(implode(__DS__, [__PRIVATEROOT__, 'app']));
 
   // Create a default stub to the application's bootstrapper
-  $phar->setDefaultStub(implode(__DS__, 'app', 'bootstrap.php'));
+  $phar->setDefaultStub('bootstrap.php');
 
   // TODO: OpenSSL Signature of PHAR file
