@@ -16,14 +16,14 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   // Provide manual support for loading external dependencies
-  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
-    'Path.php'])); require_once($_class); }
-  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene',
-    'DesignPatterns', 'Singleton.php'])); require_once($_class); }
-  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene',
-    'DesignPatterns', 'HiddenMembers.php'])); require_once($_class); }
-  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
-    'Security.php'])); require_once($_class); }
+  { $_class = implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
+    'Path.php']);          require_once($_class); }
+  { $_class = implode(__DS__, [__CLASSPATH__, 'Eugene', 'DesignPatterns',
+    'Singleton.php']);     require_once($_class); }
+  { $_class = implode(__DS__, [__CLASSPATH__, 'Eugene', 'DesignPatterns',
+    'HiddenMembers.php']); require_once($_class); }
+  { $_class = implode(__DS__, [__CLASSPATH__, 'Eugene', 'Utilities',
+    'Security.php']);      require_once($_class); }
 
   // Create a locally-scoped alias for the `Path` class and its exceptions
   use \Eugene\{Exceptions\PathResolutionError, Utilities\Path};
@@ -229,7 +229,7 @@
         // Load Composer's `installed.json` file to import autoloaders
         if (is_readable($installed)) {
           // Attempt to parse the file as JSON
-          $installed = @json_decode(@file_get_contents($installed), true);
+          $installed = @json_decode(file_get_contents($installed), true);
           // Ensure that the resulting content is an array
           if (is_array($installed)) {
             // Iterate over each package and import its autoloader definition

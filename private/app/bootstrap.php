@@ -17,18 +17,29 @@
   ini_set('log_errors_max_len',                           '0');
   error_reporting(E_ALL | E_STRICT);
 
+  // Make the appropriate checks for PHAR compatibility and security
+  extension_loaded('Phar') or trigger_error('This project requires the PHAR '.
+    'extension to be loaded', E_USER_ERROR);
+  boolval(ini_get('phar.readonly')) or trigger_error('This project requires '.
+    'that '.escapeshellarg('phar.readonly').' is enabled', E_USER_ERROR);
+  boolval(ini_get('phar.require_hash')) or trigger_error('This project '.
+    'requires that '.escapeshellarg('phar.require_hash').' is '.
+    'enabled', E_USER_ERROR);
+
   // Define the required path constants for the application
   define('__DS__',           DIRECTORY_SEPARATOR);
-  define('__CLASSPATH__',    realpath(__DIR__.__DS__.'lib'));
-  define('__TEMPLATEROOT__', realpath(__DIR__.__DS__.'templates'));
-  define('__APPROOT__',      realpath(__DIR__));
-  define('__PRIVATEROOT__',  realpath(dirname(__APPROOT__)));
+  define('__COMPILED__',     strlen(Phar::running()) > 0);
+  define('__APPROOT__',      __COMPILED__ ? Phar::running()      : __DIR__);
+  define('__APPFILE__',      __COMPILED__ ? Phar::running(false) : __DIR__);
+  define('__CLASSPATH__',    __APPROOT__.__DS__.'lib');
+  define('__TEMPLATEROOT__', __APPROOT__.__DS__.'templates');
+  define('__VENDORROOT__',   __APPROOT__.__DS__.'vendor');
+  define('__PRIVATEROOT__',  realpath(dirname(__APPFILE__)));
+  define('__PROJECTROOT__',  realpath(dirname(__PRIVATEROOT__)));
+  define('__PUBLICROOT__',   realpath(__PROJECTROOT__.__DS__.'public'));
   define('__CONFIGROOT__',   realpath(__PRIVATEROOT__.__DS__.'config'));
   define('__DATAROOT__',     realpath(__PRIVATEROOT__.__DS__.'data'));
   define('__KEYROOT__',      realpath(__PRIVATEROOT__.__DS__.'keys'));
-  define('__PROJECTROOT__',  realpath(dirname(__PRIVATEROOT__)));
-  define('__PUBLICROOT__',   realpath(__PROJECTROOT__.__DS__.'public'));
-  define('__VENDORROOT__',   realpath(__PROJECTROOT__.__DS__.'vendor'));
   define('__STARTTIME__',    microtime(true));
 
   // Check the PHP version number and complain if unsatisfactory
@@ -39,18 +50,18 @@
   function_exists('posix_kill') or trigger_error('This project requires the '.
     'POSIX extension to be loaded', E_USER_ERROR);
 
+  // Warn the user about the security benefits of running a PHAR versus scripted
+  __COMPILED__ or trigger_error('Currently running in scripted mode. There '.
+    'are many security benefits to running a PHAR; see '.
+    'http://php.net/manual/en/intro.phar.php for more info', E_USER_WARNING);
+
   // Run the application autoload utility setup file
-  require_once(realpath(implode(__DS__, [__CLASSPATH__,  'Eugene',
-    'Utilities', 'Autoload.php'])));
+  require_once(implode(__DS__, [__CLASSPATH__,  'Eugene',
+    'Utilities', 'Autoload.php']));
 
   { // Begin the non-strict lockdown phase of execution (to still allow
     // configuration file parsing)
     ($security = \Eugene\Utilities\Security::getInstance())->lockdown();
-    // Add security exceptions for the Twig templating engine
-    $security->addDangerException(\Eugene\Utilities\Path::make(__VENDORROOT__,
-      'twig', 'twig', 'lib', 'Twig', 'Cache', 'Filesystem.php'));
-    $security->addDangerException(\Eugene\Utilities\Path::make(__VENDORROOT__,
-      'twig', 'twig', 'lib', 'Twig', 'Environment.php'));
     // Import all installed Composer package autoloader definitions
     \Eugene\Utilities\Autoload::getInstance()->importComposer();
     // Initialize cryptographic operations by fetching an instance to `Crypto`

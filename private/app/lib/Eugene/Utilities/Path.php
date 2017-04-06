@@ -16,8 +16,8 @@
   if (!defined('__PRIVATEROOT__')) die();
 
   // Provide manual support for loading external dependencies
-  { $_class = realpath(implode(__DS__, [__CLASSPATH__, 'Eugene', 'Exceptions',
-    'PathResolutionError.php'])); require_once($_class); }
+  { $_class = implode(__DS__, [__CLASSPATH__, 'Eugene', 'Exceptions',
+    'PathResolutionError.php']); require_once($_class); }
   use \Eugene\Exceptions\PathResolutionError;
 
   /**
@@ -69,19 +69,23 @@
       if (count($components) === 0) return $root; // TODO: realpath? --v
       // If only one path component was provided, return its value
       if (count($components) === 1) return $root.array_shift($components);
-      // Fetch the last component to isolate the target's parent
-      $lastComponent = array_pop($components);
-      // Ensure that the target's parent can be resolved via `realpath()`
+      // Only try to determine `realpath()` if non-phar path
       $path     = $root.implode(__DS__, $components);
-      $fail     = realpath($path) === false;
-      $realpath = realpath($path   .= __DS__.$lastComponent);
-      // If the parent cannot be resoved, throw an exception
-      if ($fail === true) throw new PathResolutionError('Failed to determine '.
-        'the absolute path to '.escapeshellarg($path).': the requested target '.
-        'presumably does not exist');
-      // If the target can be resolved using `realpath()` as well, prefer it;
-      // otherwise assume the file doesn't exist (yet)
-      $realpath = ($realpath !== false ? $realpath : $path);
-      return $realpath;
+      $realpath = $path;
+      if (substr($components[0], 0, 7) != 'phar://') {
+        // Fetch the last component to isolate the target's parent
+        $lastComponent = array_pop($components);
+        // Ensure that the target's parent can be resolved via `realpath()`
+        $path     = $root.implode(__DS__, $components);
+        $fail     = realpath($path) === false;
+        $realpath = realpath($path   .= __DS__.$lastComponent);
+        // If the parent cannot be resoved, throw an exception
+        if ($fail === true) throw new PathResolutionError('Failed to determine '.
+          'the absolute path to '.escapeshellarg($path).': the requested target '.
+          'presumably does not exist');
+        // If the target can be resolved using `realpath()` as well, prefer it;
+        // otherwise assume the file doesn't exist (yet)
+        $realpath = ($realpath !== false ? $realpath : $path);
+      } return $realpath;
     }
   }

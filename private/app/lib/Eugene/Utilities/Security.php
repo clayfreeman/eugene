@@ -187,7 +187,7 @@
      */
     public function lockdown(bool $strict = false): void {
       // Define some arrays of paths that should be conditionally allowed
-      $ro = []; $rw = [__APPROOT__, __DATAROOT__, __VENDORROOT__];
+      $ro = []; $rw = [__APPFILE__, __DATAROOT__, __VENDORROOT__];
       // Include `__CONFIGROOT__` and `__KEYROOT__` in non-strict mode
       if ($strict === false) { $ro[] = __CONFIGROOT__; $rw[] = __KEYROOT__; }
       // Ensure that only recursively immutable paths are allowed in the
