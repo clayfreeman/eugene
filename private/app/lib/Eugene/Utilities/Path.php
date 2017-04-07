@@ -88,4 +88,58 @@
         $realpath = ($realpath !== false ? $realpath : $path);
       } return $realpath;
     }
+
+    /**
+     * Normalizes the provided path by resolving '.' and '..' path components.
+     *
+     * If a path is provided that starts with a leading forward (or backward)
+     * slash, the path will be considered absolute and will remain as such.
+     *
+     * For all relative paths which consist of more '..' components than regular
+     * components, the result will have a leading trail of '..' components to
+     * make up the difference.
+     *
+     * All paths produced by this method will not contain a trailing forward
+     * slash, except in the case of the root directory '/'.
+     *
+     * If a scheme is provided, the result of this method will be a URL encoded
+     * RFC8089 URI with the provided scheme identifier. This method will
+     * generate relative URIs which are not compliant with RFC8089 if a relative
+     * path is given as input.
+     *
+     * @param   string  $path    The path that should be normalized.
+     * @param   string  $scheme  If a scheme is provided, an RFC8089 URI string
+     *                           will be produced as opposed to a file path.
+     *
+     * @return  string           The resulting normalized path.
+     */
+    public static function normalize(string $path,
+        ?string $scheme = null): string {
+      // Split the original path into an array of components (ignore '.')
+      $original    = array_filter(preg_split('/[\\/\\\\]/', $path),
+        function($item) { return  $item  !== '.'; }); $result = [];
+      // Allow only the scheme name to be specified for simplicity
+      if (($scheme =   rtrim($scheme,       '://')) !== '')
+        $scheme   .= (strlen($scheme) > 0 ? '://' : null);
+      // Determine if this is an absolute or relative path
+      $prefix      = ($original[0] ?? null) === '' ? '/' : null;
+      // Iterate over each original component to build our canonical path
+      foreach ($original as $component) {
+        // If this is supposed to be a URI path, it should be URL encoded
+        if ($scheme !== '') $component = rawurlencode(rawurldecode($component));
+        // Check if this component wants the previous directory removed
+        if ($component === '..') {
+          // If this is a relative path and there are no more components in the
+          // result, then append this component to the prefix
+          if (count($result) === 0 && $prefix !== '/')
+            $prefix .= $component.'/';
+          // Remove the last component from the result to get the parent
+          array_pop($result);
+          // In the default case, simply add the current component to the array
+        } else $result[] = $component;
+        // Assemble the final path with the resulting prefix
+      } $result = rtrim($prefix.implode('/', array_filter($result)), '/');
+      // If the string was trimmed to zero length, assume the root path
+      return $scheme.(strlen($result) === 0 ? '/' : $result);
+    }
   }
