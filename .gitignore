@@ -1,4 +1,6 @@
 /private/app.phar
+/private/app.phar.pubkey
+/private/app.phar.seckey
 /private/app/vendor
 /private/config/*.json
 /private/data/twig/*

@@ -11,12 +11,7 @@
 
   // Run the application bootstrap routine
   (function() {
-    // Build an array of path components referring to important items
-    $appPhar    = implode(DIRECTORY_SEPARATOR,
-      [dirname(__DIR__), 'private', 'app.phar']);
-    $bootstrap  = implode(DIRECTORY_SEPARATOR,
-      [dirname(__DIR__), 'private', 'app', 'bootstrap.php']);
-    // Check if a pre-compiled application binary exists
-    require_once(is_file($appPhar) && is_readable($appPhar) ?
-      $appPhar : $bootstrap);
+    // Load the pre-compiled application binary
+    require_once(implode(DIRECTORY_SEPARATOR,
+      [dirname(__DIR__), 'private', 'app.phar']));
   })();
